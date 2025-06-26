@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../provider/AuthProvider";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 import { FaHome, FaSignOutAlt, FaSitemap, FaUsers } from "react-icons/fa";
+import { FaList } from "react-icons/fa6";
 import { MdFormatListBulletedAdd } from "react-icons/md";
 import { MdEditNote } from "react-icons/md";
 
@@ -87,6 +88,9 @@ const Dashboard = () => {
                 </NavLink>
                 <NavLink to="/dashboard/manageItems">
                   <MdEditNote /> Manage Items
+                </NavLink>
+                <NavLink to="/dashboard/records">
+                  < FaList /> Records
                 </NavLink>
               </li>
             </>

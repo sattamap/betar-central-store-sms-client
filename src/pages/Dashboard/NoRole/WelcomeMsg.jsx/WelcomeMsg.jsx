@@ -1,4 +1,4 @@
-import React from 'react';
+
 
 const WelcomeMsg = () => {
     return (
@@ -8,7 +8,7 @@ const WelcomeMsg = () => {
                 Welcome to Our App!
             </h2>
             <p className="text-lg text-gray-700 mb-4">
-                You've just created an account and currently don't have a role assigned.
+                You have just created an account and currently do not have a role assigned.
                 An admin will reach out soon to assign you a role based on your preferences and needs.
             </p>
             <p className="text-lg text-gray-700">
