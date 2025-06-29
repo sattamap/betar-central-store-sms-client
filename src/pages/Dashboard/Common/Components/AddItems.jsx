@@ -1,12 +1,15 @@
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-import useAxiosPublic from "../../../../hooks/useAxiosPublic";
 import { useEffect, useState } from "react";
+
+import PropTypes from 'prop-types';
+import useAxiosPublic from "../../../../hooks/useAxiosPublic";
+
 
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
-const AddItems = () => {
+const AddItems = ({ block = "head" }) => {
   const axiosPublic = useAxiosPublic();
   const { register, handleSubmit, reset, watch } = useForm();
   const [category, setCategory] = useState("");
@@ -47,7 +50,11 @@ const AddItems = () => {
       item_faulty_use: 0,
     };
 
-    const totalQuantity = items_quantity.item_store + items_quantity.item_use + items_quantity.item_faulty_store+items_quantity.item_faulty_use;
+    const totalQuantity =
+      items_quantity.item_store +
+      items_quantity.item_use +
+      items_quantity.item_faulty_store +
+      items_quantity.item_faulty_use;
 
     const item = {
       itemName: data.itemName,
@@ -63,7 +70,7 @@ const AddItems = () => {
     };
 
     try {
-      const result = await axiosPublic.post("/item", item);
+      const result = await axiosPublic.post(`/${block}/item`, item);
 
       if (result.data.insertedId) {
         reset();
@@ -78,9 +85,9 @@ const AddItems = () => {
     } catch (error) {
       if (error.response && error.response.status === 400) {
         Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'An item with the same model already exists.',
+          icon: "error",
+          title: "Oops...",
+          text: "An item with the same model already exists.",
         });
       } else {
         console.error("Error adding item:", error);
@@ -92,17 +99,17 @@ const AddItems = () => {
     const modelValue = watch("model");
 
     try {
-      const response = await axiosPublic.get(`/items/model/${modelValue}`);
+      const response = await axiosPublic.get(`/${block}/items/model/${modelValue}`);
 
       if (response.data) {
         Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'An item with this model already exists in the database!',
+          icon: "error",
+          title: "Oops...",
+          text: "An item with this model already exists in the database!",
         });
       }
     } catch (error) {
-      console.error('Error checking item redundancy by model:', error);
+      console.error("Error checking item redundancy by model:", error);
     }
   };
 
@@ -112,25 +119,24 @@ const AddItems = () => {
         <div className="flex flex-col lg:flex-row gap-6 mb-6">
           <div className="form-control w-full">
             <label className="block text-gray-700 text-sm font-bold mb-2">
-              <span className="label-text">Name of the Item</span>
-              <span className="text-red-500 text-lg ml-2">*</span>
+              Name of the Item<span className="text-red-500 ml-2">*</span>
             </label>
             <input
               type="text"
               placeholder="e.g. Module"
               {...register("itemName", { required: true })}
               required
-              className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm md:text-base"
+              className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
             />
           </div>
+
           <div className="form-control w-full">
             <label className="block text-gray-700 text-sm font-bold mb-2">
-              <span className="label-text">Category</span>
-              <span className="text-red-500 text-lg ml-2">*</span>
+              Category<span className="text-red-500 ml-2">*</span>
             </label>
             <select
               {...register("category", { required: true })}
-              className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm md:text-base"
+              className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
             >
               <option value="SpareParts">Spare Parts</option>
               <option value="Equipment">Equipment</option>
@@ -144,116 +150,122 @@ const AddItems = () => {
                   placeholder="Specify the category"
                   value={specificCategory}
                   onChange={(e) => setSpecificCategory(e.target.value)}
-                  className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm md:text-base"
+                  className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
                 />
               </div>
             )}
           </div>
         </div>
+
         <div className="flex flex-col lg:flex-row gap-6 mb-6">
           <div className="form-control w-full">
             <label className="block text-gray-700 text-sm font-bold mb-2">
-              <span className="label-text">Model Name</span>
-              <span className="text-red-500 text-lg ml-2">*</span>
+              Model Name<span className="text-red-500 ml-2">*</span>
             </label>
             <input
               type="text"
               placeholder="e.g. AM-10A"
               {...register("model")}
               onBlur={onBlurModel}
-              className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm md:text-base"
+              className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
             />
           </div>
+
           <div className="form-control w-full">
             <label className="block text-gray-700 text-sm font-bold mb-2">
-              <span className="label-text">Country Origin</span>
-              <span className="text-red-500 text-lg ml-2">*</span>
+              Country Origin<span className="text-red-500 ml-2">*</span>
             </label>
             <input
               type="text"
               placeholder="e.g. USA"
               {...register("origin", { required: true })}
               required
-              className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm md:text-base"
+              className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
             />
           </div>
         </div>
+
         <div className="flex flex-col lg:flex-row gap-6 mb-6">
           <div className="form-control w-full">
             <label className="block text-gray-700 text-sm font-bold mb-2">
-              <span className="label-text">Item Quantity in Store</span>
-              <span className="text-red-500 text-lg ml-2">*</span>
+              Item Quantity in Store<span className="text-red-500 ml-2">*</span>
             </label>
             <input
               type="number"
               placeholder="e.g. 4"
               {...register("goodQuantity", { required: true })}
               required
-              className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm md:text-base"
+              className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
             />
           </div>
         </div>
+
         <div className="flex flex-col lg:flex-row gap-6 mb-6">
           <div className="form-control w-full">
             <label className="block text-gray-700 text-sm font-bold mb-2">
-              <span className="label-text">Current Location of Good Item</span>
-              <span className="text-red-500 text-lg ml-2">*</span>
+              Current Location of Good Item<span className="text-red-500 ml-2">*</span>
             </label>
             <input
               type="text"
               placeholder="e.g. At Store/FM Room"
               {...register("locationGood", { required: true })}
               required
-              className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm md:text-base"
+              className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
             />
           </div>
+
           <div className="form-control w-full">
             <label className="block text-gray-700 text-sm font-bold mb-2">
-              <span className="label-text">Date of Receive</span>
-              <span className="text-red-500 text-lg ml-2">*</span>
+              Date of Receive<span className="text-red-500 ml-2">*</span>
             </label>
             <input
               type="date"
               id="receive"
-              {...register("date", {})}
-              className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm md:text-base"
+              {...register("date")}
+              className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
             />
           </div>
         </div>
-        <div className="flex gap-6 mb-6">
-          <div className="form-control w-full">
-            <label htmlFor="detail" className="block text-gray-700 text-sm font-bold mb-2">
-              Detail About the Item
-            </label>
-            <textarea
-              id="detail"
-              placeholder="Write about specs, application etc of the item..."
-              {...register("detail")}
-              className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-          </div>
+
+        <div className="mb-6">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Detail About the Item
+          </label>
+          <textarea
+            {...register("detail")}
+            placeholder="Write about specs, application etc..."
+            className="border rounded w-full py-2 px-3 text-gray-700"
+          />
         </div>
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div className="form-control w-full">
-            <label htmlFor="image" className="block text-gray-700 text-sm font-bold mb-2">
-              Image of the Item
-            </label>
-            <input
-              type="file"
-              id="image"
-              {...register("image", {})}
-              className="border rounded w-full py-[6px] px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-          </div>
+
+        <div className="mb-6">
+          <label htmlFor="image" className="block text-gray-700 text-sm font-bold mb-2">
+            Image of the Item
+          </label>
+          <input
+            type="file"
+            id="image"
+            {...register("image")}
+            className="border rounded w-full py-[6px] px-3 text-gray-700"
+          />
         </div>
+
         <div className="flex justify-center">
-          <button className="btn w-1/2 mt-10 bg-emerald-700 text-white hover:bg-emerald-950 hover:text-white">
+          <button
+            type="submit"
+            className="btn w-1/2 mt-10 bg-emerald-700 text-white hover:bg-emerald-900"
+          >
             Add Item
           </button>
         </div>
       </form>
     </div>
   );
+};
+
+
+AddItems.propTypes = {
+  block: PropTypes.string,
 };
 
 export default AddItems;

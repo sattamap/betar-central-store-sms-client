@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import useAxiosPublic from "../../../../hooks/useAxiosPublic";
-import { Link } from "react-router-dom";
+
+// import { Link, useOutletContext } from "react-router-dom";
 import Swal from "sweetalert2";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -8,9 +8,12 @@ import { FaPlusMinus } from "react-icons/fa6";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { CgDetailsMore } from "react-icons/cg";
 import Modal from "react-modal";
+import useAxiosPublic from "../../../../hooks/useAxiosPublic";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 Modal.setAppElement("#root");
-const ManageItems = () => {
+const ManageItems = ({ block = "head" }) => {
   const axiosPublic = useAxiosPublic();
   const [items, setItems] = useState([]);
   const [searchItemTerm, setSearchItemTerm] = useState("");
@@ -21,24 +24,24 @@ const ManageItems = () => {
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [filterApplied, setFilterApplied] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-const [formData, setFormData] = useState({
-  good: "",
-  condition: "", // 'add' or 'use'
-  locationGood: "",
-  purpose: "",
-  date: "",
-});
-
-
+  const [formData, setFormData] = useState({
+    good: "",
+    condition: "", // 'add' or 'use'
+    locationGood: "",
+    purpose: "",
+    date: "",
+  });
 
   const [selectedItemData, setSelectedItemData] = useState(null);
   //const [operation, setOperation] = useState("plus");
+  //   const outletContext = useOutletContext();
+  // const block = outletContext?.block || "head";
 
   // Fetch items from the API
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await axiosPublic.get("/items");
+        const response = await axiosPublic.get(`/${block}/items`);
         setItems(response.data);
 
         // Get all available categories from the items
@@ -51,7 +54,7 @@ const [formData, setFormData] = useState({
       }
     };
     fetchItems();
-  }, [axiosPublic]);
+  }, [axiosPublic, block]);
 
   // Handle deletion of an item
   const handleDelete = async (item) => {
@@ -66,7 +69,9 @@ const [formData, setFormData] = useState({
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await axiosPublic.delete(`/item/${item._id}`);
+          const response = await axiosPublic.delete(
+            `/${block}/item/${item._id}`
+          );
           if (response.status === 200) {
             // Remove the deleted item from the state
             setItems((prevItems) =>
@@ -99,21 +104,19 @@ const [formData, setFormData] = useState({
     });
   };
 
- 
-// Filter items based on search term and selected category
-const filteredItems = items.filter((item) => {
-  const matchesName =
-    item.itemName &&
-    item.itemName.toLowerCase().includes(searchItemTerm.toLowerCase());
-  const matchesModel =
-    item.model &&
-    item.model.toLowerCase().includes(searchModelTerm.toLowerCase());
-  const matchesCategory =
-    selectedCategory === "" || item.category === selectedCategory;
+  // Filter items based on search term and selected category
+  const filteredItems = items.filter((item) => {
+    const matchesName =
+      item.itemName &&
+      item.itemName.toLowerCase().includes(searchItemTerm.toLowerCase());
+    const matchesModel =
+      item.model &&
+      item.model.toLowerCase().includes(searchModelTerm.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "" || item.category === selectedCategory;
 
-  return matchesName && matchesModel && matchesCategory;
-});
-
+    return matchesName && matchesModel && matchesCategory;
+  });
 
   // Calculate the total number of filtered items
   const totalFilteredItems = filteredItems.length;
@@ -129,7 +132,7 @@ const filteredItems = items.filter((item) => {
   // Update the current page when search term or selected condition changes
   useEffect(() => {
     setCurrentPage(0);
-  }, [searchItemTerm, searchModelTerm,]);
+  }, [searchItemTerm, searchModelTerm]);
 
   // Handle changes in items per page
   const handleItemsPerPageChange = (e) => {
@@ -248,14 +251,13 @@ const filteredItems = items.filter((item) => {
     const doc = new jsPDF();
     const tableData = items.map((item, index) => [
       startIndex + index + 1,
-      `item.itemName,
-            item.model,
-            item.origin,`,
-      item.condition.Good,
-      item.locationGood,
-      item.condition.Bad,
-      item.locationBad,
+      [`${item.itemName}`, `${item.model}`, `${item.origin}`],
+      item?.items_quantity?.item_store,
+      item?.items_quantity?.item_use,
+      item?.items_quantity?.item_faulty_store,
+      item?.items_quantity?.item_faulty_use,
       item.totalQuantity,
+      item.locationGood,
       item.category,
       item.date,
     ]);
@@ -264,12 +266,13 @@ const filteredItems = items.filter((item) => {
       head: [
         [
           "#",
-          "Name, Model & Origin",
-          "Good item",
-          "Location (Good)",
-          "Defective item",
-          "Location (Defective)",
+          "Name,Model & Origin",
+          "Item (Store)",
+          "Item (Use)",
+          "Item (Faulty_store)",
+          "Item (Faulty_use)",
           "Total item",
+          "Location (Good)",
           "Category",
           "Date",
         ],
@@ -288,26 +291,30 @@ const filteredItems = items.filter((item) => {
     let headers = [];
     let tableData = [];
 
-  
-      headers = [
-        [
-          "#",
-          "Name, Model & Origin",
-          "Good item",
-          "Location (Good)",
-          "Total item",
-          "Category & Date",
-        ],
-      ];
-      tableData = filteredItems.map((item, index) => [
-        startIndex + index + 1,
-        [`${item.itemName}`, `${item.model}`, `${item.origin}`], // Multi-line text array
-        item.condition?.Good,
-        item.locationGood,
-        item.totalQuantity,
-        [`${item.category}`, `${item.date}`], // Multi-line text array
-      ]);
-    
+    headers = [
+      [
+        "#",
+        "Name,Model & Origin",
+        "Item (Store)",
+        "Item (Use)",
+        "Item (Faulty_store)",
+        "Item (Faulty_use)",
+        "Total item",
+        "Location (Good)",
+        "Category & Date",
+      ],
+    ];
+    tableData = filteredItems.map((item, index) => [
+      startIndex + index + 1,
+      [`${item.itemName}`, `${item.model}`, `${item.origin}`], // Multi-line text array
+      item?.items_quantity?.item_store,
+      item?.items_quantity?.item_use,
+      item?.items_quantity?.item_faulty_store,
+      item?.items_quantity?.item_faulty_use,
+      item.totalQuantity,
+      item.locationGood,
+      [`${item.category}`, `${item.date}`], // Multi-line text array
+    ]);
 
     // Generate PDF with the dynamically set headers and table data
     doc.autoTable({
@@ -318,10 +325,10 @@ const filteredItems = items.filter((item) => {
     doc.save("filtered_items.pdf");
   };
 
-const openModal = (item) => {
-  setSelectedItemData(item);
-  setIsModalOpen(true);
-};
+  const openModal = (item) => {
+    setSelectedItemData(item);
+    setIsModalOpen(true);
+  };
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -334,140 +341,136 @@ const openModal = (item) => {
     });
   };
 
-const handleSubmit = async () => {
-  try {
-    if (!formData.condition) throw new Error("Please select an action");
-    if (!selectedItemData?._id) throw new Error("Missing item ID");
+  const handleSubmit = async () => {
+    try {
+      if (!formData.condition) throw new Error("Please select an action");
+      if (!selectedItemData?._id) throw new Error("Missing item ID");
 
-    const inputQty = Number(formData.good);
-    const availableStore = Number(selectedItemData.items_quantity?.item_store || 0);
-    const availableUse = Number(selectedItemData.items_quantity?.item_use || 0);
+      const inputQty = Number(formData.good);
+      const availableStore = Number(
+        selectedItemData.items_quantity?.item_store || 0
+      );
+      const availableUse = Number(
+        selectedItemData.items_quantity?.item_use || 0
+      );
 
-    // ❗ Validate input before submit
-    if (formData.condition === "use" && inputQty > availableStore) {
-      return Swal.fire({
-        icon: "error",
-        title: "Insufficient Store Quantity",
-        text: `Only ${availableStore} items available in store.`,
-      });
-    }
+      // ❗ Validate input before submit
+      if (formData.condition === "use" && inputQty > availableStore) {
+        return Swal.fire({
+          icon: "error",
+          title: "Insufficient Store Quantity",
+          text: `Only ${availableStore} items available in store.`,
+        });
+      }
 
-    if (formData.condition === "faulty_store" && inputQty > availableStore) {
-      return Swal.fire({
-        icon: "error",
-        title: "Insufficient Store Quantity",
-        text: `Cannot mark ${inputQty} faulty from store. Only ${availableStore} available.`,
-      });
-    }
+      if (formData.condition === "faulty_store" && inputQty > availableStore) {
+        return Swal.fire({
+          icon: "error",
+          title: "Insufficient Store Quantity",
+          text: `Cannot mark ${inputQty} faulty from store. Only ${availableStore} available.`,
+        });
+      }
 
-    if (formData.condition === "faulty_use" && inputQty > availableUse) {
-      return Swal.fire({
-        icon: "error",
-        title: "Insufficient Use Quantity",
-        text: `Cannot mark ${inputQty} faulty from use. Only ${availableUse} available.`,
-      });
-    }
+      if (formData.condition === "faulty_use" && inputQty > availableUse) {
+        return Swal.fire({
+          icon: "error",
+          title: "Insufficient Use Quantity",
+          text: `Cannot mark ${inputQty} faulty from use. Only ${availableUse} available.`,
+        });
+      }
 
-    // ✅ Build payload
-    const payload= {
-      itemName: selectedItemData.itemName,
-      model: selectedItemData.model,
-      date: formData.date,
-      itemId: selectedItemData._id,
-      locationGood: formData.locationGood,
-      purpose:
-        formData.purpose ||
-        (formData.condition === "add"
-          ? "To store"
-          : formData.condition === "use"
-          ? "For use"
-          : "Faulty removal"),
-      items_quantity: {
-        item_store: 0,
-        item_use: 0,
-        item_faulty_store: 0,
-        item_faulty_use: 0,
-      },
-    };
+      // ✅ Build payload
+      const payload = {
+        itemName: selectedItemData.itemName,
+        model: selectedItemData.model,
+        date: formData.date,
+        itemId: selectedItemData._id,
+        locationGood: formData.locationGood,
+        purpose:
+          formData.purpose ||
+          (formData.condition === "add"
+            ? "To store"
+            : formData.condition === "use"
+            ? "For use"
+            : "Faulty removal"),
+        items_quantity: {
+          item_store: 0,
+          item_use: 0,
+          item_faulty_store: 0,
+          item_faulty_use: 0,
+        },
+      };
 
-    // ✅ Set status and the corresponding field
-    if (formData.condition === "add") {
-      payload.status = "pending(add)";
-      payload.items_quantity.item_store = inputQty;
-    } else if (formData.condition === "use") {
-      payload.status = "pending(remove)";
-      payload.items_quantity.item_use = inputQty;
-    } else if (formData.condition === "faulty_store") {
-      payload.status = "pending(remove_fault_store)";
-      payload.items_quantity.item_faulty_store = inputQty;
-    } else if (formData.condition === "faulty_use") {
-      payload.status = "pending(remove_fault_use)";
-      payload.items_quantity.item_faulty_use = inputQty;
-    }
+      // ✅ Set status and the corresponding field
+      if (formData.condition === "add") {
+        payload.status = "pending(add)";
+        payload.items_quantity.item_store = inputQty;
+      } else if (formData.condition === "use") {
+        payload.status = "pending(remove)";
+        payload.items_quantity.item_use = inputQty;
+      } else if (formData.condition === "faulty_store") {
+        payload.status = "pending(remove_fault_store)";
+        payload.items_quantity.item_faulty_store = inputQty;
+      } else if (formData.condition === "faulty_use") {
+        payload.status = "pending(remove_fault_use)";
+        payload.items_quantity.item_faulty_use = inputQty;
+      }
 
-    console.log("Submitting payload:", payload);
+      console.log("Submitting payload:", payload);
 
-    const response = await axiosPublic.post("/records", payload);
+      const response = await axiosPublic.post(`/${block}/records`, payload);
 
-    if (response.status === 200 || response.status === 201) {
+      if (response.status === 200 || response.status === 201) {
+        Swal.fire({
+          icon: "success",
+          title: "Submitted for approval",
+          timer: 1500,
+          showConfirmButton: false,
+          position: "top-end",
+        });
+
+        closeModal();
+        setFormData({
+          good: "",
+          condition: "",
+          locationGood: "",
+          purpose: "",
+          date: "",
+        });
+      } else {
+        throw new Error("Submission failed");
+      }
+    } catch (error) {
+      console.error("Submit error:", error);
       Swal.fire({
-        icon: "success",
-        title: "Submitted for approval",
-        timer: 1500,
-        showConfirmButton: false,
-        position: "top-end",
+        icon: "error",
+        title: "Error",
+        text: error.message || "Something went wrong",
       });
-
-      closeModal();
-      setFormData({
-        good: "",
-        condition: "",
-        locationGood: "",
-        purpose: "",
-        date: "",
-      });
-    } else {
-      throw new Error("Submission failed");
     }
-  } catch (error) {
-    console.error("Submit error:", error);
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: error.message || "Something went wrong",
-    });
-  }
-};
-
-
-
-
+  };
 
   // Update filterApplied when searchTerm or selectedCondition changes
   useEffect(() => {
     setFilterApplied(
-      searchItemTerm !== "" ||
-        searchModelTerm !== "" ||
-        selectedCategory !== ""
+      searchItemTerm !== "" || searchModelTerm !== "" || selectedCategory !== ""
     );
-  }, [searchItemTerm, searchModelTerm,  selectedCategory]);
+  }, [searchItemTerm, searchModelTerm, selectedCategory]);
 
   const isFiltered = filteredItems.length > 0 && filterApplied;
 
-  const columns =
-     [
-          "#",
-          "Name,Model & Origin",
-          "Item (Store)",
-          "Location (Good)",
-          "Item (Use)",
-          "Item (Faulty_store)",
-          "Item (Faulty_use)",
-          "Total item",
-          "Category & Date",
-          "Action",
-        ]
-      
+  const columns = [
+    "#",
+    "Name,Model & Origin",
+    "Item (Store)",
+    "Location (Good)",
+    "Item (Use)",
+    "Item (Faulty_store)",
+    "Item (Faulty_use)",
+    "Total item",
+    "Category & Date",
+    "Action",
+  ];
 
   const tableHeader = (
     <thead>
@@ -501,19 +504,29 @@ const handleSubmit = async () => {
             </div>
           </td>
           <td>
-             <div className="text-sm opacity-50 text-center">{item?.items_quantity?.item_store}</div>
+            <div className="text-sm opacity-50 text-center">
+              {item?.items_quantity?.item_store}
+            </div>
           </td>
           <td>
-             <div className="text-sm opacity-50 text-center">{item?.locationGood}</div>
+            <div className="text-sm opacity-50 text-center">
+              {item?.locationGood}
+            </div>
           </td>
           <td>
-             <div className="text-sm opacity-50 text-center">{item?.items_quantity?.item_use}</div>
+            <div className="text-sm opacity-50 text-center">
+              {item?.items_quantity?.item_use}
+            </div>
           </td>
           <td>
-             <div className="text-sm opacity-50 text-center">{item?.items_quantity?.item_faulty_store}</div>
+            <div className="text-sm opacity-50 text-center">
+              {item?.items_quantity?.item_faulty_store}
+            </div>
           </td>
           <td>
-             <div className="text-sm opacity-50 text-center">{item?.items_quantity?.item_faulty_use}</div>
+            <div className="text-sm opacity-50 text-center">
+              {item?.items_quantity?.item_faulty_use}
+            </div>
           </td>
           <td>
             <div className="text-center">
@@ -534,21 +547,23 @@ const handleSubmit = async () => {
               >
                 <MdDelete />
               </button>
-              <Link to={`/dashboard/updateItem/${item._id}`}>
+              <Link to={`/${block}/updateItem/${item._id}`}>
                 <button className="btn btn-neutral btn-xs">
                   <MdEdit />
                 </button>
               </Link>
-              <Link to={`/dashboard/details/${item._id}`}>
+
+              <Link to={`/${block}/details/${item._id}`}>
                 <button className="btn btn-neutral btn-xs">
                   <CgDetailsMore />
                 </button>
               </Link>
+
               <button
                 onClick={() => openModal(item)}
                 className="btn btn-neutral btn-xs"
               >
-               <FaPlusMinus/>
+                <FaPlusMinus />
               </button>
             </div>
           </td>
@@ -628,122 +643,125 @@ const handleSubmit = async () => {
         </div>
         <nav>{renderPageNumbers()}</nav>
       </div>
-<Modal
-  isOpen={isModalOpen}
-  onRequestClose={closeModal}
-  contentLabel="Submit Item Operation"
-  style={{
-    overlay: { backgroundColor: "rgba(0, 0, 0, 0.75)" },
-    content: {
-      width: "80%",
-      maxWidth: "600px",
-      height: "auto",
-      maxHeight: "80%",
-      margin: "auto",
-      borderRadius: "8px",
-      padding: "30px",
-    },
-  }}
->
-  <div className="modal-content">
-    <button className="modal-close-btn" onClick={closeModal}>
-      <svg
-        className="h-6 w-6 text-gray-500"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        contentLabel="Submit Item Operation"
+        style={{
+          overlay: { backgroundColor: "rgba(0, 0, 0, 0.75)" },
+          content: {
+            width: "80%",
+            maxWidth: "600px",
+            height: "auto",
+            maxHeight: "80%",
+            margin: "auto",
+            borderRadius: "8px",
+            padding: "30px",
+          },
+        }}
       >
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </button>
+        <div className="modal-content">
+          <button className="modal-close-btn" onClick={closeModal}>
+            <svg
+              className="h-6 w-6 text-gray-500"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
 
-    <h3 className="text-lg font-semibold mb-2">Submit Item Operation</h3>
+          <h3 className="text-lg font-semibold mb-2">Submit Item Operation</h3>
 
-    <div className="grid grid-cols-2 gap-4">
-      {/* Item Name and Model */}
-      <input
-        type="text"
-        value={selectedItemData?.itemName || ""}
-        readOnly
-        className="input input-bordered"
-      />
-      <input
-        type="text"
-        value={selectedItemData?.model || ""}
-        readOnly
-        className="input input-bordered"
-      />
+          <div className="grid grid-cols-2 gap-4">
+            {/* Item Name and Model */}
+            <input
+              type="text"
+              value={selectedItemData?.itemName || ""}
+              readOnly
+              className="input input-bordered"
+            />
+            <input
+              type="text"
+              value={selectedItemData?.model || ""}
+              readOnly
+              className="input input-bordered"
+            />
 
-      {/* Action Selector */}
-      <select
-        name="condition"
-        value={formData.condition}
-        onChange={handleInputChange}
-        className="input input-bordered col-span-2"
-      >
-        <option value="">Select Action</option>
-        <option value="add">Add to Store</option>
-        <option value="use">Items for Use</option>
-        <option value="faulty_store">Remove from Store (Faulty)</option>
-        <option value="faulty_use">Remove from Use (Faulty)</option>
-      </select>
+            {/* Action Selector */}
+            <select
+              name="condition"
+              value={formData.condition}
+              onChange={handleInputChange}
+              className="input input-bordered col-span-2"
+            >
+              <option value="">Select Action</option>
+              <option value="add">Add to Store</option>
+              <option value="use">Items for Use</option>
+              <option value="faulty_store">Remove from Store (Faulty)</option>
+              <option value="faulty_use">Remove from Use (Faulty)</option>
+            </select>
 
-      {/* Show the rest of the form only when an action is selected */}
-      {formData.condition && (
-        <>
-          <input
-            type="number"
-            name="good"
-            value={formData.good}
-            onChange={handleInputChange}
-            placeholder={
-              formData.condition === "add" ? "Quantity to Add" : "Quantity to Remove"
-            }
-            className="input input-bordered"
-          />
-          <input
-            type="text"
-            name="purpose"
-            value={formData.purpose}
-            onChange={handleInputChange}
-            placeholder="Purpose"
-            className="input input-bordered"
-          />
-          <input
-            type="text"
-            name="locationGood"
-            value={formData.locationGood}
-            onChange={handleInputChange}
-            placeholder="Location"
-            className="input input-bordered"
-          />
-          <input
-            type="date"
-            name="date"
-            value={formData.date}
-            onChange={handleInputChange}
-            className="input input-bordered"
-          />
-        </>
-      )}
-    </div>
+            {/* Show the rest of the form only when an action is selected */}
+            {formData.condition && (
+              <>
+                <input
+                  type="number"
+                  name="good"
+                  value={formData.good}
+                  onChange={handleInputChange}
+                  placeholder={
+                    formData.condition === "add"
+                      ? "Quantity to Add"
+                      : "Quantity to Remove"
+                  }
+                  className="input input-bordered"
+                />
+                <input
+                  type="text"
+                  name="purpose"
+                  value={formData.purpose}
+                  onChange={handleInputChange}
+                  placeholder="Purpose"
+                  className="input input-bordered"
+                />
+                <input
+                  type="text"
+                  name="locationGood"
+                  value={formData.locationGood}
+                  onChange={handleInputChange}
+                  placeholder="Location"
+                  className="input input-bordered"
+                />
+                <input
+                  type="date"
+                  name="date"
+                  value={formData.date}
+                  onChange={handleInputChange}
+                  className="input input-bordered"
+                />
+              </>
+            )}
+          </div>
 
-    <button onClick={handleSubmit} className="btn mt-4">
-      Submit for Approval
-    </button>
-  </div>
-</Modal>
-
-
-
-
-
-
-
-
+          <button onClick={handleSubmit} className="btn mt-4">
+            Submit for Approval
+          </button>
+        </div>
+      </Modal>
     </div>
   );
+};
+
+ManageItems.propTypes = {
+  block: PropTypes.string,
 };
 
 export default ManageItems;

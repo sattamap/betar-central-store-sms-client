@@ -16,7 +16,7 @@ const AboutIMS = () => {
                     <li><strong>Admin:</strong> Admin users have full control over the system. They can manage users, assign roles, and perform all the tasks available to Coordinators. Additionally, Admins can change user roles and handle advanced administrative tasks.</li>
                     <li><strong>Coordinator:</strong> Coordinator users can add, edit, and remove items. They also have all the permissions of a Monitor, allowing them to view item details such as name, quantity, location, condition, detail, and image.</li>
                     <li><strong>Monitor:</strong> Monitor users can view item details, including name, quantity, location, condition, detail, and image. However, they do not have the permission to add, edit, or remove items.</li>
-                    <li><strong>No Role:</strong> Users with no assigned role cannot access or perform any actions within the system. When a user registers for the first time, their status is set to "No Role" by default. Only Admin users can change the roles of other users.</li>
+                    <li><strong>No Role:</strong> Users with no assigned role cannot access or perform any actions within the system. When a user registers for the first time, their status is set to No Role by default. Only Admin users can change the roles of other users.</li>
                 </ul>
                 <p>
                     This system streamlines inventory management and improves efficiency in organizing and tracking items across different locations in the office.

@@ -1,114 +1,132 @@
-import {
-  createBrowserRouter
-} from "react-router-dom";
+//
+
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import Main from "../layout/Main";
+import Dashboard from "../layout/Dashboard";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
-import Dashboard from "../layout/Dashboard";
-import AllUsers from "../pages/Dashboard/Admin/AllUsers/AllUsers";
-import AddItems from "../pages/Dashboard/Coordinator/AddItems/AddItems";
-import Items from "../pages/Dashboard/Monitor/Items/Items";
-import WelcomeMsg from "../pages/Dashboard/NoRole/WelcomeMsg.jsx/WelcomeMsg";
-import ManageItems from "../pages/Dashboard/Coordinator/ManageItems/ManageItems";
-import UpdateItems from "../pages/Dashboard/Coordinator/UpdateItems/UpdateItems";
-import Details from "../pages/Dashboard/Common/Components/Details";
-import Home from "../pages/Dashboard/Common/Home/Home";
 import Contact from "../pages/Login/Contact";
 import AboutIMS from "../pages/Login/AboutIMS";
 import PrivateRoutes from "./PrivateRoutes";
-import Records from "../pages/Dashboard/Admin/Records/Records";
+
+import Items from "../pages/Dashboard/HeadOffice/Monitor/Items/HeadItems";
+import Details from "../pages/Dashboard/Common/Components/Details";
+
+
+import BlockSelector from "../pages/Dashboard/Common/BlockSelector/BlockSelector";
+
+import HeadAddItems from "../pages/Dashboard/HeadOffice/Coordinator/AddItems/HeadAddItems";
+import HeadManageItems from "../pages/Dashboard/HeadOffice/Coordinator/ManageItems/HeadManageItems";
+import HeadUpdateItems from "../pages/Dashboard/HeadOffice/Coordinator/UpdateItems/HeadUpdateItems";
+import LocalAddItems from "../pages/Dashboard/Local/Coordinator/AddItems/LocalAddItems";
+import LocalManageItems from "../pages/Dashboard/Local/Coordinator/ManageItems/LocalManageItems";
+import LocalUpdateItems from "../pages/Dashboard/Local/Coordinator/UpdateItems/LocalUpdateItems";
+import HeadHome from "../pages/Dashboard/HeadOffice/Home/HeadHome";
+import LocalHome from "../pages/Dashboard/Local/Home/LocalHome";
+import HeadRecords from "../pages/Dashboard/HeadOffice/Admin/Records/HeadRecords";
+import LocalRecords from "../pages/Dashboard/Local/Admin/Records/LocalRecords";
+import AllUsers from "../pages/Dashboard/Common/Components/AllUsers";
+import GenericDashboard from "../layout/GenericDashboard";
+import HeadWelcomeMsg from "../pages/Dashboard/HeadOffice/None/HeadWelcomeMsg";
+import LocalWelcomeMsg from "../pages/Dashboard/Local/None/LocalWelcomeMsg";
 
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Main></Main>,
-    children:[
-        {
-            path:"/",
-            element:<Login></Login>,
-        },
-        {
-            path:"register",
-            element:<Register></Register>,
-        },
-        {
-            path:"contact",
-            element:<Contact></Contact>,
-        },
-        {
-            path:"about",
-            element:<AboutIMS></AboutIMS>,
-        },
-    ]
-  },
-  {
-    path: "dashboard",
-    element: <PrivateRoutes><Dashboard></Dashboard></PrivateRoutes>,
+    element: <Main />,
     children: [
-
-
-
-      // common routes
-   
-    
-      
       {
-        path: "home",
-        element:<Home></Home>,
+        path: "/",
+        element: <Login />,
       },
       {
-        path: "details/:id",
-        element: <Details></Details>,
+        path: "register",
+        element: <Register />,
       },
+      {
+        path: "contact",
+        element: <Contact />,
+      },
+      {
+        path: "about",
+        element: <AboutIMS />,
+      },
+    ],
+  },
 
+  {
+    path: "/dashboard",
+    element: (
+      <PrivateRoutes>
+        <Dashboard />
+      </PrivateRoutes>
+    ), // Only photo + BlockSelector
+    children: [
+      {
+        index: true,
+        element: <Navigate to="select-block" replace />,
+      },
+      {
+        path: "select-block",
+        element: <BlockSelector />,
+      },
+      {
+        path: "all-users",
+        element: <AllUsers />,
+      },
+    ],
+  },
 
-      // admin routes
-   
+  // ✅ HEAD OFFICE BLOCK
+  {
+    path: "/head",
+    element: (
+      <PrivateRoutes>
+        <GenericDashboard />
+      </PrivateRoutes>
+    ),
+    children: [
+      { path: "home", element: <HeadHome /> },
+      { path: "addItems", element: <HeadAddItems /> },
+      { path: "manageItems", element: <HeadManageItems /> },
       {
-        path: "allUsers",
-        element: <AllUsers></AllUsers>,
+        path: "updateItem/:id",
+        element: <HeadUpdateItems />,
+        loader: ({ params }) =>
+          fetch(`http://localhost:5000/head/items/${params.id}`),
       },
-      {
-        path: "records",
-        element: <Records></Records>,
-      },
-     
-      // coordinator routes
-     
-      {
-        path: "addItems",
-        element:<AddItems></AddItems>,
-      },
-      
-      {
-        path: "manageItems",
-        element:<ManageItems></ManageItems>,
-      },
-      {
-        path: 'updateItem/:id',
-        element:<UpdateItems></UpdateItems>,
-        loader: ({params})=> fetch(`http://localhost:5000/items/${params.id}`)
+      { path: "items", element: <Items /> },
+      { path: "adminRecords", element: <HeadRecords /> },
+      { path: "records", element: <HeadRecords /> },
+      { path: "details/:id", element: <Details /> },
+       { path: "none", element: <HeadWelcomeMsg /> }, 
+    ],
+  },
 
-      },
-
-      
-      // monitor routes
-     
+  // ✅ LOCAL BLOCK
+  {
+    path: "/local",
+    element: (
+      <PrivateRoutes>
+        <GenericDashboard />
+      </PrivateRoutes>
+    ),
+    children: [
+      { path: "home", element: <LocalHome /> },
+      { path: "addItems", element: <LocalAddItems /> },
+      { path: "manageItems", element: <LocalManageItems /> },
       {
-        path: "items",
-        element:<Items></Items>,
+        path: "updateItem/:id",
+        element: <LocalUpdateItems />,
+        loader: ({ params }) =>
+          fetch(`http://localhost:5000/local/items/${params.id}`),
       },
-       // user (no role) routes
-       {
-          path: "none",
-          element: <WelcomeMsg></WelcomeMsg>,
-        },
-      
-
-      
-    ]
-   
-  }
+      { path: "items", element: <Items /> },
+      { path: "adminRecords", element: <LocalRecords /> },
+      { path: "records", element: <LocalRecords /> },
+      { path: "details/:id", element: <Details /> },
+       { path: "none", element: <LocalWelcomeMsg /> }, 
+    ],
+  },
 ]);
-

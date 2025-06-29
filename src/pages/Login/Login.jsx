@@ -1,11 +1,12 @@
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../provider/AuthProvider";
+
 import Swal from "sweetalert2";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import logo from "../../assets/betar-logo.jpg"
+import { AuthContext } from "../../provider/AuthProvider";
 
 
 const Login = () => {
