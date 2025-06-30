@@ -11,6 +11,7 @@ import {
     browserLocalPersistence, // Import persistence types
 } from "firebase/auth";
 import { app } from "../firebase/firebase.config";
+import useAxiosPublic from "../hooks/useAxiosPublic";
 
 export const AuthContext = createContext(null);
 const auth = getAuth(app);
@@ -18,6 +19,7 @@ const auth = getAuth(app);
 const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState(null);
+      const axiosPublic = useAxiosPublic();
 
     // Set the desired persistence type (browserLocalPersistence)
     useEffect(() => {
@@ -105,11 +107,30 @@ const AuthProvider = ({ children }) => {
         const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
             console.log("User in auth state:", currentUser);
             setUser(currentUser);
+            console.log('State captured',currentUser?.email)
+            if(currentUser?.email){
+                const user = {email : currentUser.email};
+                axiosPublic.post('/jwt',user,{withCredentials:true})
+                .then(res =>{
+                    console.log('login token', res.data)
+                    setLoading(false);
+                })
+                .catch(err => console.error('JWT Error:', err));
+            }
+          else {
+            // 🔐 User logged out -> call backend to clear cookie
+            axiosPublic.post('/logout', {}, { withCredentials: true })
+                .then(res =>{ 
+                    console.log('JWT cookie cleared',res.data)
+                    setLoading(false);
+                })
+                .catch(err => console.error('Logout error:', err));
+        }
             setLoading(false);
         });
 
         return () => unSubscribe();
-    }, []);
+    }, [axiosPublic]);
 
     // Context value to provide authentication state and functions
     const authInfo = {
