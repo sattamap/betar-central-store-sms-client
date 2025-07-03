@@ -2,9 +2,8 @@ import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import useAxiosPublic from "../../../../hooks/useAxiosPublic";
-
 
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
@@ -55,7 +54,7 @@ const AddItems = ({ block = "head" }) => {
       items_quantity.item_store +
       items_quantity.item_use +
       items_quantity.item_faulty_store +
-      items_quantity.item_faulty_use+
+      items_quantity.item_faulty_use +
       items_quantity.item_transfer;
 
     const item = {
@@ -101,7 +100,9 @@ const AddItems = ({ block = "head" }) => {
     const modelValue = watch("model");
 
     try {
-      const response = await axiosPublic.get(`/${block}/items/model/${modelValue}`);
+      const response = await axiosPublic.get(
+        `/${block}/items/model/${modelValue}`
+      );
 
       if (response.data) {
         Swal.fire({
@@ -116,155 +117,161 @@ const AddItems = ({ block = "head" }) => {
   };
 
   return (
-    <div className="w-full mx-auto bg-white p-4 my-10 rounded-md shadow-xl md:w-4/5 lg:w-full xl:w-full">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex flex-col lg:flex-row gap-6 mb-6">
-          <div className="form-control w-full">
+    <div>
+      <div className="w-full mx-auto bg-white p-4 my-10 rounded-md shadow-xl md:w-4/5 lg:w-full xl:w-full">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex flex-col lg:flex-row gap-6 mb-6">
+            <div className="form-control w-full">
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Name of the Item<span className="text-red-500 ml-2">*</span>
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Module"
+                {...register("itemName", { required: true })}
+                required
+                className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
+              />
+            </div>
+
+            <div className="form-control w-full">
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Category<span className="text-red-500 ml-2">*</span>
+              </label>
+              <select
+                {...register("category", { required: true })}
+                className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
+              >
+                <option value="SpareParts">Spare Parts</option>
+                <option value="Equipment">Equipment</option>
+                <option value="Furniture">Furniture</option>
+                <option value="Others">Others</option>
+              </select>
+              {category === "Others" && (
+                <div className="mt-2">
+                  <input
+                    type="text"
+                    placeholder="Specify the category"
+                    value={specificCategory}
+                    onChange={(e) => setSpecificCategory(e.target.value)}
+                    className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex flex-col lg:flex-row gap-6 mb-6">
+            <div className="form-control w-full">
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Model Name<span className="text-red-500 ml-2">*</span>
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. AM-10A"
+                {...register("model")}
+                onBlur={onBlurModel}
+                className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
+              />
+            </div>
+
+            <div className="form-control w-full">
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Country Origin<span className="text-red-500 ml-2">*</span>
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. USA"
+                {...register("origin", { required: true })}
+                required
+                className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col lg:flex-row gap-6 mb-6">
+            <div className="form-control w-full">
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Item Quantity in Store
+                <span className="text-red-500 ml-2">*</span>
+              </label>
+              <input
+                type="number"
+                placeholder="e.g. 4"
+                {...register("goodQuantity", { required: true })}
+                required
+                className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col lg:flex-row gap-6 mb-6">
+            <div className="form-control w-full">
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Current Location of Good Item
+                <span className="text-red-500 ml-2">*</span>
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. At Store/FM Room"
+                {...register("locationGood", { required: true })}
+                required
+                className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
+              />
+            </div>
+
+            <div className="form-control w-full">
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Date of Receive<span className="text-red-500 ml-2">*</span>
+              </label>
+              <input
+                type="date"
+                id="receive"
+                {...register("date")}
+                className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
+              />
+            </div>
+          </div>
+
+          <div className="mb-6">
             <label className="block text-gray-700 text-sm font-bold mb-2">
-              Name of the Item<span className="text-red-500 ml-2">*</span>
+              Detail About the Item
             </label>
-            <input
-              type="text"
-              placeholder="e.g. Module"
-              {...register("itemName", { required: true })}
-              required
-              className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
+            <textarea
+              {...register("detail")}
+              placeholder="Write about specs, application etc..."
+              className="border rounded w-full py-2 px-3 text-gray-700"
             />
           </div>
 
-          <div className="form-control w-full">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Category<span className="text-red-500 ml-2">*</span>
-            </label>
-            <select
-              {...register("category", { required: true })}
-              className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
+          <div className="mb-6">
+            <label
+              htmlFor="image"
+              className="block text-gray-700 text-sm font-bold mb-2"
             >
-              <option value="SpareParts">Spare Parts</option>
-              <option value="Equipment">Equipment</option>
-              <option value="Furniture">Furniture</option>
-              <option value="Others">Others</option>
-            </select>
-            {category === "Others" && (
-              <div className="mt-2">
-                <input
-                  type="text"
-                  placeholder="Specify the category"
-                  value={specificCategory}
-                  onChange={(e) => setSpecificCategory(e.target.value)}
-                  className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
-                />
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="flex flex-col lg:flex-row gap-6 mb-6">
-          <div className="form-control w-full">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Model Name<span className="text-red-500 ml-2">*</span>
+              Image of the Item
             </label>
             <input
-              type="text"
-              placeholder="e.g. AM-10A"
-              {...register("model")}
-              onBlur={onBlurModel}
-              className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
+              type="file"
+              id="image"
+              {...register("image")}
+              className="border rounded w-full py-[6px] px-3 text-gray-700"
             />
           </div>
 
-          <div className="form-control w-full">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Country Origin<span className="text-red-500 ml-2">*</span>
-            </label>
-            <input
-              type="text"
-              placeholder="e.g. USA"
-              {...register("origin", { required: true })}
-              required
-              className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
-            />
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              className="btn w-1/2 mt-10 bg-emerald-700 text-white hover:bg-emerald-900"
+            >
+              Add Item
+            </button>
           </div>
-        </div>
-
-        <div className="flex flex-col lg:flex-row gap-6 mb-6">
-          <div className="form-control w-full">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Item Quantity in Store<span className="text-red-500 ml-2">*</span>
-            </label>
-            <input
-              type="number"
-              placeholder="e.g. 4"
-              {...register("goodQuantity", { required: true })}
-              required
-              className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-col lg:flex-row gap-6 mb-6">
-          <div className="form-control w-full">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Current Location of Good Item<span className="text-red-500 ml-2">*</span>
-            </label>
-            <input
-              type="text"
-              placeholder="e.g. At Store/FM Room"
-              {...register("locationGood", { required: true })}
-              required
-              className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
-            />
-          </div>
-
-          <div className="form-control w-full">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Date of Receive<span className="text-red-500 ml-2">*</span>
-            </label>
-            <input
-              type="date"
-              id="receive"
-              {...register("date")}
-              className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
-            />
-          </div>
-        </div>
-
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Detail About the Item
-          </label>
-          <textarea
-            {...register("detail")}
-            placeholder="Write about specs, application etc..."
-            className="border rounded w-full py-2 px-3 text-gray-700"
-          />
-        </div>
-
-        <div className="mb-6">
-          <label htmlFor="image" className="block text-gray-700 text-sm font-bold mb-2">
-            Image of the Item
-          </label>
-          <input
-            type="file"
-            id="image"
-            {...register("image")}
-            className="border rounded w-full py-[6px] px-3 text-gray-700"
-          />
-        </div>
-
-        <div className="flex justify-center">
-          <button
-            type="submit"
-            className="btn w-1/2 mt-10 bg-emerald-700 text-white hover:bg-emerald-900"
-          >
-            Add Item
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 };
-
 
 AddItems.propTypes = {
   block: PropTypes.string,

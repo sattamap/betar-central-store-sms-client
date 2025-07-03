@@ -482,8 +482,6 @@ import { useEffect, useState } from "react";
 
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-
-import Modal from "react-modal";
 import useAxiosPublic from "../../../../hooks/useAxiosPublic";
 import PropTypes from "prop-types";
 import Swal from "sweetalert2";
@@ -504,7 +502,7 @@ const months = [
   "December",
 ];
 
-Modal.setAppElement("#root");
+
 const AdminRecords = ({ block = "head" }) => {
   const axiosPublic = useAxiosPublic();
   const [records, setRecords] = useState([]);

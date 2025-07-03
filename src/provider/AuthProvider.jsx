@@ -132,6 +132,39 @@ const AuthProvider = ({ children }) => {
         return () => unSubscribe();
     }, [axiosPublic]);
 
+
+    // Inactivity auto-logout
+useEffect(() => {
+    if (!user) return; // Only apply for logged-in users
+
+    let timer;
+    const logoutTime = 60 * 60 * 1000; // 15 minutes inactivity
+
+    const resetTimer = () => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            // Auto logout
+            logOut();
+            axiosPublic.post('/logout', {}, { withCredentials: true });
+            alert('Logged out due to inactivity');
+            window.location.href = '/';
+        }, logoutTime);
+    };
+
+    // Listen to user activity events
+    const events = ['mousemove', 'keydown', 'scroll', 'click'];
+    events.forEach(event => window.addEventListener(event, resetTimer));
+
+    resetTimer(); // Start timer
+
+    // Cleanup on unmount or logout
+    return () => {
+        clearTimeout(timer);
+        events.forEach(event => window.removeEventListener(event, resetTimer));
+    };
+}, [user, axiosPublic]);
+
+
     // Context value to provide authentication state and functions
     const authInfo = {
         loading,

@@ -197,48 +197,48 @@ const Items = () => {
     doc.save(`${block}_items.pdf`);
   };
 
- const handleDownloadFilteredPDF = () => {
-     const doc = new jsPDF();
- 
-     // Define headers and data mapping based on the selected condition
-     let headers = [];
-     let tableData = [];
- 
-     headers = [
-       [
-         "#",
-         "Name,Model & Origin",
-         "Item (Store)",
-         "Item (Use)",
-         "Item (Faulty_store)",
-         "Item (Faulty_use)",
-         "Item (Transfer)",
-         "Total item",
-         "Location (Good)",
-         "Category & Date",
-       ],
-     ];
-     tableData = filteredItems.map((item, index) => [
-       startIndex + index + 1,
-       [`${item.itemName}`, `${item.model}`, `${item.origin}`], // Multi-line text array
-       item?.items_quantity?.item_store,
-       item?.items_quantity?.item_use,
-       item?.items_quantity?.item_faulty_store,
-       item?.items_quantity?.item_faulty_use,
-       item?.items_quantity?.item_transfer,
-       item.totalQuantity,
-       item.locationGood,
-       [`${item.category}`, `${item.date}`], // Multi-line text array
-     ]);
- 
-     // Generate PDF with the dynamically set headers and table data
-     doc.autoTable({
-       head: headers,
-       body: tableData,
-     });
- 
-     doc.save("${block}_filtered_items.pdf");
-   };
+  const handleDownloadFilteredPDF = () => {
+    const doc = new jsPDF();
+
+    // Define headers and data mapping based on the selected condition
+    let headers = [];
+    let tableData = [];
+
+    headers = [
+      [
+        "#",
+        "Name,Model & Origin",
+        "Item (Store)",
+        "Item (Use)",
+        "Item (Faulty_store)",
+        "Item (Faulty_use)",
+        "Item (Transfer)",
+        "Total item",
+        "Location (Good)",
+        "Category & Date",
+      ],
+    ];
+    tableData = filteredItems.map((item, index) => [
+      startIndex + index + 1,
+      [`${item.itemName}`, `${item.model}`, `${item.origin}`], // Multi-line text array
+      item?.items_quantity?.item_store,
+      item?.items_quantity?.item_use,
+      item?.items_quantity?.item_faulty_store,
+      item?.items_quantity?.item_faulty_use,
+      item?.items_quantity?.item_transfer,
+      item.totalQuantity,
+      item.locationGood,
+      [`${item.category}`, `${item.date}`], // Multi-line text array
+    ]);
+
+    // Generate PDF with the dynamically set headers and table data
+    doc.autoTable({
+      head: headers,
+      body: tableData,
+    });
+
+    doc.save("${block}_filtered_items.pdf");
+  };
 
   const isFiltered = filteredItems.length > 0 && filterApplied;
 

@@ -65,7 +65,7 @@ const Home = ({ block = "head" }) => {
       </div>
 
       <footer className="mt-16 text-center text-gray-600 text-sm">
-        &copy; {new Date().getFullYear()} Inventory Management System of Bangladesh Betar, Bandarban. All rights reserved.
+        &copy; {new Date().getFullYear()} Inventory Management System of Bangladesh Betar. All rights reserved.
         <br />Developed by Sattam.
       </footer>
     </div>

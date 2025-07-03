@@ -15,20 +15,23 @@ import Details from "../pages/Dashboard/Common/Components/Details";
 import BlockSelector from "../pages/Dashboard/Common/BlockSelector/BlockSelector";
 
 import HeadAddItems from "../pages/Dashboard/HeadOffice/Coordinator/AddItems/HeadAddItems";
-import HeadManageItems from "../pages/Dashboard/HeadOffice/Coordinator/ManageItems/HeadManageItems";
+import HeadAdminManageItems from "../pages/Dashboard/HeadOffice/Admin/ManageItems/HeadAdminManageItems";
 import HeadUpdateItems from "../pages/Dashboard/HeadOffice/Coordinator/UpdateItems/HeadUpdateItems";
 import LocalAddItems from "../pages/Dashboard/Local/Coordinator/AddItems/LocalAddItems";
-import LocalManageItems from "../pages/Dashboard/Local/Coordinator/ManageItems/LocalManageItems";
+import LocalAdminManageItems from "../pages/Dashboard/Local/Admin/ManageItems/LocalAdminManageItems";
 import LocalUpdateItems from "../pages/Dashboard/Local/Coordinator/UpdateItems/LocalUpdateItems";
 import HeadHome from "../pages/Dashboard/HeadOffice/Home/HeadHome";
 import LocalHome from "../pages/Dashboard/Local/Home/LocalHome";
-import HeadRecords from "../pages/Dashboard/HeadOffice/Admin/Records/HeadRecords";
-import LocalRecords from "../pages/Dashboard/Local/Admin/Records/LocalRecords";
+import HeadRecords from "../pages/Dashboard/HeadOffice/Admin/Records/HeadAdminRecords";
+import LocalRecords from "../pages/Dashboard/Local/Admin/Records/LocalAdminRecords";
 import AllUsers from "../pages/Dashboard/Common/Components/AllUsers";
-import Records from "../pages/Dashboard/Common/Components/Records";
 import GenericDashboard from "../layout/GenericDashboard";
 import HeadWelcomeMsg from "../pages/Dashboard/HeadOffice/None/HeadWelcomeMsg";
 import LocalWelcomeMsg from "../pages/Dashboard/Local/None/LocalWelcomeMsg";
+import HeadCoManageItems from "../pages/Dashboard/HeadOffice/Coordinator/ManageItems/HeadCoManageItems";
+import LocalCoManageItems from "../pages/Dashboard/Local/Coordinator/ManageItems/LocalCoManageItems";
+import HeadCoRecords from "../pages/Dashboard/HeadOffice/Coordinator/Records/HeadCoRecords";
+import LocalCoRecords from "../pages/Dashboard/Local/Coordinator/Records/LocalCoRecords";
 
 export const router = createBrowserRouter([
   {
@@ -88,7 +91,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "home", element: <HeadHome /> },
       { path: "addItems", element: <HeadAddItems /> },
-      { path: "manageItems", element: <HeadManageItems /> },
+      { path: "adminManageItems", element: <HeadAdminManageItems /> },
       {
         path: "updateItem/:id",
         element: <HeadUpdateItems />,
@@ -100,8 +103,9 @@ export const router = createBrowserRouter([
         // ✅ This sends cookies like the JWT token
       },
       { path: "items", element: <Items /> },
+      { path: "manageItems", element: <HeadCoManageItems/> },
       { path: "adminRecords", element: <HeadRecords /> },
-      { path: "records", element: <Records/> },
+      { path: "records", element: <HeadCoRecords/> },
       { path: "details/:id", element: <Details /> },
       { path: "none", element: <HeadWelcomeMsg /> },
     ],
@@ -118,7 +122,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "home", element: <LocalHome /> },
       { path: "addItems", element: <LocalAddItems /> },
-      { path: "manageItems", element: <LocalManageItems /> },
+      { path: "adminManageItems", element: <LocalAdminManageItems /> },
       {
         path: "updateItem/:id",
         element: <LocalUpdateItems />,
@@ -131,8 +135,9 @@ export const router = createBrowserRouter([
         
       },
       { path: "items", element: <Items /> },
+      { path: "manageItems", element: <LocalCoManageItems /> },
       { path: "adminRecords", element: <LocalRecords /> },
-      { path: "records", element: <Records/> },
+      { path: "records", element: <LocalCoRecords/> },
       { path: "details/:id", element: <Details /> },
       { path: "none", element: <LocalWelcomeMsg /> },
     ],

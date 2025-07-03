@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { FaPlusMinus } from "react-icons/fa6";
-import { MdEdit } from "react-icons/md";
+import { MdDelete, MdEdit } from "react-icons/md";
 import { CgDetailsMore } from "react-icons/cg";
 import Modal from "react-modal";
 import useAxiosPublic from "../../../../hooks/useAxiosPublic";
@@ -55,9 +55,57 @@ const ManageItems = ({ block = "head" }) => {
     fetchItems();
   }, [axiosPublic, block]);
 
+  // Handle deletion of an item
+  const handleDelete = async (item) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await axiosPublic.delete(
+            `/${block}/item/${item._id}`
+          );
+          if (response.status === 200) {
+            // Remove the deleted item from the state
+            setItems((prevItems) =>
+              prevItems.filter((i) => i._id !== item._id)
+            );
+            Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: `${item.itemName} has been deleted`,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          } else {
+            console.error("Error deleting item:", response.data);
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Something went wrong!",
+            });
+          }
+        } catch (error) {
+          console.error("Error deleting item:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+          });
+        }
+      }
+    });
+  };
+
   // Filter items based on search term and selected category
   const filteredItems = items.filter((item) => {
-      const search = searchTerm.toLowerCase();
+    const search = searchTerm.toLowerCase();
     const matchesSearch =
       item.itemName?.toLowerCase().includes(search) ||
       item.model?.toLowerCase().includes(search);
@@ -417,9 +465,7 @@ const ManageItems = ({ block = "head" }) => {
 
   // Update filterApplied when searchTerm or selectedCondition changes
   useEffect(() => {
-    setFilterApplied(
-      searchTerm !== "" || selectedCategory !== ""
-    );
+    setFilterApplied(searchTerm !== "" || selectedCategory !== "");
   }, [searchTerm, selectedCategory]);
 
   const isFiltered = filteredItems.length > 0 && filterApplied;
@@ -547,6 +593,12 @@ const ManageItems = ({ block = "head" }) => {
           </td>
           <td>
             <div className="flex gap-2 justify-center">
+              <button
+                className="btn btn-warning btn-xs"
+                onClick={() => handleDelete(item)}
+              >
+                <MdDelete />
+              </button>
               <Link to={`/${block}/updateItem/${item._id}`}>
                 <button className="btn btn-neutral btn-xs">
                   <MdEdit />
@@ -576,15 +628,15 @@ const ManageItems = ({ block = "head" }) => {
     <div>
       <div className="mb-4">
         <div className="flex flex-col md:flex-row md:gap-4 items-center justify-center">
-                 <div className="md:w-2/5 mb-4 md:mb-0">
-            <input
-              type="text"
-              placeholder="Search by Item Name or Model"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="border px-3 py-2 rounded w-full"
-            />
-          </div>
+            <div className="md:w-2/5 mb-4 md:mb-0">
+          <input
+            type="text"
+            placeholder="Search by Item Name or Model"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="border px-3 py-2 rounded w-full"
+          />
+        </div>
           <div className="mb-4 md:mb-0">
             <select
               value={selectedCategory}

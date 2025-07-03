@@ -1,11 +1,14 @@
 import AdminRecords from "../../../Common/Components/AdminRecords";
 
-const LocalRecords = () => {
+
+const HeadAdminRecords = () => {
   return (
     <div>
-      <AdminRecords block="local" />
+      <AdminRecords block="head" /> 
     </div>
   );
 };
 
-export default LocalRecords;
+
+
+export default HeadAdminRecords;
