@@ -90,7 +90,7 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-emerald-400">
       <div className="max-w-xl mx-auto p-6 bg-white shadow-md rounded-md">
         <div className='flex items-center justify-center text-xl font-bold bg-gradient-to-r from-purple-300 via-purple-400 to-purple-600 rounded-xl shadow-xl mb-5 p-4'>
-          <h2 className="ml-2 text-center">Inventory Management System for the Engineering Section of Bangladesh Betar, Bandarban</h2>
+          <h2 className="ml-2 text-center">Inventory Management System for the Engineering Section of Bangladesh Betar</h2>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8" >

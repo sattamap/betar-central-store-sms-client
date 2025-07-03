@@ -168,6 +168,7 @@ const Items = () => {
       item?.items_quantity?.item_use,
       item?.items_quantity?.item_faulty_store,
       item?.items_quantity?.item_faulty_use,
+      item?.items_quantity?.item_transfer,
       item.totalQuantity,
       item.locationGood,
       item.category,
@@ -183,6 +184,7 @@ const Items = () => {
           "Item (Use)",
           "Item (Faulty_store)",
           "Item (Faulty_use)",
+          "Item (Transfer)",
           "Total item",
           "Location (Good)",
           "Category",
@@ -210,6 +212,7 @@ const Items = () => {
          "Item (Use)",
          "Item (Faulty_store)",
          "Item (Faulty_use)",
+         "Item (Transfer)",
          "Total item",
          "Location (Good)",
          "Category & Date",
@@ -222,6 +225,7 @@ const Items = () => {
        item?.items_quantity?.item_use,
        item?.items_quantity?.item_faulty_store,
        item?.items_quantity?.item_faulty_use,
+       item?.items_quantity?.item_transfer,
        item.totalQuantity,
        item.locationGood,
        [`${item.category}`, `${item.date}`], // Multi-line text array
@@ -297,6 +301,7 @@ const Items = () => {
               <th className="text-center">Item (Use)</th>
               <th className="text-center">Faulty (Store)</th>
               <th className="text-center">Faulty (Use)</th>
+              <th className="text-center">Item (Transfer)</th>
               <th className="text-center">Category & Date</th>
               <th className="text-center">Location</th>
               <th className="text-center">Action</th>
@@ -322,6 +327,9 @@ const Items = () => {
                 </td>
                 <td className="text-center">
                   {item?.items_quantity?.item_faulty_use}
+                </td>
+                <td className="text-center">
+                  {item?.items_quantity?.item_transfer}
                 </td>
                 <td className="text-center">
                   <p>{item?.category}</p>

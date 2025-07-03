@@ -256,6 +256,7 @@ const ManageItems = ({ block = "head" }) => {
       item?.items_quantity?.item_use,
       item?.items_quantity?.item_faulty_store,
       item?.items_quantity?.item_faulty_use,
+      item?.items_quantity?.item_transfer,
       item.totalQuantity,
       item.locationGood,
       item.category,
@@ -271,6 +272,7 @@ const ManageItems = ({ block = "head" }) => {
           "Item (Use)",
           "Item (Faulty_store)",
           "Item (Faulty_use)",
+          "Item (Transfer)",
           "Total item",
           "Location (Good)",
           "Category",
@@ -299,6 +301,7 @@ const ManageItems = ({ block = "head" }) => {
         "Item (Use)",
         "Item (Faulty_store)",
         "Item (Faulty_use)",
+        "Item (Transfer)",
         "Total item",
         "Location (Good)",
         "Category & Date",
@@ -311,6 +314,7 @@ const ManageItems = ({ block = "head" }) => {
       item?.items_quantity?.item_use,
       item?.items_quantity?.item_faulty_store,
       item?.items_quantity?.item_faulty_use,
+      item?.items_quantity?.item_transfer,
       item.totalQuantity,
       item.locationGood,
       [`${item.category}`, `${item.date}`], // Multi-line text array
@@ -378,11 +382,19 @@ const ManageItems = ({ block = "head" }) => {
           text: `Cannot mark ${inputQty} faulty from use. Only ${availableUse} available.`,
         });
       }
+      if (formData.condition === "transfer" && inputQty > availableStore) {
+        return Swal.fire({
+          icon: "error",
+          title: "Insufficient Use Quantity",
+          text: `Cannot mark ${inputQty} faulty from use. Only ${availableStore} available.`,
+        });
+      }
 
       // ✅ Build payload
       const payload = {
         itemName: selectedItemData.itemName,
         model: selectedItemData.model,
+        category: selectedItemData.category,
         date: formData.date,
         itemId: selectedItemData._id,
         locationGood: formData.locationGood,
@@ -398,6 +410,7 @@ const ManageItems = ({ block = "head" }) => {
           item_use: 0,
           item_faulty_store: 0,
           item_faulty_use: 0,
+          item_transfer: 0,
         },
       };
 
@@ -414,6 +427,9 @@ const ManageItems = ({ block = "head" }) => {
       } else if (formData.condition === "faulty_use") {
         payload.status = "pending(remove_fault_use)";
         payload.items_quantity.item_faulty_use = inputQty;
+      } else if (formData.condition === "transfer") {
+        payload.status = "pending(transfer)";
+        payload.items_quantity.item_transfer = inputQty;
       }
 
       console.log("Submitting payload:", payload);
@@ -461,14 +477,50 @@ const ManageItems = ({ block = "head" }) => {
 
   const columns = [
     "#",
-    "Name,Model & Origin",
-    "Item (Store)",
-    "Location (Good)",
-    "Item (Use)",
-    "Item (Faulty_store)",
-    "Item (Faulty_use)",
-    "Total item",
-    "Category & Date",
+    <>
+      Name,
+      <br />
+      Model & Origin
+    </>,
+    <>
+      Item
+      <br />
+      (Store)
+    </>,
+    <>
+      Location
+      <br />
+      (Good)
+    </>,
+    <>
+      Item
+      <br />
+      (Use)
+    </>,
+    <>
+      Item
+      <br />
+      (Faulty_store)
+    </>,
+    <>
+      Item
+      <br />
+      (Faulty_use)
+    </>,
+    <>
+      Item
+      <br />
+      (Transfer)
+    </>,
+    <>
+      Total
+      <br />
+      Item
+    </>,
+    <>
+      Category
+      <br />& Date
+    </>,
     "Action",
   ];
 
@@ -526,6 +578,11 @@ const ManageItems = ({ block = "head" }) => {
           <td>
             <div className="text-sm opacity-50 text-center">
               {item?.items_quantity?.item_faulty_use}
+            </div>
+          </td>
+          <td>
+            <div className="text-sm opacity-50 text-center">
+              {item?.items_quantity?.item_transfer}
             </div>
           </td>
           <td>
@@ -694,6 +751,12 @@ const ManageItems = ({ block = "head" }) => {
               readOnly
               className="input input-bordered"
             />
+            <input
+              type="text"
+              value={selectedItemData?.category || ""}
+              readOnly
+              className="input input-bordered"
+            />
 
             {/* Action Selector */}
             <select
@@ -707,6 +770,7 @@ const ManageItems = ({ block = "head" }) => {
               <option value="use">Items for Use</option>
               <option value="faulty_store">Remove from Store (Faulty)</option>
               <option value="faulty_use">Remove from Use (Faulty)</option>
+              <option value="transfer">Items for Transfer</option>
             </select>
 
             {/* Show the rest of the form only when an action is selected */}

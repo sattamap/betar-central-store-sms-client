@@ -48,13 +48,15 @@ const AddItems = ({ block = "head" }) => {
       item_use: 0,
       item_faulty_store: 0,
       item_faulty_use: 0,
+      item_transfer: 0,
     };
 
     const totalQuantity =
       items_quantity.item_store +
       items_quantity.item_use +
       items_quantity.item_faulty_store +
-      items_quantity.item_faulty_use;
+      items_quantity.item_faulty_use+
+      items_quantity.item_transfer;
 
     const item = {
       itemName: data.itemName,

@@ -12,7 +12,6 @@ import PrivateRoutes from "./PrivateRoutes";
 import Items from "../pages/Dashboard/HeadOffice/Monitor/Items/HeadItems";
 import Details from "../pages/Dashboard/Common/Components/Details";
 
-
 import BlockSelector from "../pages/Dashboard/Common/BlockSelector/BlockSelector";
 
 import HeadAddItems from "../pages/Dashboard/HeadOffice/Coordinator/AddItems/HeadAddItems";
@@ -26,10 +25,10 @@ import LocalHome from "../pages/Dashboard/Local/Home/LocalHome";
 import HeadRecords from "../pages/Dashboard/HeadOffice/Admin/Records/HeadRecords";
 import LocalRecords from "../pages/Dashboard/Local/Admin/Records/LocalRecords";
 import AllUsers from "../pages/Dashboard/Common/Components/AllUsers";
+import Records from "../pages/Dashboard/Common/Components/Records";
 import GenericDashboard from "../layout/GenericDashboard";
 import HeadWelcomeMsg from "../pages/Dashboard/HeadOffice/None/HeadWelcomeMsg";
 import LocalWelcomeMsg from "../pages/Dashboard/Local/None/LocalWelcomeMsg";
-
 
 export const router = createBrowserRouter([
   {
@@ -94,13 +93,17 @@ export const router = createBrowserRouter([
         path: "updateItem/:id",
         element: <HeadUpdateItems />,
         loader: ({ params }) =>
-          fetch(`http://localhost:5000/head/items/${params.id}`),
+          fetch(`http://localhost:5000/head/items/${params.id}`,
+            {
+              credentials: "include", 
+            }),
+        // ✅ This sends cookies like the JWT token
       },
       { path: "items", element: <Items /> },
       { path: "adminRecords", element: <HeadRecords /> },
-      { path: "records", element: <HeadRecords /> },
+      { path: "records", element: <Records/> },
       { path: "details/:id", element: <Details /> },
-       { path: "none", element: <HeadWelcomeMsg /> }, 
+      { path: "none", element: <HeadWelcomeMsg /> },
     ],
   },
 
@@ -120,13 +123,18 @@ export const router = createBrowserRouter([
         path: "updateItem/:id",
         element: <LocalUpdateItems />,
         loader: ({ params }) =>
-          fetch(`http://localhost:5000/local/items/${params.id}`),
+          fetch(`http://localhost:5000/local/items/${params.id}`,
+                  {
+              credentials: "include", 
+            }
+          ),
+        
       },
       { path: "items", element: <Items /> },
       { path: "adminRecords", element: <LocalRecords /> },
-      { path: "records", element: <LocalRecords /> },
+      { path: "records", element: <Records/> },
       { path: "details/:id", element: <Details /> },
-       { path: "none", element: <LocalWelcomeMsg /> }, 
+      { path: "none", element: <LocalWelcomeMsg /> },
     ],
   },
 ]);
