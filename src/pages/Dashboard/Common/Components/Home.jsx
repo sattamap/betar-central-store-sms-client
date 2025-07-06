@@ -20,7 +20,7 @@ const Home = ({ block = "head" }) => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await axiosPublic.get(`/${block}/items/all`);
+        const response = await axiosPublic.get(`/${block}/items`);
         const items = response.data;
 
         setTotalItems(items.length);

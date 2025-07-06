@@ -8,6 +8,31 @@ import useAxiosPublic from "../../../../hooks/useAxiosPublic";
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
+const category_local = [
+  "পরিষ্কার পরিচ্ছন্নতা সামগ্রী",
+  "বইপত্র ও সাময়িকী",
+  "প্রকাশনা",
+  "স্বাস্থ্যবিধান সামগ্রী",
+  "নিরাপত্তা সামগ্রী",
+  "কম্পিউটার সামগ্রী",
+  "মুদ্রণ ও বাঁধাই",
+  "অন্যান্য মনিহারি",
+  "ব্যবহার্য সামগ্রী",
+  "অনুষ্ঠান/ উৎসবাদি",
+  "বাগান পরিচর্যা",
+  "বৈদ্যুতিক সরঞ্জামাদি",
+  "আসবাবপত্র",
+];
+
+const category_head = [
+  "বেতার সরঞ্জামাদি",
+  "বৈদ্যুতিক সরঞ্জামাদি",
+  "কম্পিউটার ও আনুষঙ্গিক",
+  "অফিস সরঞ্জামাদি",
+  "কাঁচামাল ও খুচরা যন্ত্রাংশ",
+  "প্রকৌশল ও অন্যান্য সরঞ্জামাদি",
+];
+
 const AddItems = ({ block = "head" }) => {
   const axiosPublic = useAxiosPublic();
   const { register, handleSubmit, reset, watch } = useForm();
@@ -116,6 +141,8 @@ const AddItems = ({ block = "head" }) => {
     }
   };
 
+  const categories = block === "local" ? category_local : category_head;
+
   return (
     <div>
       <div className="w-full mx-auto bg-white p-4 my-10 rounded-md shadow-xl md:w-4/5 lg:w-full xl:w-full">
@@ -127,7 +154,7 @@ const AddItems = ({ block = "head" }) => {
               </label>
               <input
                 type="text"
-                placeholder="e.g. Module"
+                  placeholder={block === "head" ? "e.g. PA Module" : "e.g. কলম, কাগজ"}
                 {...register("itemName", { required: true })}
                 required
                 className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
@@ -140,13 +167,17 @@ const AddItems = ({ block = "head" }) => {
               </label>
               <select
                 {...register("category", { required: true })}
-                className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
+                className="..."
               >
-                <option value="SpareParts">Spare Parts</option>
-                <option value="Equipment">Equipment</option>
-                <option value="Furniture">Furniture</option>
+                <option value="">Select Category</option>
+                {categories.map((cat, index) => (
+                  <option key={index} value={cat}>
+                    {cat}
+                  </option>
+                ))}
                 <option value="Others">Others</option>
               </select>
+
               {category === "Others" && (
                 <div className="mt-2">
                   <input
@@ -168,7 +199,7 @@ const AddItems = ({ block = "head" }) => {
               </label>
               <input
                 type="text"
-                placeholder="e.g. AM-10A"
+                  placeholder={block === "head" ? "e.g. FM-10s" : "e.g. Matador All-Time"}
                 {...register("model")}
                 onBlur={onBlurModel}
                 className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
@@ -181,7 +212,7 @@ const AddItems = ({ block = "head" }) => {
               </label>
               <input
                 type="text"
-                placeholder="e.g. USA"
+                placeholder="e.g. USA/China/BD"
                 {...register("origin", { required: true })}
                 required
                 className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
@@ -197,7 +228,7 @@ const AddItems = ({ block = "head" }) => {
               </label>
               <input
                 type="number"
-                placeholder="e.g. 4"
+                placeholder="Add amount greater than 0"
                 {...register("goodQuantity", { required: true })}
                 required
                 className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
@@ -213,7 +244,7 @@ const AddItems = ({ block = "head" }) => {
               </label>
               <input
                 type="text"
-                placeholder="e.g. At Store/FM Room"
+                placeholder="e.g. স্টোরে / এফ এম কক্ষে "
                 {...register("locationGood", { required: true })}
                 required
                 className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"

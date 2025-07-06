@@ -40,7 +40,7 @@ const ManageItems = ({ block = "head" }) => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await axiosPublic.get(`/${block}/items/all`);
+        const response = await axiosPublic.get(`/${block}/items`);
         setItems(response.data);
 
         // Get all available categories from the items
@@ -295,126 +295,137 @@ const ManageItems = ({ block = "head" }) => {
     });
   };
 
-  const handleSubmit = async () => {
-    try {
-      if (!formData.condition) throw new Error("Please select an action");
-      if (!selectedItemData?._id) throw new Error("Missing item ID");
+const handleSubmit = async () => {
+  try {
+    if (!formData.condition) throw new Error("Please select an action");
+    if (!selectedItemData?._id) throw new Error("Missing item ID");
 
-      const inputQty = Number(formData.good);
-      const availableStore = Number(
-        selectedItemData.items_quantity?.item_store || 0
-      );
-      const availableUse = Number(
-        selectedItemData.items_quantity?.item_use || 0
-      );
+    const inputQty = Number(formData.good);
+    const availableStore = Number(
+      selectedItemData.items_quantity?.item_store || 0
+    );
+    const availableUse = Number(
+      selectedItemData.items_quantity?.item_use || 0
+    );
 
-      // ❗ Validate input before submit
-      if (formData.condition === "use" && inputQty > availableStore) {
-        return Swal.fire({
-          icon: "error",
-          title: "Insufficient Store Quantity",
-          text: `Only ${availableStore} items available in store.`,
-        });
-      }
-
-      if (formData.condition === "faulty_store" && inputQty > availableStore) {
-        return Swal.fire({
-          icon: "error",
-          title: "Insufficient Store Quantity",
-          text: `Cannot mark ${inputQty} faulty from store. Only ${availableStore} available.`,
-        });
-      }
-
-      if (formData.condition === "faulty_use" && inputQty > availableUse) {
-        return Swal.fire({
-          icon: "error",
-          title: "Insufficient Use Quantity",
-          text: `Cannot mark ${inputQty} faulty from use. Only ${availableUse} available.`,
-        });
-      }
-      if (formData.condition === "transfer" && inputQty > availableStore) {
-        return Swal.fire({
-          icon: "error",
-          title: "Insufficient Use Quantity",
-          text: `Cannot mark ${inputQty} faulty from use. Only ${availableStore} available.`,
-        });
-      }
-
-      // ✅ Build payload
-      const payload = {
-        itemName: selectedItemData.itemName,
-        model: selectedItemData.model,
-        category: selectedItemData.category,
-        date: formData.date,
-        itemId: selectedItemData._id,
-        locationGood: formData.locationGood,
-        purpose:
-          formData.purpose ||
-          (formData.condition === "add"
-            ? "To store"
-            : formData.condition === "use"
-            ? "For use"
-            : "Faulty removal"),
-        items_quantity: {
-          item_store: 0,
-          item_use: 0,
-          item_faulty_store: 0,
-          item_faulty_use: 0,
-          item_transfer: 0,
-        },
-      };
-
-      // ✅ Set status and the corresponding field
-      if (formData.condition === "add") {
-        payload.status = "pending(add)";
-        payload.items_quantity.item_store = inputQty;
-      } else if (formData.condition === "use") {
-        payload.status = "pending(remove)";
-        payload.items_quantity.item_use = inputQty;
-      } else if (formData.condition === "faulty_store") {
-        payload.status = "pending(remove_fault_store)";
-        payload.items_quantity.item_faulty_store = inputQty;
-      } else if (formData.condition === "faulty_use") {
-        payload.status = "pending(remove_fault_use)";
-        payload.items_quantity.item_faulty_use = inputQty;
-      } else if (formData.condition === "transfer") {
-        payload.status = "pending(transfer)";
-        payload.items_quantity.item_transfer = inputQty;
-      }
-
-      console.log("Submitting payload:", payload);
-
-      const response = await axiosPublic.post(`/${block}/records`, payload);
-
-      if (response.status === 200 || response.status === 201) {
-        Swal.fire({
-          icon: "success",
-          title: "Submitted for approval",
-          timer: 1500,
-          showConfirmButton: false,
-          position: "top-end",
-        });
-
-        closeModal();
-        setFormData({
-          good: "",
-          condition: "",
-          locationGood: "",
-          purpose: "",
-          date: "",
-        });
-      } else {
-        throw new Error("Submission failed");
-      }
-    } catch (error) {
-      console.error("Submit error:", error);
-      Swal.fire({
+    // ✅ Validate: Quantity must be > 0
+    if (isNaN(inputQty) || inputQty <= 0) {
+      return Swal.fire({
         icon: "error",
-        title: "Error",
-        text: error.message || "Something went wrong",
+        title: "Invalid Quantity",
+        text: "Quantity must be greater than 0",
       });
     }
-  };
+
+    // ❗ Validate input before submit
+    if (formData.condition === "use" && inputQty > availableStore) {
+      return Swal.fire({
+        icon: "error",
+        title: "Insufficient Store Quantity",
+        text: `Only ${availableStore} items available in store.`,
+      });
+    }
+
+    if (formData.condition === "faulty_store" && inputQty > availableStore) {
+      return Swal.fire({
+        icon: "error",
+        title: "Insufficient Store Quantity",
+        text: `Cannot mark ${inputQty} faulty from store. Only ${availableStore} available.`,
+      });
+    }
+
+    if (formData.condition === "faulty_use" && inputQty > availableUse) {
+      return Swal.fire({
+        icon: "error",
+        title: "Insufficient Use Quantity",
+        text: `Cannot mark ${inputQty} faulty from use. Only ${availableUse} available.`,
+      });
+    }
+
+    if (formData.condition === "transfer" && inputQty > availableStore) {
+      return Swal.fire({
+        icon: "error",
+        title: "Insufficient Store Quantity",
+        text: `Cannot transfer ${inputQty} items. Only ${availableStore} available in store.`,
+      });
+    }
+
+    // ✅ Build payload
+    const payload = {
+      itemName: selectedItemData.itemName,
+      model: selectedItemData.model,
+      category: selectedItemData.category,
+      date: formData.date,
+      itemId: selectedItemData._id,
+      locationGood: formData.locationGood,
+      purpose:
+        formData.purpose ||
+        (formData.condition === "add"
+          ? "To store"
+          : formData.condition === "use"
+          ? "For use"
+          : "Faulty removal"),
+      items_quantity: {
+        item_store: 0,
+        item_use: 0,
+        item_faulty_store: 0,
+        item_faulty_use: 0,
+        item_transfer: 0,
+      },
+    };
+
+    // ✅ Set status and quantity field
+    if (formData.condition === "add") {
+      payload.status = "pending(add)";
+      payload.items_quantity.item_store = inputQty;
+    } else if (formData.condition === "use") {
+      payload.status = "pending(remove)";
+      payload.items_quantity.item_use = inputQty;
+    } else if (formData.condition === "faulty_store") {
+      payload.status = "pending(remove_fault_store)";
+      payload.items_quantity.item_faulty_store = inputQty;
+    } else if (formData.condition === "faulty_use") {
+      payload.status = "pending(remove_fault_use)";
+      payload.items_quantity.item_faulty_use = inputQty;
+    } else if (formData.condition === "transfer") {
+      payload.status = "pending(transfer)";
+      payload.items_quantity.item_transfer = inputQty;
+    }
+
+    console.log("Submitting payload:", payload);
+
+    const response = await axiosPublic.post(`/${block}/records`, payload);
+
+    if (response.status === 200 || response.status === 201) {
+      Swal.fire({
+        icon: "success",
+        title: "Submitted for approval",
+        timer: 1500,
+        showConfirmButton: false,
+        position: "top-end",
+      });
+
+      closeModal();
+      setFormData({
+        good: "",
+        condition: "",
+        locationGood: "",
+        purpose: "",
+        date: "",
+      });
+    } else {
+      throw new Error("Submission failed");
+    }
+  } catch (error) {
+    console.error("Submit error:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: error.message || "Something went wrong",
+    });
+  }
+};
+
 
   // Update filterApplied when searchTerm or selectedCondition changes
   useEffect(() => {
