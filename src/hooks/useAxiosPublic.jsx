@@ -12,7 +12,7 @@ axiosPublic.interceptors.response.use(
     if (err.response?.data?.message === 'TokenExpired') {
       alert('Session expired. Logging out.');
       // Optional: Call your logout function here if available
-      window.location.href = '/login'; // Redirect to login
+      window.location.href = '/'; // Redirect to login
     }
     return Promise.reject(err);
   }

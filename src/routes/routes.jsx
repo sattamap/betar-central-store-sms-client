@@ -32,6 +32,8 @@ import HeadCoManageItems from "../pages/Dashboard/HeadOffice/Coordinator/ManageI
 import LocalCoManageItems from "../pages/Dashboard/Local/Coordinator/ManageItems/LocalCoManageItems";
 import HeadCoRecords from "../pages/Dashboard/HeadOffice/Coordinator/Records/HeadCoRecords";
 import LocalCoRecords from "../pages/Dashboard/Local/Coordinator/Records/LocalCoRecords";
+import HeadNotificationsPage from "../pages/Dashboard/HeadOffice/Admin/Notifications/HeadNotificationsPage";
+import LocalNotificationsPage from "../pages/Dashboard/Local/Admin/Notifications/LocalNotificationsPage";
 
 export const router = createBrowserRouter([
   {
@@ -105,6 +107,7 @@ export const router = createBrowserRouter([
       { path: "items", element: <Items /> },
       { path: "manageItems", element: <HeadCoManageItems/> },
       { path: "adminRecords", element: <HeadRecords /> },
+      { path: "adminNotifications", element: <HeadNotificationsPage /> },
       { path: "records", element: <HeadCoRecords/> },
       { path: "details/:id", element: <Details /> },
       { path: "none", element: <HeadWelcomeMsg /> },
@@ -137,6 +140,7 @@ export const router = createBrowserRouter([
       { path: "items", element: <Items /> },
       { path: "manageItems", element: <LocalCoManageItems /> },
       { path: "adminRecords", element: <LocalRecords /> },
+      { path: "adminNotifications", element: <LocalNotificationsPage /> },
       { path: "records", element: <LocalCoRecords/> },
       { path: "details/:id", element: <Details /> },
       { path: "none", element: <LocalWelcomeMsg /> },

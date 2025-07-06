@@ -22,7 +22,7 @@ const Items = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await axiosPublic.get(`/${block}/items`);
+        const response = await axiosPublic.get(`/${block}/items/all`);
         setItems(response.data);
         const categories = [
           ...new Set(response.data.map((item) => item.category)),

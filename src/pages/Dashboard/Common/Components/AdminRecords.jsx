@@ -516,10 +516,6 @@ const AdminRecords = ({ block = "head" }) => {
   const [selectedMonth, setSelectedMonth] = useState("All");
   const [dateRange, setDateRange] = useState({ start: "", end: "" });
 
-  //const [operation, setOperation] = useState("plus");
-  //   const outletContext = useOutletContext();
-  // const block = outletContext?.block || "head";
-
   // Fetch items from the API   
   useEffect(() => {
     const fetchItems = async () => {

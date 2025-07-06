@@ -7,15 +7,26 @@ const Details = () => {
   const { id } = useParams();
   const { block } = useOutletContext();
   const axiosPublic = useAxiosPublic();
-  const [items, setItems] = useState([]);
-  console.log(`The ${block}   id is`, id);
-  useEffect(() => {
-    axiosPublic.get(`/${block}/items`).then((response) => {
-      setItems(response.data);
-    });
-  }, [axiosPublic, block]);
+  const [itemDetails, setItemDetails] = useState(null);
 
-  const itemDetails = items.find((item) => item._id === id);
+  useEffect(() => {
+    const fetchItemById = async () => {
+      try {
+        const response = await axiosPublic.get(`/${block}/items/${id}`);
+        setItemDetails(response.data);
+      } catch (error) {
+        console.error("Error fetching item by ID:", error);
+      }
+    };
+
+    if (id && block) {
+      fetchItemById();
+    }
+  }, [axiosPublic, block, id]);
+
+  if (!itemDetails) {
+    return <div>Loading item details...</div>;
+  }
 
   return (
     <div>
