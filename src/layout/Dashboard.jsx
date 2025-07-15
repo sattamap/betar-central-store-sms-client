@@ -7,13 +7,11 @@
 // import { MdFormatListBulletedAdd } from "react-icons/md";
 // import { MdEditNote } from "react-icons/md";
 
-
 // const Dashboard = () => {
 //   const { user, logOut } = useContext(AuthContext);
 //   const navigate = useNavigate();
 //   const [userData, setUserData] = useState(null);
 //   const axiosPublic = useAxiosPublic();
-
 
 //   useEffect(() => {
 //     const fetchUserData = async () => {
@@ -70,7 +68,6 @@
 //           <span className="text-white text-sm font-medium bg-gradient-to-r from-fuchsia-600 hover:from-pink-500 hover:to-violet-400 p-1 shadow-lg rounded-lg">
 //             Current Role: <span className="text-slate-950">{userData?.status}</span>
 //           </span>
-
 
 //         </div>
 //         <ul className="menu p-4">
@@ -175,33 +172,46 @@ const Dashboard = () => {
   }, [user, axiosPublic]);
 
   const handleLogOut = () => {
-    logOut().then(() => navigate("/")).catch(console.log);
+    logOut()
+      .then(() => navigate("/"))
+      .catch(console.log);
   };
-
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
       {/* Sidebar - user profile only */}
       <div className="w-full lg:w-64 lg:min-h-screen bg-[#38a9a1] p-4 text-center">
-       <div className="text-center mb-4">
-          <img src={user?.photoURL} alt="profile" className="w-20 h-20 rounded-full mx-auto" />
+        <div className="text-center mb-4">
+          <img
+            src={user?.photoURL}
+            alt="profile"
+            className="w-20 h-20 rounded-full mx-auto"
+          />
           <p className="mt-2 font-semibold">{user?.displayName}</p>
           <p className="text-sm">{userData?.designation}</p>
-          <p className="bg-white text-black text-xs mt-1 px-2 py-1 rounded">Role: {userData?.status}</p>
+          <p className="bg-white text-black text-xs mt-1 px-2 py-1 rounded">
+            Role: {userData?.status}
+          </p>
         </div>
-         <ul className="menu space-y-2">
-                  {userData?.status === "admin" && (
-                    <>
-                       <li><NavLink to="/dashboard/all-users"><FaUsers /> All Users</NavLink></li>
-                    </>
-                  )} 
-                  <li>
-    <NavLink to="/dashboard/select-block">
-      🧭 Choose Block
-    </NavLink>
-  </li>
-                  <li><button onClick={handleLogOut}><FaSignOutAlt /> Logout</button></li>
-                </ul>
+        <ul className="menu space-y-2">
+          {userData?.status === "admin" && (
+            <>
+              <li>
+                <NavLink to="/dashboard/all-users">
+                  <FaUsers /> All Users
+                </NavLink>
+              </li>
+            </>
+          )}
+          <li>
+            <NavLink to="/dashboard/select-block">🧭 Choose Block</NavLink>
+          </li>
+          <li>
+            <button onClick={handleLogOut}>
+              <FaSignOutAlt /> Logout
+            </button>
+          </li>
+        </ul>
       </div>
       {/* Main content */}
       <div className="flex-1 p-8">
@@ -212,4 +222,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-

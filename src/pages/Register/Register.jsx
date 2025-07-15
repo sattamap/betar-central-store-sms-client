@@ -7,6 +7,7 @@ import { useContext, useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import useAxiosPublic from '../../hooks/useAxiosPublic';
 import { AuthContext } from '../../provider/AuthProvider';
+import axios from 'axios';
 
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
@@ -42,7 +43,7 @@ const Register = () => {
   const onSubmit = async (data) => {
     try {
       const imageFile = { image: data.image[0] };
-      const imgbbResponse = await axiosPublic.post(image_hosting_api, imageFile, {
+      const imgbbResponse = await axios.post(image_hosting_api, imageFile, {
         headers: {
           'content-type': 'multipart/form-data',
         },

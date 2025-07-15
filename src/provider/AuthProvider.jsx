@@ -130,7 +130,7 @@ const AuthProvider = ({ children }) => {
         });
 
         return () => unSubscribe();
-    }, [axiosPublic]);
+    }, [axiosPublic, user]);
 
 
     // Inactivity auto-logout

@@ -14,8 +14,8 @@ import {
 } from "react-icons/md";
 import { AuthContext } from "../provider/AuthProvider";
 import useAxiosPublic from "../hooks/useAxiosPublic";
-import HeadWelcomeMsg from "../pages/Dashboard/HeadOffice/None/HeadWelcomeMsg";
-import LocalWelcomeMsg from "../pages/Dashboard/Local/None/LocalWelcomeMsg";
+import HeadWelcomeMsg from "../pages/Dashboard/HeadOffice/Items/None/HeadWelcomeMsg";
+import LocalWelcomeMsg from "../pages/Dashboard/Local/Items/None/LocalWelcomeMsg";
 
 const GenericDashboard = () => {
   const { user, logOut } = useContext(AuthContext);
@@ -32,6 +32,9 @@ const GenericDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const block = location.pathname.split("/")[1];
+  const subBlock = location.pathname.split("/")[2]; // 'items' or 'services'
+  console.log("Subblock",subBlock)
+
   const themeColor = block === "head" ? "#1e3a5f" : "#0f766e";
 
   // ✅ Fetch user data
@@ -52,11 +55,13 @@ const GenericDashboard = () => {
     fetchUserData();
   }, [user, axiosPublic]);
 
-  // ✅ Fetch notification count (unseen only)
+  // ✅ Fetch notification count (filtered by block and module)
   useEffect(() => {
     const fetchNotificationCount = async () => {
       try {
-        const res = await axiosPublic.get(`/notifications/count?block=${block}`);
+        const res = await axiosPublic.get(
+          `/notifications/count?block=${block}&module=${subBlock}`
+        );
         setNotificationCount(res.data.count);
       } catch (err) {
         console.error("Failed to fetch notification count:", err);
@@ -66,13 +71,13 @@ const GenericDashboard = () => {
     if (userData?.status === "admin") {
       fetchNotificationCount();
     }
-  }, [axiosPublic, userData, block]);
+  }, [axiosPublic, userData, block, subBlock]);
 
   // ✅ Fetch notifications (paginated)
   const fetchNotifications = async (initial = false) => {
     try {
       const res = await axiosPublic.get(
-        `/notifications?block=${block}&skip=${initial ? 0 : skip}&limit=5`
+        `/notifications?block=${block}&module=${subBlock}&skip=${initial ? 0 : skip}&limit=5`
       );
       if (initial) {
         setNotifications(res.data);
@@ -90,17 +95,17 @@ const GenericDashboard = () => {
     }
   };
 
-  // ✅ Mark notifications as seen
+  // ✅ Mark all as seen
   const markAllAsSeen = async () => {
     try {
-      await axiosPublic.patch(`/notifications/mark-all?block=${block}`);
+      await axiosPublic.patch(`/notifications/mark-all?block=${block}&module=${subBlock}`);
       setNotificationCount(0);
     } catch (err) {
       console.error("Failed to mark notifications as seen:", err);
     }
   };
 
-  // ✅ Handle bell click
+  // ✅ Handle bell icon
   const handleBellClick = async () => {
     setShowDropdown(!showDropdown);
     if (!showDropdown) {
@@ -115,9 +120,7 @@ const GenericDashboard = () => {
       .catch(console.log);
   };
 
-  if (loading) {
-    return <div className="text-center mt-20">Loading...</div>;
-  }
+  if (loading) return <div className="text-center mt-20">Loading...</div>;
 
   if (userData?.status === "none") {
     return block === "head" ? <HeadWelcomeMsg /> : <LocalWelcomeMsg />;
@@ -126,10 +129,7 @@ const GenericDashboard = () => {
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
       {/* ✅ Sidebar */}
-      <div
-        className="w-full lg:w-64 text-white p-4"
-        style={{ backgroundColor: themeColor }}
-      >
+      <div className="w-full lg:w-64 text-white p-4" style={{ backgroundColor: themeColor }}>
         <div className="text-center mb-4">
           <img
             src={user?.photoURL}
@@ -146,34 +146,70 @@ const GenericDashboard = () => {
           </p>
         </div>
 
+        {/* ✅ Navigation Menu */}
         <ul className="menu space-y-2">
-          {userData?.status === "admin" && (
+          {subBlock === "items" && (
             <>
-              <li><NavLink to="home"><FaHome /> Home</NavLink></li>
-              <li><NavLink to="addItems"><MdFormatListBulletedAdd /> Add Items</NavLink></li>
-              <li><NavLink to="adminManageItems"><MdEditNote /> Manage Items</NavLink></li>
-              <li><NavLink to="adminRecords"><FaList /> Admin Records</NavLink></li>
-              <li><NavLink to="adminNotifications"><MdNotificationsActive /> All Notifications</NavLink></li>
+              {userData?.status === "admin" && (
+                <>
+                  <li><NavLink to="items/home"><FaHome /> Home</NavLink></li>
+                  <li><NavLink to="items/addItems"><MdFormatListBulletedAdd /> Add Items</NavLink></li>
+                  <li><NavLink to="items/adminManageItems"><MdEditNote /> Manage Items</NavLink></li>
+                  <li><NavLink to="items/adminRecords"><FaList /> Admin Records</NavLink></li>
+                  <li><NavLink to="items/adminNotifications"><MdNotificationsActive /> All Notifications</NavLink></li>
+                </>
+              )}
+              {userData?.status === "coordinator" && (
+                <>
+                  <li><NavLink to="items/home"><FaHome /> Home</NavLink></li>
+                  <li><NavLink to="items/addItems"><MdFormatListBulletedAdd /> Add Items</NavLink></li>
+                  <li><NavLink to="items/manageItems"><MdEditNote /> Manage Items</NavLink></li>
+                  <li><NavLink to="items/records"><FaList /> Records</NavLink></li>
+                </>
+              )}
+              {userData?.status === "monitor" && (
+                <>
+                  <li><NavLink to="items/home"><FaHome /> Home</NavLink></li>
+                  <li><NavLink to="items/allItems"><FaSitemap /> Items</NavLink></li>
+                  <li><NavLink to="items/records"><FaList /> Records</NavLink></li>
+                </>
+              )}
             </>
           )}
-          {userData?.status === "coordinator" && (
+
+          {subBlock === "services" && (
             <>
-              <li><NavLink to="home"><FaHome /> Home</NavLink></li>
-              <li><NavLink to="addItems"><MdFormatListBulletedAdd /> Add Items</NavLink></li>
-              <li><NavLink to="manageItems"><MdEditNote /> Manage Items</NavLink></li>
-              <li><NavLink to="records"><FaList /> Records</NavLink></li>
+              {userData?.status === "admin" && (
+                <>
+                  <li><NavLink to="services/home"><FaHome /> Home</NavLink></li>
+                  <li><NavLink to="services/addServices"><MdFormatListBulletedAdd /> Add Service</NavLink></li>
+                  <li><NavLink to="services/adminManageServices"><MdEditNote /> Manage Service</NavLink></li>
+                  <li><NavLink to="services/adminNotifications"><MdNotificationsActive /> All Notifications</NavLink></li>
+                </>
+              )}
+              {userData?.status === "coordinator" && (
+                <>
+                  <li><NavLink to="services/home"><FaHome /> Home</NavLink></li>
+                  <li><NavLink to="services/addServices"><MdFormatListBulletedAdd /> Add Service</NavLink></li>
+                  <li><NavLink to="services/manageServices"><MdEditNote /> Manage Service</NavLink></li>
+                </>
+              )}
+              {userData?.status === "monitor" && (
+                <>
+                  <li><NavLink to="services/home"><FaHome /> Home</NavLink></li>
+                  <li><NavLink to="services/allServices"><FaSitemap /> All Service</NavLink></li>
+                </>
+              )}
             </>
           )}
-          {userData?.status === "monitor" && (
-            <>
-              <li><NavLink to="home"><FaHome /> Home</NavLink></li>
-              <li><NavLink to="items"><FaSitemap /> Items</NavLink></li>
-              <li><NavLink to="records"><FaList /> Records</NavLink></li>
-            </>
-          )}
+
           <div className="divider" />
           <li><NavLink to="/dashboard/select-block">🔙 Back to Dashboard</NavLink></li>
-          <li><button onClick={handleLogOut}><FaSignOutAlt /> Logout</button></li>
+          <li>
+            <button onClick={handleLogOut}>
+              <FaSignOutAlt /> Logout
+            </button>
+          </li>
         </ul>
       </div>
 
@@ -181,7 +217,7 @@ const GenericDashboard = () => {
       <div className="flex-1 p-6 bg-gray-100 relative">
         {/* ✅ Notification Bell */}
         {userData?.status === "admin" && (
-          <div className="absolute top-4 right-6 mb-6">
+          <div className="absolute top-4 right-6 mb-10">
             <div className="relative">
               <button
                 className="relative p-3 rounded-full bg-white shadow hover:bg-gray-100 transition"

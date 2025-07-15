@@ -6,34 +6,37 @@ import Dashboard from "../layout/Dashboard";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import Contact from "../pages/Login/Contact";
-import AboutIMS from "../pages/Login/AboutIMS";
 import PrivateRoutes from "./PrivateRoutes";
-
-import Items from "../pages/Dashboard/HeadOffice/Monitor/Items/HeadItems";
-import Details from "../pages/Dashboard/Common/Components/Details";
-
 import BlockSelector from "../pages/Dashboard/Common/BlockSelector/BlockSelector";
-
-import HeadAddItems from "../pages/Dashboard/HeadOffice/Coordinator/AddItems/HeadAddItems";
-import HeadAdminManageItems from "../pages/Dashboard/HeadOffice/Admin/ManageItems/HeadAdminManageItems";
-import HeadUpdateItems from "../pages/Dashboard/HeadOffice/Coordinator/UpdateItems/HeadUpdateItems";
-import LocalAddItems from "../pages/Dashboard/Local/Coordinator/AddItems/LocalAddItems";
-import LocalAdminManageItems from "../pages/Dashboard/Local/Admin/ManageItems/LocalAdminManageItems";
-import LocalUpdateItems from "../pages/Dashboard/Local/Coordinator/UpdateItems/LocalUpdateItems";
-import HeadHome from "../pages/Dashboard/HeadOffice/Home/HeadHome";
-import LocalHome from "../pages/Dashboard/Local/Home/LocalHome";
-import HeadRecords from "../pages/Dashboard/HeadOffice/Admin/Records/HeadAdminRecords";
-import LocalRecords from "../pages/Dashboard/Local/Admin/Records/LocalAdminRecords";
 import AllUsers from "../pages/Dashboard/Common/Components/AllUsers";
+import GenericDashboad from "../layout/GenericDashboard";
+import HeadHome from "../pages/Dashboard/HeadOffice/Items/Home/HeadHome";
+import HeadAddItems from "../pages/Dashboard/HeadOffice/Items/Coordinator/HeadAddItems";
+import AdminManageItems from "../pages/Dashboard/Common/Components/Items/AdminManageItems";
+import HeadUpdateItems from "../pages/Dashboard/HeadOffice/Items/Coordinator/HeadUpdateItems";
+import Items from "../pages/Dashboard/Common/Components/Items/Items";
+import HeadCoRecords from "../pages/Dashboard/HeadOffice/Items/Coordinator/HeadCoRecords";
+import HeadWelcomeMsg from "../pages/Dashboard/HeadOffice/Items/None/HeadWelcomeMsg";
+import HeadAdminRecords from "../pages/Dashboard/HeadOffice/Items/Admin/HeadAdminRecords";
+import HeadAddServices from "../pages/Dashboard/HeadOffice/Services/Admin/HeadAddServices";
 import GenericDashboard from "../layout/GenericDashboard";
-import HeadWelcomeMsg from "../pages/Dashboard/HeadOffice/None/HeadWelcomeMsg";
-import LocalWelcomeMsg from "../pages/Dashboard/Local/None/LocalWelcomeMsg";
-import HeadCoManageItems from "../pages/Dashboard/HeadOffice/Coordinator/ManageItems/HeadCoManageItems";
-import LocalCoManageItems from "../pages/Dashboard/Local/Coordinator/ManageItems/LocalCoManageItems";
-import HeadCoRecords from "../pages/Dashboard/HeadOffice/Coordinator/Records/HeadCoRecords";
-import LocalCoRecords from "../pages/Dashboard/Local/Coordinator/Records/LocalCoRecords";
-import HeadNotificationsPage from "../pages/Dashboard/HeadOffice/Admin/Notifications/HeadNotificationsPage";
-import LocalNotificationsPage from "../pages/Dashboard/Local/Admin/Notifications/LocalNotificationsPage";
+import LocalHome from "../pages/Dashboard/Local/Items/Home/LocalHome";
+import LocalAddItems from "../pages/Dashboard/Local/Items/Coordinator/LocalAddItems";
+import LocalUpdateItems from "../pages/Dashboard/Local/Items/Coordinator/LocalUpdateItems";
+import LocalRecords from "../pages/Dashboard/Local/Items/Admin/LocalAdminRecords";
+import LocalCoRecords from "../pages/Dashboard/Local/Items/Coordinator/LocalCoRecords";
+import LocalWelcomeMsg from "../pages/Dashboard/Local/Items/None/LocalWelcomeMsg";
+import LocalAddServices from "../pages/Dashboard/Local/Services/Admin/LocalAddServices";
+import UpdateServices from "../pages/Dashboard/Common/Components/Services/UpdateServices";
+import ServiceDetails from "../pages/Dashboard/Common/Components/Services/ServiceDetails";
+import HomeServices from "../pages/Dashboard/Common/Components/Services/HomeServices";
+import ManageServices from "../pages/Dashboard/Common/Components/Services/ManageServices";
+import AdminManageServices from "../pages/Dashboard/Common/Components/Services/AdminManageServices";
+import ManageItems from "../pages/Dashboard/Common/Components/Items/ManageItems";
+import ItemsDetails from "../pages/Dashboard/Common/Components/Items/ItemsDetails";
+import AboutSMS from "../pages/Login/AboutSMS";
+import Services from "../pages/Dashboard/Common/Components/Services/Services";
+import NotificationsPage from "../pages/Dashboard/Common/Components/Both/NotificationsPage";
 
 export const router = createBrowserRouter([
   {
@@ -54,7 +57,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "about",
-        element: <AboutIMS />,
+        element: <AboutSMS />,
       },
     ],
   },
@@ -87,30 +90,72 @@ export const router = createBrowserRouter([
     path: "/head",
     element: (
       <PrivateRoutes>
-        <GenericDashboard />
+        <GenericDashboad />
       </PrivateRoutes>
     ),
     children: [
-      { path: "home", element: <HeadHome /> },
-      { path: "addItems", element: <HeadAddItems /> },
-      { path: "adminManageItems", element: <HeadAdminManageItems /> },
+      // HEAD - Items Management Block
       {
-        path: "updateItem/:id",
-        element: <HeadUpdateItems />,
-        loader: ({ params }) =>
-          fetch(`http://localhost:5000/head/items/${params.id}`,
-            {
-              credentials: "include", 
-            }),
-        // ✅ This sends cookies like the JWT token
+        path: "items",
+        //element: <GenericDashboard />,
+        children: [
+          { path: "home", element: <HeadHome /> },
+          { path: "addItems", element: <HeadAddItems /> },
+          {
+            path: "adminManageItems",
+            element: <AdminManageItems block="head" />,
+          },
+          {
+            path: "updateItem/:id",
+            element: <HeadUpdateItems />,
+            loader: ({ params }) =>
+              fetch(`http://localhost:5000/head/items/${params.id}`, {
+                credentials: "include",
+              }),
+          },
+          { path: "allItems", element: <Items block="head"/> },
+          { path: "manageItems", element: <ManageItems block="head" /> },
+          { path: "adminRecords", element: <HeadAdminRecords /> },
+          { path: "adminNotifications", element: <NotificationsPage block="head"/> },
+          { path: "records", element: <HeadCoRecords /> },
+          { path: "details/:id", element: <ItemsDetails /> },
+          { path: "none", element: <HeadWelcomeMsg /> },
+        ],
       },
-      { path: "items", element: <Items /> },
-      { path: "manageItems", element: <HeadCoManageItems/> },
-      { path: "adminRecords", element: <HeadRecords /> },
-      { path: "adminNotifications", element: <HeadNotificationsPage /> },
-      { path: "records", element: <HeadCoRecords/> },
-      { path: "details/:id", element: <Details /> },
-      { path: "none", element: <HeadWelcomeMsg /> },
+      // HEAD - Services Management Block (NEW ✅)
+      {
+        path: "services",
+        // element: <GenericDashboard />,
+        children: [
+          {
+            path: "home",
+            element: <HomeServices />,
+          },
+          {
+            path: "addServices",
+            element: <HeadAddServices />,
+          },
+          {
+            path: "adminManageServices",
+            element: <AdminManageServices block="head" />,
+          },
+          {
+            path: "ManageServices",
+            element: <ManageServices block="head" />,
+          },
+          {
+            path: "updateService/:id",
+            element: <UpdateServices />,
+            loader: ({ params }) =>
+              fetch(`http://localhost:5000/head/services/${params.id}`, {
+                credentials: "include",
+              }),
+          },
+          { path: "allServices", element: <Services block="head"/> },
+          { path: "details/:id", element: <ServiceDetails /> },
+          { path: "adminNotifications", element: <NotificationsPage block="head"/> },
+        ],
+      },
     ],
   },
 
@@ -123,27 +168,68 @@ export const router = createBrowserRouter([
       </PrivateRoutes>
     ),
     children: [
-      { path: "home", element: <LocalHome /> },
-      { path: "addItems", element: <LocalAddItems /> },
-      { path: "adminManageItems", element: <LocalAdminManageItems /> },
+      // LOCAL - Items Management Block
       {
-        path: "updateItem/:id",
-        element: <LocalUpdateItems />,
-        loader: ({ params }) =>
-          fetch(`http://localhost:5000/local/items/${params.id}`,
-                  {
-              credentials: "include", 
-            }
-          ),
-        
+        path: "items",
+        children: [
+          { path: "home", element: <LocalHome /> },
+          { path: "addItems", element: <LocalAddItems /> },
+          {
+            path: "adminManageItems",
+            element: <AdminManageItems block="local" />,
+          },
+          {
+            path: "updateItem/:id",
+            element: <LocalUpdateItems />,
+            loader: ({ params }) =>
+              fetch(`http://localhost:5000/local/items/${params.id}`, {
+                credentials: "include",
+              }),
+          },
+          { path: "allItems", element: <Items block="local"/> },
+          { path: "manageItems", element: <ManageItems block="local" /> },
+          { path: "adminRecords", element: <LocalRecords /> },
+          { path: "adminNotifications", element: <NotificationsPage block="local"/> },
+          { path: "records", element: <LocalCoRecords /> },
+          { path: "details/:id", element: <ItemsDetails /> },
+          { path: "none", element: <LocalWelcomeMsg /> },
+        ],
       },
-      { path: "items", element: <Items /> },
-      { path: "manageItems", element: <LocalCoManageItems /> },
-      { path: "adminRecords", element: <LocalRecords /> },
-      { path: "adminNotifications", element: <LocalNotificationsPage /> },
-      { path: "records", element: <LocalCoRecords/> },
-      { path: "details/:id", element: <Details /> },
-      { path: "none", element: <LocalWelcomeMsg /> },
+      // LOCAL - Services Management Block (NEW ✅)
+      {
+        path: "services",
+        children: [
+          {
+            path: "home",
+            element: <HomeServices />,
+          },
+          {
+            path: "addServices",
+            element: <LocalAddServices />,
+          },
+          {
+            path: "adminManageServices",
+            element: <AdminManageServices block="local" />,
+          },
+          {
+            path: "manageServices",
+            element: <ManageServices block="local" />,
+          },
+          {
+            path: "updateService/:id",
+            element: <UpdateServices />,
+            loader: ({ params }) =>
+              fetch(`http://localhost:5000/local/services/${params.id}`, {
+                credentials: "include",
+              }),
+          },
+           { path: "allServices", element: <Services block="local"/> },
+          { path: "details/:id", element: <ServiceDetails /> },
+          { path: "adminNotifications", element: <NotificationsPage block="local"/> },
+
+          // Add actual services routes later
+        ],
+      },
     ],
   },
 ]);

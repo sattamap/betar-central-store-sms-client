@@ -87,10 +87,10 @@ const Login = () => {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-emerald-400">
-      <div className="max-w-xl mx-auto p-6 bg-white shadow-md rounded-md">
+    <div className="min-h-screen flex items-center justify-center bg-green-200">
+      <div className="max-w-xl mx-auto p-6 bg-white shadow-2xl rounded-md">
         <div className='flex items-center justify-center text-xl font-bold bg-gradient-to-r from-purple-300 via-purple-400 to-purple-600 rounded-xl shadow-xl mb-5 p-4'>
-          <h2 className="ml-2 text-center">Inventory Management System for the Engineering Section of Bangladesh Betar</h2>
+          <h2 className="ml-2 text-center">Store Management System for the Engineering Section of Bangladesh Betar</h2>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8" >
@@ -101,7 +101,7 @@ const Login = () => {
             {/* Text content */}
             <div className="relative z-10 text-center  my-12 lg:my-0">
               <h4 className="text-4xl font-bold  text-emerald-800">Welcome Back!</h4>
-              <p className="text-base font-semibold">Log in to manage items and access operations.</p>
+              <p className="text-base font-semibold">Log in to manage items, services and access operations.</p>
             </div>
           </div>
 
@@ -165,9 +165,9 @@ const Login = () => {
         <div className='space-y-4'>
           <div className="flex justify-center gap-4 mt-8">
             <Link to="/contact" className="text-sm font-medium text-indigo-900 hover:underline border-r-2 border-black pr-4">Contact</Link>
-            <Link to="/about" className="text-sm font-medium text-indigo-900 hover:underline">About IMS</Link>
+            <Link to="/about" className="text-sm font-medium text-indigo-900 hover:underline">About SMS</Link>
           </div>
-          <p className="text-center mt-8 text-sm text-gray-500">&copy; 2024 Inventory Management System | Developed by Sattam</p>
+          <p className="text-center mt-8 text-sm text-gray-500"> &copy; {new Date().getFullYear()} Store Management System | Developed by Sattam</p>
 
         </div>
 
