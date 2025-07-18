@@ -5,7 +5,9 @@ import { MdEdit, MdDelete, MdVisibility } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import jsPDF from "jspdf";
-import "../../../../../../NotoSansBengali"; 
+import useDownloadPDF from "../../../../../hooks/useDownloadPDF";
+//import DownloadPDF from "../../../../../utils/DownloadPDF";
+
 
 
 const AdminManageServices = ({ block = "head" }) => {
@@ -22,6 +24,11 @@ const AdminManageServices = ({ block = "head" }) => {
   const [filterApplied, setFilterApplied] = useState(false);
 
   const axiosPublic = useAxiosPublic();
+
+  const downloadPDF = useDownloadPDF();
+
+
+
 
   const fetchServices = useCallback(async () => {
     try {
@@ -188,32 +195,36 @@ const AdminManageServices = ({ block = "head" }) => {
 //     doc.save("service.pdf");
 //   };
 
-const handleDownloadPDF = () => {
-  const doc = new jsPDF();
-  doc.setFont("NotoSansBengali"); // ✅ Use the Bangla font
-  doc.setFontSize(12);
+// const handleDownloadPDF = () => {
+//   const doc = new jsPDF();
+//   doc.setFont("NotoSansBengali"); // ✅ Use the Bangla font
+//   doc.setFontSize(12);
 
-  doc.text("বাংলা সার্ভিস রিপোর্ট", 14, 20); // ✅ Bangla text example
+//   doc.text("বাংলা সার্ভিস রিপোর্ট", 14, 20); // ✅ Bangla text example
 
-  doc.autoTable({
-    startY: 30,
-    head: [["#", "Service Name", "Detail", "Start", "End", "Category", "Provider"]],
-    body: services.map((s, i) => [
-      i + 1,
-      s?.serviceName,
-      s?.detail,
-      s?.start_date,
-      s?.end_date,
-      s?.category,
-      s?.provider,
-    ]),
-    styles: {
-      font: "NotoSansBengali",
-    },
-  });
+//   doc.autoTable({
+//     startY: 30,
+//     head: [["#", "Service Name", "Detail", "Start", "End", "Category", "Provider"]],
+//     body: services.map((s, i) => [
+//       i + 1,
+//       s?.serviceName,
+//       s?.detail,
+//       s?.start_date,
+//       s?.end_date,
+//       s?.category,
+//       s?.provider,
+//     ]),
+//     styles: {
+//       font: "NotoSansBengali",
+//     },
+//   });
 
-  doc.save("service-bangla.pdf");
-};
+//   doc.save("service-bangla.pdf");
+// };
+
+// const handleDownloadPDF = () => {
+//   DownloadPDF(services, "service-report.pdf");
+// };
 
 
 
@@ -344,12 +355,7 @@ const handleDownloadPDF = () => {
             </select>
           </div>
           <div className="flex flex-col md:flex-row items-center  gap-2 md:gap-4 md:border-l-4 md: border-emerald-900">
-            <button
-              onClick={handleDownloadPDF}
-              className="btn btn-xs bg-teal-300 md:btn-sm md:ml-3"
-            >
-              Download PDF
-            </button>
+          <button onClick={() => downloadPDF(services)}>Download PDF</button>
             <button
               onClick={handleDownloadFilteredPDF}
               disabled={!isFiltered}
