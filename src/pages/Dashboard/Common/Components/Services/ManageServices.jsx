@@ -3,7 +3,8 @@ import useAxiosPublic from "../../../../../hooks/useAxiosPublic";
 import PropTypes from "prop-types";
 import { MdEdit, MdVisibility } from "react-icons/md";
 import { Link } from "react-router-dom";
-import jsPDF from "jspdf";
+import useDownloadPDF from "../../../../../hooks/useDownloadPDF";
+//import jsPDF from "jspdf";
 
 const ManageServices = ({ block = "head" }) => {
   const [services, setServices] = useState([]);
@@ -17,6 +18,8 @@ const ManageServices = ({ block = "head" }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [filterApplied, setFilterApplied] = useState(false);
+
+  const downloadPDF = useDownloadPDF();
 
   const axiosPublic = useAxiosPublic();
 
@@ -80,7 +83,6 @@ const ManageServices = ({ block = "head" }) => {
     setFilteredServices(filtered);
   }, [categoryFilter, searchTerm, selectedMonth, startDate, endDate, services]);
 
-
   const totalFiltered = filteredServices.length;
   const numberOfPages = Math.ceil(totalFiltered / itemsPerPage);
 
@@ -133,73 +135,73 @@ const ManageServices = ({ block = "head" }) => {
   };
 
   // Function to generate and download PDF
-  const handleDownloadPDF = () => {
-    const doc = new jsPDF();
-    const tableData = services.map((service, index) => [
-      startIndex + index + 1,
-      service?.serviceName,
-      service?.detail,
-      service?.start_date,
-      service?.end_date,
-      service?.category,
-      service?.provider,
-    ]);
+  // const handleDownloadPDF = () => {
+  //   const doc = new jsPDF();
+  //   const tableData = services.map((service, index) => [
+  //     startIndex + index + 1,
+  //     service?.serviceName,
+  //     service?.detail,
+  //     service?.start_date,
+  //     service?.end_date,
+  //     service?.category,
+  //     service?.provider,
+  //   ]);
 
-    doc.autoTable({
-      head: [
-        [
-          "#",
-          "Service Name",
-          "Detail",
-          "Start Date",
-          "End Date",
-          "Category",
-          "Provider",
-        ],
-      ],
-      body: tableData,
-    });
+  //   doc.autoTable({
+  //     head: [
+  //       [
+  //         "#",
+  //         "Service Name",
+  //         "Detail",
+  //         "Start Date",
+  //         "End Date",
+  //         "Category",
+  //         "Provider",
+  //       ],
+  //     ],
+  //     body: tableData,
+  //   });
 
-    doc.save("service.pdf");
-  };
+  //   doc.save("service.pdf");
+  // };
 
   // Function to generate and download PDF for filtered items
-  const handleDownloadFilteredPDF = () => {
-    const doc = new jsPDF();
+  // const handleDownloadFilteredPDF = () => {
+  //   const doc = new jsPDF();
 
-    // Define headers and data mapping based on the selected condition
-    let headers = [];
-    let tableData = [];
+  //   // Define headers and data mapping based on the selected condition
+  //   let headers = [];
+  //   let tableData = [];
 
-    headers = [
-      [
-        "#",
-        "Service Name",
-        "Detail",
-        "Start Date",
-        "End Date",
-        "Category",
-        "Provider",
-      ],
-    ];
-    tableData = filteredServices.map((service, index) => [
-      startIndex + index + 1,
-      service?.serviceName,
-      service?.detail,
-      service?.start_date,
-      service?.end_date,
-      service?.category,
-      service?.provider,
-    ]);
+  //   headers = [
+  //     [
+  //       "#",
+  //       "Service Name",
+  //       "Detail",
+  //       "Start Date",
+  //       "End Date",
+  //       "Category",
+  //       "Provider",
+  //     ],
+  //   ];
+  //   tableData = filteredServices.map((service, index) => [
+  //     startIndex + index + 1,
+  //     service?.serviceName,
+  //     service?.detail,
+  //     service?.start_date,
+  //     service?.end_date,
+  //     service?.category,
+  //     service?.provider,
+  //   ]);
 
-    // Generate PDF with the dynamically set headers and table data
-    doc.autoTable({
-      head: headers,
-      body: tableData,
-    });
+  //   // Generate PDF with the dynamically set headers and table data
+  //   doc.autoTable({
+  //     head: headers,
+  //     body: tableData,
+  //   });
 
-    doc.save("filtered_services.pdf");
-  };
+  //   doc.save("filtered_services.pdf");
+  // };
 
   useEffect(() => {
     const hasFilters =
@@ -291,17 +293,18 @@ const ManageServices = ({ block = "head" }) => {
           </div>
           <div className="flex flex-col md:flex-row items-center  gap-2 md:gap-4 md:border-l-4 md: border-emerald-900">
             <button
-              onClick={handleDownloadPDF}
-              className="btn btn-xs bg-teal-300 md:btn-sm md:ml-3"
+              onClick={() => downloadPDF(services, "services")}
+              className="btn bg-green-500 btn-xs md:btn-sm text-white"
             >
               Download PDF
             </button>
+
             <button
-              onClick={handleDownloadFilteredPDF}
+              onClick={() => downloadPDF(filteredServices, "services")}
               disabled={!isFiltered}
               className={`btn ${
                 isFiltered ? "bg-green-500" : "bg-gray-300"
-              } btn-xs md:btn-sm  text-white`}
+              } btn-xs md:btn-sm text-white`}
             >
               Download Filtered PDF
             </button>

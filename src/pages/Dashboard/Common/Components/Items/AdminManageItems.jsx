@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 // import { Link, useOutletContext } from "react-router-dom";
 import Swal from "sweetalert2";
-import jsPDF from "jspdf";
+//import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { FaPlusMinus } from "react-icons/fa6";
 import { MdDelete, MdEdit } from "react-icons/md";
@@ -11,6 +11,7 @@ import Modal from "react-modal";
 import useAxiosPublic from "../../../../../hooks/useAxiosPublic";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import useDownloadPDF from "../../../../../hooks/useDownloadPDF";
 
 Modal.setAppElement("#root");
 const AdminManageItems = ({ block = "head" }) => {
@@ -32,6 +33,8 @@ const AdminManageItems = ({ block = "head" }) => {
   });
 
   const [selectedItemData, setSelectedItemData] = useState(null);
+
+  const downloadPDF = useDownloadPDF();
   //const [operation, setOperation] = useState("plus");
   //   const outletContext = useOutletContext();
   // const block = outletContext?.block || "head";
@@ -244,87 +247,87 @@ const AdminManageItems = ({ block = "head" }) => {
   };
 
   // Function to generate and download PDF
-  const handleDownloadPDF = () => {
-    const doc = new jsPDF();
-    const tableData = items.map((item, index) => [
-      startIndex + index + 1,
-      [`${item.itemName}`, `${item.model}`, `${item.origin}`],
-      item?.items_quantity?.item_store,
-      item?.items_quantity?.item_use,
-      item?.items_quantity?.item_faulty_store,
-      item?.items_quantity?.item_faulty_use,
-      item?.items_quantity?.item_transfer,
-      item.totalQuantity,
-      item.locationGood,
-      item.category,
-      item.date,
-    ]);
+  // const handleDownloadPDF = () => {
+  //   const doc = new jsPDF();
+  //   const tableData = items.map((item, index) => [
+  //     startIndex + index + 1,
+  //     [`${item.itemName}`, `${item.model}`, `${item.origin}`],
+  //     item?.items_quantity?.item_store,
+  //     item?.items_quantity?.item_use,
+  //     item?.items_quantity?.item_faulty_store,
+  //     item?.items_quantity?.item_faulty_use,
+  //     item?.items_quantity?.item_transfer,
+  //     item.totalQuantity,
+  //     item.locationGood,
+  //     item.category,
+  //     item.date,
+  //   ]);
 
-    doc.autoTable({
-      head: [
-        [
-          "#",
-          "Name,Model & Origin",
-          "Item (Store)",
-          "Item (Use)",
-          "Item (Faulty_store)",
-          "Item (Faulty_use)",
-          "Item (Transfer)",
-          "Total item",
-          "Location (Good)",
-          "Category",
-          "Date",
-        ],
-      ],
-      body: tableData,
-    });
+  //   doc.autoTable({
+  //     head: [
+  //       [
+  //         "#",
+  //         "Name,Model & Origin",
+  //         "Item (Store)",
+  //         "Item (Use)",
+  //         "Item (Faulty_store)",
+  //         "Item (Faulty_use)",
+  //         "Item (Transfer)",
+  //         "Total item",
+  //         "Location (Good)",
+  //         "Category",
+  //         "Date",
+  //       ],
+  //     ],
+  //     body: tableData,
+  //   });
 
-    doc.save("items.pdf");
-  };
+  //   doc.save("items.pdf");
+  // };
 
   // Function to generate and download PDF for filtered items
-  const handleDownloadFilteredPDF = () => {
-    const doc = new jsPDF();
+  // const handleDownloadFilteredPDF = () => {
+  //   const doc = new jsPDF();
 
-    // Define headers and data mapping based on the selected condition
-    let headers = [];
-    let tableData = [];
+  //   // Define headers and data mapping based on the selected condition
+  //   let headers = [];
+  //   let tableData = [];
 
-    headers = [
-      [
-        "#",
-        "Name,Model & Origin",
-        "Item (Store)",
-        "Item (Use)",
-        "Item (Faulty_store)",
-        "Item (Faulty_use)",
-        "Item (Transfer)",
-        "Total item",
-        "Location (Good)",
-        "Category & Date",
-      ],
-    ];
-    tableData = filteredItems.map((item, index) => [
-      startIndex + index + 1,
-      [`${item.itemName}`, `${item.model}`, `${item.origin}`], // Multi-line text array
-      item?.items_quantity?.item_store,
-      item?.items_quantity?.item_use,
-      item?.items_quantity?.item_faulty_store,
-      item?.items_quantity?.item_faulty_use,
-      item?.items_quantity?.item_transfer,
-      item.totalQuantity,
-      item.locationGood,
-      [`${item.category}`, `${item.date}`], // Multi-line text array
-    ]);
+  //   headers = [
+  //     [
+  //       "#",
+  //       "Name,Model & Origin",
+  //       "Item (Store)",
+  //       "Item (Use)",
+  //       "Item (Faulty_store)",
+  //       "Item (Faulty_use)",
+  //       "Item (Transfer)",
+  //       "Total item",
+  //       "Location (Good)",
+  //       "Category & Date",
+  //     ],
+  //   ];
+  //   tableData = filteredItems.map((item, index) => [
+  //     startIndex + index + 1,
+  //     [`${item.itemName}`, `${item.model}`, `${item.origin}`], // Multi-line text array
+  //     item?.items_quantity?.item_store,
+  //     item?.items_quantity?.item_use,
+  //     item?.items_quantity?.item_faulty_store,
+  //     item?.items_quantity?.item_faulty_use,
+  //     item?.items_quantity?.item_transfer,
+  //     item.totalQuantity,
+  //     item.locationGood,
+  //     [`${item.category}`, `${item.date}`], // Multi-line text array
+  //   ]);
 
-    // Generate PDF with the dynamically set headers and table data
-    doc.autoTable({
-      head: headers,
-      body: tableData,
-    });
+  //   // Generate PDF with the dynamically set headers and table data
+  //   doc.autoTable({
+  //     head: headers,
+  //     body: tableData,
+  //   });
 
-    doc.save("filtered_items.pdf");
-  };
+  //   doc.save("filtered_items.pdf");
+  // };
 
   const openModal = (item) => {
     setSelectedItemData(item);
@@ -342,137 +345,142 @@ const AdminManageItems = ({ block = "head" }) => {
     });
   };
 
-const handleSubmit = async () => {
-  try {
-    if (!formData.condition) throw new Error("Please select an action");
-    if (!selectedItemData?._id) throw new Error("Missing item ID");
+  const handleSubmit = async () => {
+    try {
+      if (!formData.condition) throw new Error("Please select an action");
+      if (!selectedItemData?._id) throw new Error("Missing item ID");
 
-    const inputQty = Number(formData.good);
-    const availableStore = Number(
-      selectedItemData.items_quantity?.item_store || 0
-    );
-    const availableUse = Number(
-      selectedItemData.items_quantity?.item_use || 0
-    );
+      const inputQty = Number(formData.good);
+      const availableStore = Number(
+        selectedItemData.items_quantity?.item_store || 0
+      );
+      const availableUse = Number(
+        selectedItemData.items_quantity?.item_use || 0
+      );
 
-    // ✅ Validate: Quantity must be > 0
-    if (isNaN(inputQty) || inputQty <= 0) {
-      return Swal.fire({
-        icon: "error",
-        title: "Invalid Quantity",
-        text: "Quantity must be greater than 0",
-      });
-    }
+      // ✅ Validate: Quantity must be > 0
+      if (isNaN(inputQty) || inputQty <= 0) {
+        return Swal.fire({
+          icon: "error",
+          title: "Invalid Quantity",
+          text: "Quantity must be greater than 0",
+        });
+      }
 
-    // ❗ Validate input before submit
-    if (formData.condition === "use" && inputQty > availableStore) {
-      return Swal.fire({
-        icon: "error",
-        title: "Insufficient Store Quantity",
-        text: `Only ${availableStore} items available in store.`,
-      });
-    }
+      // ❗ Validate input before submit
+      if (formData.condition === "use" && inputQty > availableStore) {
+        return Swal.fire({
+          icon: "error",
+          title: "Insufficient Store Quantity",
+          text: `Only ${availableStore} items available in store.`,
+        });
+      }
 
-    if (formData.condition === "faulty_store" && inputQty > availableStore) {
-      return Swal.fire({
-        icon: "error",
-        title: "Insufficient Store Quantity",
-        text: `Cannot mark ${inputQty} faulty from store. Only ${availableStore} available.`,
-      });
-    }
+      if (formData.condition === "faulty_store" && inputQty > availableStore) {
+        return Swal.fire({
+          icon: "error",
+          title: "Insufficient Store Quantity",
+          text: `Cannot mark ${inputQty} faulty from store. Only ${availableStore} available.`,
+        });
+      }
 
-    if (formData.condition === "faulty_use" && inputQty > availableUse) {
-      return Swal.fire({
-        icon: "error",
-        title: "Insufficient Use Quantity",
-        text: `Cannot mark ${inputQty} faulty from use. Only ${availableUse} available.`,
-      });
-    }
+      if (formData.condition === "faulty_use" && inputQty > availableUse) {
+        return Swal.fire({
+          icon: "error",
+          title: "Insufficient Use Quantity",
+          text: `Cannot mark ${inputQty} faulty from use. Only ${availableUse} available.`,
+        });
+      }
 
-    if (formData.condition === "transfer" && inputQty > availableStore) {
-      return Swal.fire({
-        icon: "error",
-        title: "Insufficient Store Quantity",
-        text: `Cannot transfer ${inputQty} items. Only ${availableStore} available in store.`,
-      });
-    }
+      if (formData.condition === "transfer" && inputQty > availableStore) {
+        return Swal.fire({
+          icon: "error",
+          title: "Insufficient Store Quantity",
+          text: `Cannot transfer ${inputQty} items. Only ${availableStore} available in store.`,
+        });
+      }
 
-    // ✅ Build payload
-    const payload = {
-      itemName: selectedItemData.itemName,
-      model: selectedItemData.model,
-      category: selectedItemData.category,
-      date: formData.date,
-      itemId: selectedItemData._id,
-      locationGood: formData.locationGood,
-      purpose:
-        formData.purpose ||
-        (formData.condition === "add"
-          ? "To store"
-          : formData.condition === "use"
-          ? "For use"
-          : "Faulty removal"),
-      items_quantity: {
-        item_store: 0,
-        item_use: 0,
-        item_faulty_store: 0,
-        item_faulty_use: 0,
-        item_transfer: 0,
-      },
-    };
+      // ✅ Build payload
+      const payload = {
+        itemName: selectedItemData.itemName,
+        model: selectedItemData.model,
+        category: selectedItemData.category,
+        date: formData.date,
+        itemId: selectedItemData._id,
+        locationGood: formData.locationGood,
+        purpose:
+          formData.purpose ||
+          (formData.condition === "add"
+            ? "To store"
+            : formData.condition === "use"
+            ? "For use"
+            : "Faulty removal"),
+        items_quantity: {
+          item_store: 0,
+          item_use: 0,
+          item_faulty_store: 0,
+          item_faulty_use: 0,
+          item_transfer: 0,
+        },
+      };
 
-    // ✅ Set status and quantity field
-    if (formData.condition === "add") {
-      payload.status = "pending(add)";
-      payload.items_quantity.item_store = inputQty;
-    } else if (formData.condition === "use") {
-      payload.status = "pending(remove)";
-      payload.items_quantity.item_use = inputQty;
-    } else if (formData.condition === "faulty_store") {
-      payload.status = "pending(remove_fault_store)";
-      payload.items_quantity.item_faulty_store = inputQty;
-    } else if (formData.condition === "faulty_use") {
-      payload.status = "pending(remove_fault_use)";
-      payload.items_quantity.item_faulty_use = inputQty;
-    } else if (formData.condition === "transfer") {
-      payload.status = "pending(transfer)";
-      payload.items_quantity.item_transfer = inputQty;
-    }
+      // ✅ Set status and quantity field
+      if (formData.condition === "add") {
+        payload.status = "pending(add)";
+        payload.items_quantity.item_store = inputQty;
+      } else if (formData.condition === "use") {
+        payload.status = "pending(remove)";
+        payload.items_quantity.item_use = inputQty;
+      } else if (formData.condition === "faulty_store") {
+        payload.status = "pending(remove_fault_store)";
+        payload.items_quantity.item_faulty_store = inputQty;
+      } else if (formData.condition === "faulty_use") {
+        payload.status = "pending(remove_fault_use)";
+        payload.items_quantity.item_faulty_use = inputQty;
+      } else if (formData.condition === "transfer") {
+        payload.status = "pending(transfer)";
+        payload.items_quantity.item_transfer = inputQty;
+      }
 
-    console.log("Submitting payload:", payload);
+      console.log("Submitting payload:", payload);
 
-    const response = await axiosPublic.post(`/${block}/records`, payload);
+      const response = await axiosPublic.post(`/${block}/records`, payload);
 
-    if (response.status === 200 || response.status === 201) {
+      if (response.status === 200 || response.status === 201) {
+        Swal.fire({
+          icon: "success",
+          title: "Submitted for approval",
+          timer: 1500,
+          showConfirmButton: false,
+          position: "top-end",
+        });
+
+        closeModal();
+        setFormData({
+          good: "",
+          condition: "",
+          locationGood: "",
+          purpose: "",
+          date: "",
+        });
+      } else {
+        throw new Error("Submission failed");
+      }
+    } catch (error) {
+      console.error("Submit error:", error);
       Swal.fire({
-        icon: "success",
-        title: "Submitted for approval",
-        timer: 1500,
-        showConfirmButton: false,
-        position: "top-end",
+        icon: "error",
+        title: "Error",
+        text: error.message || "Something went wrong",
       });
-
-      closeModal();
-      setFormData({
-        good: "",
-        condition: "",
-        locationGood: "",
-        purpose: "",
-        date: "",
-      });
-    } else {
-      throw new Error("Submission failed");
     }
-  } catch (error) {
-    console.error("Submit error:", error);
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: error.message || "Something went wrong",
-    });
-  }
-};
+  };
 
+  // const handleDownloadFilteredPDF = () => {
+  //   if (isFiltered && filteredItems?.length > 0) {
+  //     downloadPDF(filteredItems);
+  //   }
+  // };
 
   // Update filterApplied when searchTerm or selectedCondition changes
   useEffect(() => {
@@ -639,15 +647,15 @@ const handleSubmit = async () => {
     <div className="md:mt-8">
       <div className="mb-4">
         <div className="flex flex-col md:flex-row md:gap-4 items-center justify-center">
-            <div className="md:w-2/5 mb-4 md:mb-0">
-          <input
-            type="text"
-            placeholder="Search by Item Name or Model"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="border px-3 py-2 rounded w-full"
-          />
-        </div>
+          <div className="md:w-2/5 mb-4 md:mb-0">
+            <input
+              type="text"
+              placeholder="Search by Item Name or Model"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="border px-3 py-2 rounded w-full"
+            />
+          </div>
           <div className="mb-4 md:mb-0">
             <select
               value={selectedCategory}
@@ -662,19 +670,20 @@ const handleSubmit = async () => {
               ))}
             </select>
           </div>
-          <div className="flex flex-col md:flex-row gap-2 md:gap-4 md:border-l-4 md: border-emerald-900">
+          <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 md:border-l-4 md:border-emerald-900">
             <button
-              onClick={handleDownloadPDF}
-              className="btn btn-xs bg-teal-300 md:btn-sm md:ml-3"
+              onClick={() => downloadPDF(items, "items")}
+              className="btn bg-green-500 btn-xs md:btn-sm text-white"
             >
               Download PDF
             </button>
+
             <button
-              onClick={handleDownloadFilteredPDF}
+              onClick={() => downloadPDF(filteredItems, "items")}
               disabled={!isFiltered}
               className={`btn ${
                 isFiltered ? "bg-green-500" : "bg-gray-300"
-              } btn-xs md:btn-sm  text-white`}
+              } btn-xs md:btn-sm text-white`}
             >
               Download Filtered PDF
             </button>

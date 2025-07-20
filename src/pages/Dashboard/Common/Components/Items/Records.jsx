@@ -429,8 +429,6 @@ const Records = ({ block = "head" }) => {
         const response = await axiosPublic.get(`/${block}/records`);
         setRecords(response.data);
 
-        console.log("items:", records);
-
         // Get all available categories from the items
         const categories = [
           ...new Set(response.data.map((record) => record.category)),

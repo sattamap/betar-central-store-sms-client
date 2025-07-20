@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useOutletContext, useLocation } from "react-router-dom";
 import useAxiosPublic from "../../../../../hooks/useAxiosPublic";
-import jsPDF from "jspdf";
+//import jsPDF from "jspdf";
+import useDownloadPDF from "../../../../../hooks/useDownloadPDF";
 
 const NotificationsPage = () => {
   const axiosPublic = useAxiosPublic();
@@ -16,6 +17,8 @@ const NotificationsPage = () => {
   const [endDate, setEndDate] = useState("");
   const [filteredNotifications, setFilteredNotifications] = useState([]);
   const [filterApplied, setFilterApplied] = useState(false);
+
+  const downloadPDF = useDownloadPDF();
 
   const fetchNotifications = useCallback(() => {
     setLoading(true);
@@ -75,22 +78,22 @@ const NotificationsPage = () => {
     setFilteredNotifications(filtered);
   }, [notifications, searchTerm, selectedMonth, startDate, endDate]);
 
-  const handleDownloadPDF = () => {
-    const doc = new jsPDF();
-    const tableData = notifications.map((n, i) => [
-      i + 1,
-      n.message,
-      n.type,
-      new Date(n.timestamp).toLocaleString(),
-    ]);
+  // const handleDownloadPDF = () => {
+  //   const doc = new jsPDF();
+  //   const tableData = notifications.map((n, i) => [
+  //     i + 1,
+  //     n.message,
+  //     n.type,
+  //     new Date(n.timestamp).toLocaleString(),
+  //   ]);
 
-    doc.autoTable({
-      head: [["#", "Message", "Type", "Date"]],
-      body: tableData,
-    });
+  //   doc.autoTable({
+  //     head: [["#", "Message", "Type", "Date"]],
+  //     body: tableData,
+  //   });
 
-    doc.save("all_notifications.pdf");
-  };
+  //   doc.save("all_notifications.pdf");
+  // };
 
   useEffect(() => {
     const isSearchActive = searchTerm.trim() !== "";
@@ -100,22 +103,22 @@ const NotificationsPage = () => {
     setFilterApplied(isSearchActive || isMonthActive || isDateRangeActive);
   }, [searchTerm, selectedMonth, startDate, endDate]);
 
-  const handleDownloadFilteredPDF = () => {
-    const doc = new jsPDF();
-    const tableData = filteredNotifications.map((n, i) => [
-      i + 1,
-      n.message,
-      n.type,
-      new Date(n.timestamp).toLocaleString(),
-    ]);
+  // const handleDownloadFilteredPDF = () => {
+  //   const doc = new jsPDF();
+  //   const tableData = filteredNotifications.map((n, i) => [
+  //     i + 1,
+  //     n.message,
+  //     n.type,
+  //     new Date(n.timestamp).toLocaleString(),
+  //   ]);
 
-    doc.autoTable({
-      head: [["#", "Message", "Type", "Date"]],
-      body: tableData,
-    });
+  //   doc.autoTable({
+  //     head: [["#", "Message", "Type", "Date"]],
+  //     body: tableData,
+  //   });
 
-    doc.save("filtered_notifications.pdf");
-  };
+  //   doc.save("filtered_notifications.pdf");
+  // };
 
   return (
     <div className="p-4">
@@ -157,21 +160,20 @@ const NotificationsPage = () => {
 
         <div className="flex flex-col sm:flex-row gap-2 mb-4">
           <button
-            onClick={handleDownloadPDF}
-            className="btn bg-blue-500 text-white btn-sm"
+            onClick={() => downloadPDF(notifications, "notifications")}
+            className="btn bg-green-500 btn-xs md:btn-sm text-white"
           >
-            Download All PDF
+            Download Records PDF
           </button>
+
           <button
-            onClick={handleDownloadFilteredPDF}
-            disabled={!filterApplied || filteredNotifications.length === 0}
-            className={`btn btn-sm text-white ${
-              !filterApplied || filteredNotifications.length === 0
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-green-600"
-            }`}
+            onClick={() => downloadPDF(filteredNotifications, "notifications")}
+            disabled={!filterApplied}
+            className={`btn ${
+              filterApplied ? "bg-green-500" : "bg-gray-300"
+            } btn-xs md:btn-sm text-white`}
           >
-            Download Filtered PDF
+            Download Filtered Records PDF
           </button>
         </div>
       </div>

@@ -1,13 +1,18 @@
 import useAxiosPublic from "../hooks/useAxiosPublic";
 
 const useDownloadPDF = () => {
-  const axiosPublic = useAxiosPublic(); // ✅ use it inside a hook
+  const axiosPublic = useAxiosPublic();
 
-  const downloadPDF = async (services, filename = "bangla-service-report") => {
+  const downloadPDF = async (data, type = "services", filename = `${type}-report`) => {
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      console.error("Invalid or empty data provided for PDF generation.");
+      return;
+    }
+
     try {
       const response = await axiosPublic.post(
         "/generate-pdf",
-        { services, filename },
+        { data, type, filename },
         { responseType: "blob" }
       );
 

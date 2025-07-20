@@ -480,11 +480,12 @@ import { useEffect, useState } from "react";
 
 // import { Link, useOutletContext } from "react-router-dom";
 
-import jsPDF from "jspdf";
+//import jsPDF from "jspdf";
 import "jspdf-autotable";
 import useAxiosPublic from "../../../../../hooks/useAxiosPublic";
 import PropTypes from "prop-types";
 import Swal from "sweetalert2";
+import useDownloadPDF from "../../../../../hooks/useDownloadPDF";
 
 const months = [
   "All",
@@ -515,14 +516,14 @@ const AdminRecords = ({ block = "head" }) => {
   const [selectedMonth, setSelectedMonth] = useState("All");
   const [dateRange, setDateRange] = useState({ start: "", end: "" });
 
+  const downloadPDF = useDownloadPDF();
+
   // Fetch items from the API
   useEffect(() => {
     const fetchItems = async () => {
       try {
         const response = await axiosPublic.get(`/${block}/records`);
         setRecords(response.data);
-
-        console.log("items:", records);
 
         // Get all available categories from the items
         const categories = [
@@ -784,87 +785,87 @@ const AdminRecords = ({ block = "head" }) => {
   };
 
   // Function to generate and download PDF
-  const handleDownloadPDF = () => {
-    const doc = new jsPDF();
-    const tableData = records.map((item, index) => [
-      startIndex + index + 1,
-      [`${item.itemName}`, `${item.model}`, `${item.origin}`],
-      item?.items_quantity?.item_store,
-      item?.items_quantity?.item_use,
-      item?.items_quantity?.item_faulty_store,
-      item?.items_quantity?.item_faulty_use,
-      item?.items_quantity?.item_transfer,
-      item.totalQuantity,
-      item.locationGood,
-      item.category,
-      item.date,
-    ]);
+  // const handleDownloadPDF = () => {
+  //   const doc = new jsPDF();
+  //   const tableData = records.map((item, index) => [
+  //     startIndex + index + 1,
+  //     [`${item.itemName}`, `${item.model}`, `${item.origin}`],
+  //     item?.items_quantity?.item_store,
+  //     item?.items_quantity?.item_use,
+  //     item?.items_quantity?.item_faulty_store,
+  //     item?.items_quantity?.item_faulty_use,
+  //     item?.items_quantity?.item_transfer,
+  //     item.totalQuantity,
+  //     item.locationGood,
+  //     item.category,
+  //     item.date,
+  //   ]);
 
-    doc.autoTable({
-      head: [
-        [
-          "#",
-          "Name,Model & Origin",
-          "Item (Store)",
-          "Item (Use)",
-          "Item (Faulty_store)",
-          "Item (Faulty_use)",
-          "Item (Transfer)",
-          "Total item",
-          "Location (Good)",
-          "Category",
-          "Date",
-        ],
-      ],
-      body: tableData,
-    });
+  //   doc.autoTable({
+  //     head: [
+  //       [
+  //         "#",
+  //         "Name,Model & Origin",
+  //         "Item (Store)",
+  //         "Item (Use)",
+  //         "Item (Faulty_store)",
+  //         "Item (Faulty_use)",
+  //         "Item (Transfer)",
+  //         "Total item",
+  //         "Location (Good)",
+  //         "Category",
+  //         "Date",
+  //       ],
+  //     ],
+  //     body: tableData,
+  //   });
 
-    doc.save("records.pdf");
-  };
+  //   doc.save("records.pdf");
+  // };
 
   // Function to generate and download PDF for filtered items
-  const handleDownloadFilteredPDF = () => {
-    const doc = new jsPDF();
+  // const handleDownloadFilteredPDF = () => {
+  //   const doc = new jsPDF();
 
-    // Define headers and data mapping based on the selected condition
-    let headers = [];
-    let tableData = [];
+  //   // Define headers and data mapping based on the selected condition
+  //   let headers = [];
+  //   let tableData = [];
 
-    headers = [
-      [
-        "#",
-        "Name,Model & Origin",
-        "Item (Store)",
-        "Item (Use)",
-        "Item (Faulty_store)",
-        "Item (Faulty_use)",
-        "Item (Transfer)",
-        "Total item",
-        "Location (Good)",
-        "Category & Date",
-      ],
-    ];
-    tableData = filteredRecords.map((item, index) => [
-      startIndex + index + 1,
-      [`${item.itemName}`, `${item.model}`, `${item.origin}`], // Multi-line text array
-      item?.items_quantity?.item_store,
-      item?.items_quantity?.item_use,
-      item?.items_quantity?.item_faulty_store,
-      item?.items_quantity?.item_faulty_use,
-      item?.items_quantity?.item_transfer,
-      item.totalQuantity,
-      item.locationGood,
-      [`${item.category}`, `${item.date}`], // Multi-line text array
-    ]);
+  //   headers = [
+  //     [
+  //       "#",
+  //       "Name,Model & Origin",
+  //       "Item (Store)",
+  //       "Item (Use)",
+  //       "Item (Faulty_store)",
+  //       "Item (Faulty_use)",
+  //       "Item (Transfer)",
+  //       "Total item",
+  //       "Location (Good)",
+  //       "Category & Date",
+  //     ],
+  //   ];
+  //   tableData = filteredRecords.map((item, index) => [
+  //     startIndex + index + 1,
+  //     [`${item.itemName}`, `${item.model}`, `${item.origin}`], // Multi-line text array
+  //     item?.items_quantity?.item_store,
+  //     item?.items_quantity?.item_use,
+  //     item?.items_quantity?.item_faulty_store,
+  //     item?.items_quantity?.item_faulty_use,
+  //     item?.items_quantity?.item_transfer,
+  //     item.totalQuantity,
+  //     item.locationGood,
+  //     [`${item.category}`, `${item.date}`], // Multi-line text array
+  //   ]);
 
-    // Generate PDF with the dynamically set headers and table data
-    doc.autoTable({
-      head: headers,
-      body: tableData,
-    });
+  //   // Generate PDF with the dynamically set headers and table data
+  //   doc.autoTable({
+  //     head: headers,
+  //     body: tableData,
+  //   });
 
-    doc.save("filtered_items.pdf");
-  };
+  //   doc.save("filtered_items.pdf");
+  // };
 
   // Update filterApplied when searchTerm or selectedCondition changes  setFilterType   setSelectedMonth setDateRange
   useEffect(() => {
@@ -1115,21 +1116,20 @@ const AdminRecords = ({ block = "head" }) => {
           {/* Download Buttons */}
           <div className="flex flex-col md:flex-row gap-2 md:gap-3 md:pl-4 md:border-l-4 border-emerald-900">
             <button
-              onClick={handleDownloadPDF}
-              className="btn btn-sm bg-teal-500 text-white hover:bg-teal-600"
+              onClick={() => downloadPDF(records, "records")}
+              className="btn bg-green-500 btn-xs md:btn-sm text-white"
             >
-              Download PDF
+              Download Records PDF
             </button>
+
             <button
-              onClick={handleDownloadFilteredPDF}
+              onClick={() => downloadPDF(filteredRecords, "records")}
               disabled={!isFiltered}
-              className={`btn btn-sm text-white ${
-                isFiltered
-                  ? "bg-green-500 hover:bg-green-600"
-                  : "bg-gray-300 cursor-not-allowed"
-              }`}
+              className={`btn ${
+                isFiltered ? "bg-green-500" : "bg-gray-300"
+              } btn-xs md:btn-sm text-white`}
             >
-              Download Filtered PDF
+              Download Filtered Records PDF
             </button>
           </div>
         </div>

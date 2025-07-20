@@ -4,11 +4,9 @@ import PropTypes from "prop-types";
 import { MdEdit, MdDelete, MdVisibility } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import jsPDF from "jspdf";
+//import jsPDF from "jspdf";
 import useDownloadPDF from "../../../../../hooks/useDownloadPDF";
 //import DownloadPDF from "../../../../../utils/DownloadPDF";
-
-
 
 const AdminManageServices = ({ block = "head" }) => {
   const [services, setServices] = useState([]);
@@ -26,9 +24,6 @@ const AdminManageServices = ({ block = "head" }) => {
   const axiosPublic = useAxiosPublic();
 
   const downloadPDF = useDownloadPDF();
-
-
-
 
   const fetchServices = useCallback(async () => {
     try {
@@ -164,107 +159,111 @@ const AdminManageServices = ({ block = "head" }) => {
     );
   };
 
- // Function to generate and download PDF
-//   const handleDownloadPDF = () => {
-//     const doc = new jsPDF();
-//     const tableData = services.map((service, index) => [
-//       startIndex + index + 1,
-//       service?.serviceName,
-//       service?.detail,
-//       service?.start_date,
-//       service?.end_date,
-//       service?.category,
-//       service?.provider,
-//     ]);
+  // Function to generate and download PDF
+  //   const handleDownloadPDF = () => {
+  //     const doc = new jsPDF();
+  //     const tableData = services.map((service, index) => [
+  //       startIndex + index + 1,
+  //       service?.serviceName,
+  //       service?.detail,
+  //       service?.start_date,
+  //       service?.end_date,
+  //       service?.category,
+  //       service?.provider,
+  //     ]);
 
-//     doc.autoTable({
-//       head: [
-//         [
-//           "#",
-//           "Service Name",
-//           "Detail",
-//           "Start Date",
-//           "End Date",
-//           "Category",
-//           "Provider",
-//         ],
-//       ],
-//       body: tableData,
-//     });
+  //     doc.autoTable({
+  //       head: [
+  //         [
+  //           "#",
+  //           "Service Name",
+  //           "Detail",
+  //           "Start Date",
+  //           "End Date",
+  //           "Category",
+  //           "Provider",
+  //         ],
+  //       ],
+  //       body: tableData,
+  //     });
 
-//     doc.save("service.pdf");
-//   };
+  //     doc.save("service.pdf");
+  //   };
 
-// const handleDownloadPDF = () => {
-//   const doc = new jsPDF();
-//   doc.setFont("NotoSansBengali"); // ✅ Use the Bangla font
-//   doc.setFontSize(12);
+  // const handleDownloadPDF = () => {
+  //   const doc = new jsPDF();
+  //   doc.setFont("NotoSansBengali"); // ✅ Use the Bangla font
+  //   doc.setFontSize(12);
 
-//   doc.text("বাংলা সার্ভিস রিপোর্ট", 14, 20); // ✅ Bangla text example
+  //   doc.text("বাংলা সার্ভিস রিপোর্ট", 14, 20); // ✅ Bangla text example
 
-//   doc.autoTable({
-//     startY: 30,
-//     head: [["#", "Service Name", "Detail", "Start", "End", "Category", "Provider"]],
-//     body: services.map((s, i) => [
-//       i + 1,
-//       s?.serviceName,
-//       s?.detail,
-//       s?.start_date,
-//       s?.end_date,
-//       s?.category,
-//       s?.provider,
-//     ]),
-//     styles: {
-//       font: "NotoSansBengali",
-//     },
-//   });
+  //   doc.autoTable({
+  //     startY: 30,
+  //     head: [["#", "Service Name", "Detail", "Start", "End", "Category", "Provider"]],
+  //     body: services.map((s, i) => [
+  //       i + 1,
+  //       s?.serviceName,
+  //       s?.detail,
+  //       s?.start_date,
+  //       s?.end_date,
+  //       s?.category,
+  //       s?.provider,
+  //     ]),
+  //     styles: {
+  //       font: "NotoSansBengali",
+  //     },
+  //   });
 
-//   doc.save("service-bangla.pdf");
-// };
+  //   doc.save("service-bangla.pdf");
+  // };
 
-// const handleDownloadPDF = () => {
-//   DownloadPDF(services, "service-report.pdf");
-// };
-
-
+  // const handleDownloadPDF = () => {
+  //   DownloadPDF(services, "service-report.pdf");
+  // };
 
   // Function to generate and download PDF for filtered items
-  const handleDownloadFilteredPDF = () => {
-    const doc = new jsPDF();
+  // const handleDownloadFilteredPDF = () => {
+  //   const doc = new jsPDF();
 
-    // Define headers and data mapping based on the selected condition
-    let headers = [];
-    let tableData = [];
+  //   // Define headers and data mapping based on the selected condition
+  //   let headers = [];
+  //   let tableData = [];
 
-    headers = [
-      [
-        "#",
-        "Service Name",
-        "Detail",
-        "Start Date",
-        "End Date",
-        "Category",
-        "Provider",
-      ],
-    ];
-    tableData = filteredServices.map((service, index) => [
-      startIndex + index + 1,
-      service?.serviceName,
-      service?.detail,
-      service?.start_date,
-      service?.end_date,
-      service?.category,
-      service?.provider,
-    ]);
+  //   headers = [
+  //     [
+  //       "#",
+  //       "Service Name",
+  //       "Detail",
+  //       "Start Date",
+  //       "End Date",
+  //       "Category",
+  //       "Provider",
+  //     ],
+  //   ];
+  //   tableData = filteredServices.map((service, index) => [
+  //     startIndex + index + 1,
+  //     service?.serviceName,
+  //     service?.detail,
+  //     service?.start_date,
+  //     service?.end_date,
+  //     service?.category,
+  //     service?.provider,
+  //   ]);
 
-    // Generate PDF with the dynamically set headers and table data
-    doc.autoTable({
-      head: headers,
-      body: tableData,
-    });
+  //   // Generate PDF with the dynamically set headers and table data
+  //   doc.autoTable({
+  //     head: headers,
+  //     body: tableData,
+  //   });
 
-    doc.save("filtered_services.pdf");
-  };
+  //   doc.save("filtered_services.pdf");
+  // };
+
+  // const handleDownloadFilteredPDF = () => {
+  //   if (isFiltered && filteredServices?.length > 0) {
+  //     downloadPDF(filteredServices);
+  //   }
+  // };
 
   useEffect(() => {
     const hasFilters =
@@ -330,7 +329,7 @@ const AdminManageServices = ({ block = "head" }) => {
         </div>
 
         {/* Search & Category Filters */}
-        <div className="flex flex-col md:flex-row gap-2">
+        <div className="flex flex-col md:flex-row gap-4">
           <div className="md:w-1/4">
             <input
               type="text"
@@ -354,14 +353,20 @@ const AdminManageServices = ({ block = "head" }) => {
               ))}
             </select>
           </div>
-          <div className="flex flex-col md:flex-row items-center  gap-2 md:gap-4 md:border-l-4 md: border-emerald-900">
-          <button onClick={() => downloadPDF(services)}>Download PDF</button>
+          <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 md:border-l-4 md:border-emerald-900">
             <button
-              onClick={handleDownloadFilteredPDF}
+              onClick={() => downloadPDF(services, "services")}
+              className="btn bg-green-500 btn-xs md:btn-sm text-white"
+            >
+              Download PDF
+            </button>
+
+            <button
+              onClick={() => downloadPDF(filteredServices, "services")}
               disabled={!isFiltered}
               className={`btn ${
                 isFiltered ? "bg-green-500" : "bg-gray-300"
-              } btn-xs md:btn-sm  text-white`}
+              } btn-xs md:btn-sm text-white`}
             >
               Download Filtered PDF
             </button>
