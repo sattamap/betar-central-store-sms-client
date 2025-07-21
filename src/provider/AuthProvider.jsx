@@ -138,7 +138,7 @@ useEffect(() => {
     if (!user) return; // Only apply for logged-in users
 
     let timer;
-    const logoutTime = 60 * 60 * 1000; // 15 minutes inactivity
+    const logoutTime = 120 * 120 * 1000; // 15 minutes inactivity
 
     const resetTimer = () => {
         clearTimeout(timer);

@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useOutletContext, useLocation } from "react-router-dom";
 import useAxiosPublic from "../../../../../hooks/useAxiosPublic";
-//import jsPDF from "jspdf";
 import useDownloadPDF from "../../../../../hooks/useDownloadPDF";
+import { FiDownload } from "react-icons/fi";
 
 const NotificationsPage = () => {
   const axiosPublic = useAxiosPublic();
@@ -17,6 +17,10 @@ const NotificationsPage = () => {
   const [endDate, setEndDate] = useState("");
   const [filteredNotifications, setFilteredNotifications] = useState([]);
   const [filterApplied, setFilterApplied] = useState(false);
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
 
   const downloadPDF = useDownloadPDF();
 
@@ -47,17 +51,16 @@ const NotificationsPage = () => {
     }
   };
 
+  // Filtering logic
   useEffect(() => {
     let filtered = [...notifications];
 
-    // Search by message
     if (searchTerm.trim()) {
       filtered = filtered.filter((n) =>
         n.message.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    // Filter by month
     if (selectedMonth !== "all") {
       filtered = filtered.filter((n) => {
         const date = new Date(n.timestamp);
@@ -65,7 +68,6 @@ const NotificationsPage = () => {
       });
     }
 
-    // Filter by date range
     if (startDate && endDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);
@@ -76,24 +78,8 @@ const NotificationsPage = () => {
     }
 
     setFilteredNotifications(filtered);
+    setCurrentPage(0); // Reset page when filters change
   }, [notifications, searchTerm, selectedMonth, startDate, endDate]);
-
-  // const handleDownloadPDF = () => {
-  //   const doc = new jsPDF();
-  //   const tableData = notifications.map((n, i) => [
-  //     i + 1,
-  //     n.message,
-  //     n.type,
-  //     new Date(n.timestamp).toLocaleString(),
-  //   ]);
-
-  //   doc.autoTable({
-  //     head: [["#", "Message", "Type", "Date"]],
-  //     body: tableData,
-  //   });
-
-  //   doc.save("all_notifications.pdf");
-  // };
 
   useEffect(() => {
     const isSearchActive = searchTerm.trim() !== "";
@@ -103,22 +89,55 @@ const NotificationsPage = () => {
     setFilterApplied(isSearchActive || isMonthActive || isDateRangeActive);
   }, [searchTerm, selectedMonth, startDate, endDate]);
 
-  // const handleDownloadFilteredPDF = () => {
-  //   const doc = new jsPDF();
-  //   const tableData = filteredNotifications.map((n, i) => [
-  //     i + 1,
-  //     n.message,
-  //     n.type,
-  //     new Date(n.timestamp).toLocaleString(),
-  //   ]);
+  // Pagination calculations
+  const totalFiltered = filteredNotifications.length;
+  const numberOfPages = Math.ceil(totalFiltered / itemsPerPage);
 
-  //   doc.autoTable({
-  //     head: [["#", "Message", "Type", "Date"]],
-  //     body: tableData,
-  //   });
+  const startIndex = currentPage * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, totalFiltered);
 
-  //   doc.save("filtered_notifications.pdf");
-  // };
+  const paginatedNotifications = filteredNotifications.slice(startIndex, endIndex);
+
+  // Render pagination buttons
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+
+    for (let i = 0; i < numberOfPages; i++) {
+      pageNumbers.push(
+        <button
+          key={i}
+          onClick={() => setCurrentPage(i)}
+          className={`btn btn-xs mx-1 ${
+            i === currentPage ? "bg-emerald-700 text-white" : "bg-gray-200"
+          }`}
+        >
+          {i + 1}
+        </button>
+      );
+    }
+
+    return (
+      <div className="mt-4 flex justify-center items-center gap-2">
+        <button
+          className="btn btn-xs"
+          onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
+          disabled={currentPage === 0}
+        >
+          Prev
+        </button>
+        {pageNumbers}
+        <button
+          className="btn btn-xs"
+          onClick={() =>
+            setCurrentPage((prev) => Math.min(numberOfPages - 1, prev + 1))
+          }
+          disabled={currentPage === numberOfPages - 1}
+        >
+          Next
+        </button>
+      </div>
+    );
+  };
 
   return (
     <div className="p-4">
@@ -161,19 +180,21 @@ const NotificationsPage = () => {
         <div className="flex flex-col sm:flex-row gap-2 mb-4">
           <button
             onClick={() => downloadPDF(notifications, "notifications")}
-            className="btn bg-green-500 btn-xs md:btn-sm text-white"
+            className="btn btn-xs sm:btn-sm bg-green-500 text-white flex items-center justify-center"
+            title="Download All PDF"
           >
-            Download Records PDF
+            PDF <FiDownload className="text-lg" />
           </button>
 
           <button
             onClick={() => downloadPDF(filteredNotifications, "notifications")}
             disabled={!filterApplied}
-            className={`btn ${
-              filterApplied ? "bg-green-500" : "bg-gray-300"
-            } btn-xs md:btn-sm text-white`}
+            className={`btn btn-xs sm:btn-sm flex items-center justify-center text-white ${
+              filterApplied ? "bg-green-500" : "bg-gray-300 cursor-not-allowed"
+            }`}
+            title="Download Filtered PDF"
           >
-            Download Filtered Records PDF
+            Filtered PDF <FiDownload className="text-lg" />
           </button>
         </div>
       </div>
@@ -182,7 +203,7 @@ const NotificationsPage = () => {
 
       {loading ? (
         <p>Loading notifications...</p>
-      ) : filteredNotifications.length === 0 ? (
+      ) : paginatedNotifications.length === 0 ? (
         <p className="text-gray-500">No notifications found.</p>
       ) : (
         <div className="overflow-x-auto">
@@ -197,12 +218,12 @@ const NotificationsPage = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredNotifications.map((n, idx) => (
+              {paginatedNotifications.map((n, idx) => (
                 <tr key={n._id} className="hover:bg-gray-50">
-                  <td className="px-4 py-2 border text-center">{idx + 1}</td>
-                  <td className="px-4 py-2 border text-blue-700">
-                    {n.message}
+                  <td className="px-4 py-2 border text-center">
+                    {startIndex + idx + 1}
                   </td>
+                  <td className="px-4 py-2 border text-blue-700">{n.message}</td>
                   <td className="px-4 py-2 border text-blue-700">{n.type}</td>
                   <td className="px-4 py-2 border text-center">
                     {new Date(n.timestamp).toLocaleString()}
@@ -219,6 +240,25 @@ const NotificationsPage = () => {
               ))}
             </tbody>
           </table>
+          {/* Pagination Controls */}
+          {numberOfPages > 1 && renderPageNumbers()}
+          {/* Items per page selector */}
+          <div className="flex flex-col lg:flex-row items-center justify-center mt-4">
+            <div className="mb-2 lg:mr-6">
+              <select
+                value={itemsPerPage}
+                onChange={(e) => {
+                  setItemsPerPage(parseInt(e.target.value));
+                  setCurrentPage(0);
+                }}
+                className="p-2 border border-teal-400 rounded-lg"
+              >
+                <option value={5}>5 per page</option>
+                <option value={10}>10 per page</option>
+                <option value={20}>20 per page</option>
+              </select>
+            </div>
+          </div>
         </div>
       )}
     </div>

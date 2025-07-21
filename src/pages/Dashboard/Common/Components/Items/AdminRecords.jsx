@@ -486,6 +486,7 @@ import useAxiosPublic from "../../../../../hooks/useAxiosPublic";
 import PropTypes from "prop-types";
 import Swal from "sweetalert2";
 import useDownloadPDF from "../../../../../hooks/useDownloadPDF";
+import { FiDownload } from "react-icons/fi";
 
 const months = [
   "All",
@@ -552,7 +553,7 @@ const AdminRecords = ({ block = "head" }) => {
 
       await axiosPublic.patch(`/${block}/records/approve/${id}`);
       setRecords((prev) =>
-        prev.map((r) => (r._id === id ? { ...r, status: "approved" } : r))
+        prev.map((r) => (r._id === id ? { ...r, status: "অনুমোদিত" } : r))
       );
 
       Swal.fire({
@@ -1117,19 +1118,21 @@ const AdminRecords = ({ block = "head" }) => {
           <div className="flex flex-col md:flex-row gap-2 md:gap-3 md:pl-4 md:border-l-4 border-emerald-900">
             <button
               onClick={() => downloadPDF(records, "records")}
-              className="btn bg-green-500 btn-xs md:btn-sm text-white"
+              className="btn btn-xs sm:btn-sm bg-green-500 text-white flex items-center justify-center"
+              title="Download All PDF"
             >
-              Download Records PDF
+             PDF <FiDownload className="text-lg" />
             </button>
 
             <button
               onClick={() => downloadPDF(filteredRecords, "records")}
               disabled={!isFiltered}
-              className={`btn ${
-                isFiltered ? "bg-green-500" : "bg-gray-300"
-              } btn-xs md:btn-sm text-white`}
+              className={`btn btn-xs sm:btn-sm flex items-center justify-center text-white ${
+                isFiltered ? "bg-green-500" : "bg-gray-300 cursor-not-allowed"
+              }`}
+              title="Download Filtered PDF"
             >
-              Download Filtered Records PDF
+             Filtered PDF <FiDownload className="text-lg"/>
             </button>
           </div>
         </div>

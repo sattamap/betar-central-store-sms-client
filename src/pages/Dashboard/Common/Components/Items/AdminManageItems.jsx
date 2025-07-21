@@ -12,6 +12,7 @@ import useAxiosPublic from "../../../../../hooks/useAxiosPublic";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import useDownloadPDF from "../../../../../hooks/useDownloadPDF";
+import { FiDownload } from "react-icons/fi";
 
 Modal.setAppElement("#root");
 const AdminManageItems = ({ block = "head" }) => {
@@ -670,22 +671,24 @@ const AdminManageItems = ({ block = "head" }) => {
               ))}
             </select>
           </div>
-          <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 md:border-l-4 md:border-emerald-900">
+          <div className="flex flex-row gap-2 border-l-4 border-emerald-900 pl-4">
             <button
               onClick={() => downloadPDF(items, "items")}
-              className="btn bg-green-500 btn-xs md:btn-sm text-white"
+              className="btn btn-xs sm:btn-sm bg-green-500 text-white flex items-center justify-center"
+              title="Download All PDF"
             >
-              Download PDF
+              PDF <FiDownload className="text-lg" />
             </button>
 
             <button
               onClick={() => downloadPDF(filteredItems, "items")}
               disabled={!isFiltered}
-              className={`btn ${
-                isFiltered ? "bg-green-500" : "bg-gray-300"
-              } btn-xs md:btn-sm text-white`}
+              className={`btn btn-xs sm:btn-sm flex items-center justify-center text-white ${
+                isFiltered ? "bg-green-500" : "bg-gray-300 cursor-not-allowed"
+              }`}
+              title="Download Filtered PDF"
             >
-              Download Filtered PDF
+              Filtered PDF <FiDownload className="text-lg" />
             </button>
           </div>
         </div>

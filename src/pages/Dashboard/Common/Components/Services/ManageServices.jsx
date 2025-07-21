@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { MdEdit, MdVisibility } from "react-icons/md";
 import { Link } from "react-router-dom";
 import useDownloadPDF from "../../../../../hooks/useDownloadPDF";
+import { FiDownload } from "react-icons/fi";
 //import jsPDF from "jspdf";
 
 const ManageServices = ({ block = "head" }) => {
@@ -267,7 +268,7 @@ const ManageServices = ({ block = "head" }) => {
         </div>
 
         {/* Search & Category Filters */}
-        <div className="flex flex-col md:flex-row gap-2">
+        <div className="flex flex-col md:flex-row gap-2 md:gap-4 items-center justify-center">
           <div className="md:w-1/4">
             <input
               type="text"
@@ -291,22 +292,23 @@ const ManageServices = ({ block = "head" }) => {
               ))}
             </select>
           </div>
-          <div className="flex flex-col md:flex-row items-center  gap-2 md:gap-4 md:border-l-4 md: border-emerald-900">
+           <div className="flex flex-row gap-2 border-l-4 border-emerald-900 pl-4">
             <button
               onClick={() => downloadPDF(services, "services")}
-              className="btn bg-green-500 btn-xs md:btn-sm text-white"
+              className="btn btn-xs sm:btn-sm bg-green-500 text-white flex items-center justify-center"
+              title="Download All PDF"
             >
-              Download PDF
+              PDF <FiDownload className="text-lg" />
             </button>
-
             <button
               onClick={() => downloadPDF(filteredServices, "services")}
               disabled={!isFiltered}
-              className={`btn ${
-                isFiltered ? "bg-green-500" : "bg-gray-300"
-              } btn-xs md:btn-sm text-white`}
+              className={`btn btn-xs sm:btn-sm flex items-center justify-center text-white ${
+                isFiltered ? "bg-green-500" : "bg-gray-300 cursor-not-allowed"
+              }`}
+              title="Download Filtered PDF"
             >
-              Download Filtered PDF
+              Filtered PDF <FiDownload className="text-lg" />
             </button>
           </div>
         </div>

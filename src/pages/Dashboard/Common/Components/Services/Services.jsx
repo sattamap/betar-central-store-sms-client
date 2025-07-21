@@ -3,7 +3,9 @@ import useAxiosPublic from "../../../../../hooks/useAxiosPublic";
 import PropTypes from "prop-types";
 import { MdVisibility } from "react-icons/md";
 import { Link } from "react-router-dom";
-import jsPDF from "jspdf";
+//import jsPDF from "jspdf";
+import useDownloadPDF from "../../../../../hooks/useDownloadPDF";
+import { FiDownload } from "react-icons/fi";
 
 const Services = ({ block = "head" }) => {
   const [services, setServices] = useState([]);
@@ -17,6 +19,8 @@ const Services = ({ block = "head" }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [filterApplied, setFilterApplied] = useState(false);
+
+  const downloadPDF = useDownloadPDF();
 
   const axiosPublic = useAxiosPublic();
 
@@ -80,7 +84,6 @@ const Services = ({ block = "head" }) => {
     setFilteredServices(filtered);
   }, [categoryFilter, searchTerm, selectedMonth, startDate, endDate, services]);
 
-
   const totalFiltered = filteredServices.length;
   const numberOfPages = Math.ceil(totalFiltered / itemsPerPage);
 
@@ -133,73 +136,73 @@ const Services = ({ block = "head" }) => {
   };
 
   // Function to generate and download PDF
-  const handleDownloadPDF = () => {
-    const doc = new jsPDF();
-    const tableData = services.map((service, index) => [
-      startIndex + index + 1,
-      service?.serviceName,
-      service?.detail,
-      service?.start_date,
-      service?.end_date,
-      service?.category,
-      service?.provider,
-    ]);
+  // const handleDownloadPDF = () => {
+  //   const doc = new jsPDF();
+  //   const tableData = services.map((service, index) => [
+  //     startIndex + index + 1,
+  //     service?.serviceName,
+  //     service?.detail,
+  //     service?.start_date,
+  //     service?.end_date,
+  //     service?.category,
+  //     service?.provider,
+  //   ]);
 
-    doc.autoTable({
-      head: [
-        [
-          "#",
-          "Service Name",
-          "Detail",
-          "Start Date",
-          "End Date",
-          "Category",
-          "Provider",
-        ],
-      ],
-      body: tableData,
-    });
+  //   doc.autoTable({
+  //     head: [
+  //       [
+  //         "#",
+  //         "Service Name",
+  //         "Detail",
+  //         "Start Date",
+  //         "End Date",
+  //         "Category",
+  //         "Provider",
+  //       ],
+  //     ],
+  //     body: tableData,
+  //   });
 
-    doc.save("service.pdf");
-  };
+  //   doc.save("service.pdf");
+  // };
 
   // Function to generate and download PDF for filtered items
-  const handleDownloadFilteredPDF = () => {
-    const doc = new jsPDF();
+  // const handleDownloadFilteredPDF = () => {
+  //   const doc = new jsPDF();
 
-    // Define headers and data mapping based on the selected condition
-    let headers = [];
-    let tableData = [];
+  //   // Define headers and data mapping based on the selected condition
+  //   let headers = [];
+  //   let tableData = [];
 
-    headers = [
-      [
-        "#",
-        "Service Name",
-        "Detail",
-        "Start Date",
-        "End Date",
-        "Category",
-        "Provider",
-      ],
-    ];
-    tableData = filteredServices.map((service, index) => [
-      startIndex + index + 1,
-      service?.serviceName,
-      service?.detail,
-      service?.start_date,
-      service?.end_date,
-      service?.category,
-      service?.provider,
-    ]);
+  //   headers = [
+  //     [
+  //       "#",
+  //       "Service Name",
+  //       "Detail",
+  //       "Start Date",
+  //       "End Date",
+  //       "Category",
+  //       "Provider",
+  //     ],
+  //   ];
+  //   tableData = filteredServices.map((service, index) => [
+  //     startIndex + index + 1,
+  //     service?.serviceName,
+  //     service?.detail,
+  //     service?.start_date,
+  //     service?.end_date,
+  //     service?.category,
+  //     service?.provider,
+  //   ]);
 
-    // Generate PDF with the dynamically set headers and table data
-    doc.autoTable({
-      head: headers,
-      body: tableData,
-    });
+  //   // Generate PDF with the dynamically set headers and table data
+  //   doc.autoTable({
+  //     head: headers,
+  //     body: tableData,
+  //   });
 
-    doc.save("filtered_services.pdf");
-  };
+  //   doc.save("filtered_services.pdf");
+  // };
 
   useEffect(() => {
     const hasFilters =
@@ -265,7 +268,7 @@ const Services = ({ block = "head" }) => {
         </div>
 
         {/* Search & Category Filters */}
-        <div className="flex flex-col md:flex-row gap-2">
+        <div className="flex flex-col md:flex-row gap-2 md:gap-4 items-center justify-center">
           <div className="md:w-1/4">
             <input
               type="text"
@@ -289,21 +292,23 @@ const Services = ({ block = "head" }) => {
               ))}
             </select>
           </div>
-          <div className="flex flex-col md:flex-row items-center  gap-2 md:gap-4 md:border-l-4 md: border-emerald-900">
+           <div className="flex flex-row gap-2 border-l-4 border-emerald-900 pl-4">
             <button
-              onClick={handleDownloadPDF}
-              className="btn btn-xs bg-teal-300 md:btn-sm md:ml-3"
+              onClick={() => downloadPDF(services, "services")}
+              className="btn btn-xs sm:btn-sm bg-green-500 text-white flex items-center justify-center"
+              title="Download All PDF"
             >
-              Download PDF
+              PDF <FiDownload className="text-lg" />
             </button>
             <button
-              onClick={handleDownloadFilteredPDF}
+              onClick={() => downloadPDF(filteredServices, "services")}
               disabled={!isFiltered}
-              className={`btn ${
-                isFiltered ? "bg-green-500" : "bg-gray-300"
-              } btn-xs md:btn-sm  text-white`}
+              className={`btn btn-xs sm:btn-sm flex items-center justify-center text-white ${
+                isFiltered ? "bg-green-500" : "bg-gray-300 cursor-not-allowed"
+              }`}
+              title="Download Filtered PDF"
             >
-              Download Filtered PDF
+              Filtered PDF <FiDownload className="text-lg" />
             </button>
           </div>
         </div>

@@ -12,7 +12,11 @@ const AllUsers = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { data: users = [], isLoading, refetch } = useQuery({
+  const {
+    data: users = [],
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
       const res = await axiosPublic.get("/users");
@@ -30,8 +34,8 @@ const AllUsers = () => {
       input: "select",
       inputOptions: {
         admin: "Admin",
-        monitor: "Monitor",
         coordinator: "Coordinator",
+        monitor: "Monitor",
         none: "No Role",
       },
       inputPlaceholder: "Select a role",
@@ -75,7 +79,9 @@ const AllUsers = () => {
       if (result.isConfirmed) {
         const newAccessBlock = result.value;
         axiosPublic
-          .patch(`/users/accessBlock/${user._id}`, { accessBlock: newAccessBlock })
+          .patch(`/users/accessBlock/${user._id}`, {
+            accessBlock: newAccessBlock,
+          })
           .then((res) => {
             if (res.data.modifiedCount > 0) {
               refetch();
@@ -170,19 +176,19 @@ const AllUsers = () => {
                     className={`btn btn-ghost btn-xs ${
                       user.status === "admin"
                         ? "text-blue-500"
-                        : user.status === "monitor"
-                        ? "text-yellow-500"
                         : user.status === "coordinator"
                         ? "text-red-500"
+                        : user.status === "monitor"
+                        ? "text-yellow-500"
                         : "text-gray-500"
                     }`}
                   >
                     {user.status === "admin"
                       ? "Admin"
-                      : user.status === "monitor"
-                      ? "Monitor"
                       : user.status === "coordinator"
                       ? "Coordinator"
+                      : user.status === "monitor"
+                      ? "Monitor"
                       : "No Role"}
                   </button>
                 </td>
@@ -261,10 +267,18 @@ const AllUsers = () => {
         {selectedUser && (
           <div className="flex flex-col md:flex-row items-center justify-center gap-4">
             <div>
-              <p><strong>Name:</strong> {selectedUser.name}</p>
-              <p><strong>Email:</strong> {selectedUser.email}</p>
-              <p><strong>Section:</strong> {selectedUser.section}</p>
-              <p><strong>Designation:</strong> {selectedUser.designation}</p>
+              <p>
+                <strong>Name:</strong> {selectedUser.name}
+              </p>
+              <p>
+                <strong>Email:</strong> {selectedUser.email}
+              </p>
+              <p>
+                <strong>Section:</strong> {selectedUser.section}
+              </p>
+              <p>
+                <strong>Designation:</strong> {selectedUser.designation}
+              </p>
             </div>
             <div className="w-2/5 md:w-32 h-auto">
               <img

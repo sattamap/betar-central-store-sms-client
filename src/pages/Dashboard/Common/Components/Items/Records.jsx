@@ -388,10 +388,12 @@ import { useEffect, useState } from "react";
 
 // import { Link, useOutletContext } from "react-router-dom";
 
-import jsPDF from "jspdf";
-import "jspdf-autotable";
+// import jsPDF from "jspdf";
+//import "jspdf-autotable";
 import PropTypes from "prop-types";
 import useAxiosPublic from "../../../../../hooks/useAxiosPublic";
+import useDownloadPDF from "../../../../../hooks/useDownloadPDF";
+import { FiDownload } from "react-icons/fi";
 
 const months = [
   "All",
@@ -421,6 +423,8 @@ const Records = ({ block = "head" }) => {
   const [filterType, setFilterType] = useState("all");
   const [selectedMonth, setSelectedMonth] = useState("All");
   const [dateRange, setDateRange] = useState({ start: "", end: "" });
+
+  const downloadPDF = useDownloadPDF();
 
   // Fetch items from the API
   useEffect(() => {
@@ -623,87 +627,87 @@ const Records = ({ block = "head" }) => {
   };
 
   // Function to generate and download PDF
-  const handleDownloadPDF = () => {
-    const doc = new jsPDF();
-    const tableData = records.map((item, index) => [
-      startIndex + index + 1,
-      [`${item.itemName}`, `${item.model}`, `${item.origin}`],
-      item?.items_quantity?.item_store,
-      item?.items_quantity?.item_use,
-      item?.items_quantity?.item_faulty_store,
-      item?.items_quantity?.item_faulty_use,
-      item?.items_quantity?.item_transfer,
-      item.totalQuantity,
-      item.locationGood,
-      item.category,
-      item.date,
-    ]);
+  // const handleDownloadPDF = () => {
+  //   const doc = new jsPDF();
+  //   const tableData = records.map((item, index) => [
+  //     startIndex + index + 1,
+  //     [`${item.itemName}`, `${item.model}`, `${item.origin}`],
+  //     item?.items_quantity?.item_store,
+  //     item?.items_quantity?.item_use,
+  //     item?.items_quantity?.item_faulty_store,
+  //     item?.items_quantity?.item_faulty_use,
+  //     item?.items_quantity?.item_transfer,
+  //     item.totalQuantity,
+  //     item.locationGood,
+  //     item.category,
+  //     item.date,
+  //   ]);
 
-    doc.autoTable({
-      head: [
-        [
-          "#",
-          "Name,Model & Origin",
-          "Item (Store)",
-          "Item (Use)",
-          "Item (Faulty_store)",
-          "Item (Faulty_use)",
-          "Item (Transfer)",
-          "Total item",
-          "Location (Good)",
-          "Category",
-          "Date",
-        ],
-      ],
-      body: tableData,
-    });
+  //   doc.autoTable({
+  //     head: [
+  //       [
+  //         "#",
+  //         "Name,Model & Origin",
+  //         "Item (Store)",
+  //         "Item (Use)",
+  //         "Item (Faulty_store)",
+  //         "Item (Faulty_use)",
+  //         "Item (Transfer)",
+  //         "Total item",
+  //         "Location (Good)",
+  //         "Category",
+  //         "Date",
+  //       ],
+  //     ],
+  //     body: tableData,
+  //   });
 
-    doc.save("records.pdf");
-  };
+  //   doc.save("records.pdf");
+  // };
 
   // Function to generate and download PDF for filtered items
-  const handleDownloadFilteredPDF = () => {
-    const doc = new jsPDF();
+  // const handleDownloadFilteredPDF = () => {
+  //   const doc = new jsPDF();
 
-    // Define headers and data mapping based on the selected condition
-    let headers = [];
-    let tableData = [];
+  //   // Define headers and data mapping based on the selected condition
+  //   let headers = [];
+  //   let tableData = [];
 
-    headers = [
-      [
-        "#",
-        "Name,Model & Origin",
-        "Item (Store)",
-        "Item (Use)",
-        "Item (Faulty_store)",
-        "Item (Faulty_use)",
-        "Item (Transfer)",
-        "Total item",
-        "Location (Good)",
-        "Category & Date",
-      ],
-    ];
-    tableData = filteredRecords.map((item, index) => [
-      startIndex + index + 1,
-      [`${item.itemName}`, `${item.model}`, `${item.origin}`], // Multi-line text array
-      item?.items_quantity?.item_store,
-      item?.items_quantity?.item_use,
-      item?.items_quantity?.item_faulty_store,
-      item?.items_quantity?.item_faulty_use,
-      item?.items_quantity?.item_transfer,
-      item.totalQuantity,
-      item.locationGood,
-      [`${item.category}`, `${item.date}`], // Multi-line text array
-    ]);
+  //   headers = [
+  //     [
+  //       "#",
+  //       "Name,Model & Origin",
+  //       "Item (Store)",
+  //       "Item (Use)",
+  //       "Item (Faulty_store)",
+  //       "Item (Faulty_use)",
+  //       "Item (Transfer)",
+  //       "Total item",
+  //       "Location (Good)",
+  //       "Category & Date",
+  //     ],
+  //   ];
+  //   tableData = filteredRecords.map((item, index) => [
+  //     startIndex + index + 1,
+  //     [`${item.itemName}`, `${item.model}`, `${item.origin}`], // Multi-line text array
+  //     item?.items_quantity?.item_store,
+  //     item?.items_quantity?.item_use,
+  //     item?.items_quantity?.item_faulty_store,
+  //     item?.items_quantity?.item_faulty_use,
+  //     item?.items_quantity?.item_transfer,
+  //     item.totalQuantity,
+  //     item.locationGood,
+  //     [`${item.category}`, `${item.date}`], // Multi-line text array
+  //   ]);
 
-    // Generate PDF with the dynamically set headers and table data
-    doc.autoTable({
-      head: headers,
-      body: tableData,
-    });
+  //   // Generate PDF with the dynamically set headers and table data
+  //   doc.autoTable({
+  //     head: headers,
+  //     body: tableData,
+  //   });
 
-    doc.save("filtered_items.pdf");
-  };
+  //   doc.save("filtered_items.pdf");
+  // };
 
   // Update filterApplied when searchTerm or selectedCondition changes  setFilterType   setSelectedMonth setDateRange
   useEffect(() => {
@@ -921,21 +925,24 @@ const Records = ({ block = "head" }) => {
               ))}
             </select>
           </div>
-          <div className="flex flex-col md:flex-row gap-2 md:gap-4 md:border-l-4 md: border-emerald-900">
+          <div className="flex flex-col md:flex-row gap-2 md:gap-3 md:pl-4 md:border-l-4 border-emerald-900">
             <button
-              onClick={handleDownloadPDF}
-              className="btn btn-xs bg-teal-300 md:btn-sm md:ml-3"
+              onClick={() => downloadPDF(records, "records")}
+              className="btn btn-xs sm:btn-sm bg-green-500 text-white flex items-center justify-center"
+              title="Download All PDF"
             >
-              Download PDF
+              PDF <FiDownload className="text-lg" />
             </button>
+
             <button
-              onClick={handleDownloadFilteredPDF}
+              onClick={() => downloadPDF(filteredRecords, "records")}
               disabled={!isFiltered}
-              className={`btn ${
-                isFiltered ? "bg-green-500" : "bg-gray-300"
-              } btn-xs md:btn-sm  text-white`}
+              className={`btn btn-xs sm:btn-sm flex items-center justify-center text-white ${
+                isFiltered ? "bg-green-500" : "bg-gray-300 cursor-not-allowed"
+              }`}
+              title="Download Filtered PDF"
             >
-              Download Filtered PDF
+              Filtered PDF <FiDownload className="text-lg" />
             </button>
           </div>
         </div>
