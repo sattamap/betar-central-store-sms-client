@@ -1,11 +1,14 @@
 import axios from "axios";
 
 const axiosPublic = axios.create({
-  baseURL: 'http://localhost:5000',
+  baseURL: 'https://bbanims-server.onrender.com',
   withCredentials: true,
 });
 
-// ✅ Global Response Interceptor for Token Expiry
+//https://bbanims-server.onrender.com
+
+
+// ✅ Global Response Interceptor for Token Expiry https://bbanims-server.onrender.com/
 axiosPublic.interceptors.response.use(
   res => res,
   err => {

@@ -671,10 +671,10 @@ const AdminManageItems = ({ block = "head" }) => {
               ))}
             </select>
           </div>
-          <div className="flex flex-row gap-2 border-l-4 border-emerald-900 pl-4">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 md:border-l-4 md:border-emerald-900">
             <button
               onClick={() => downloadPDF(items, "items")}
-              className="btn btn-xs sm:btn-sm bg-green-500 text-white flex items-center justify-center"
+              className="btn btn-xs sm:btn-sm bg-green-500 text-white md:ml-4"
               title="Download All PDF"
             >
               PDF <FiDownload className="text-lg" />

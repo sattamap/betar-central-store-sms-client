@@ -11,7 +11,7 @@ const useDownloadPDF = () => {
 
     try {
       const response = await axiosPublic.post(
-        "/generate-pdf",
+        "/api/generate-pdf",
         { data, type, filename },
         { responseType: "blob" }
       );

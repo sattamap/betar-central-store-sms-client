@@ -18,6 +18,8 @@ const auth = getAuth(app);
 
 const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
+    const [jwtReady, setJwtReady] = useState(false);
+
     const [user, setUser] = useState(null);
       const axiosPublic = useAxiosPublic();
 
@@ -103,34 +105,45 @@ const AuthProvider = ({ children }) => {
     };
 
     // Handle authentication state changes
-    useEffect(() => {
-        const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
-            console.log("User in auth state:", currentUser);
-            setUser(currentUser);
-            console.log('State captured',currentUser?.email)
-            if(currentUser?.email){
-                const user = {email : currentUser.email};
-                axiosPublic.post('/jwt',user,{withCredentials:true})
-                .then(res =>{
-                    console.log('login token', res.data)
-                    setLoading(false);
-                })
-                .catch(err => console.error('JWT Error:', err));
-            }
-          else {
-            // 🔐 User logged out -> call backend to clear cookie
-            axiosPublic.post('/logout', {}, { withCredentials: true })
-                .then(res =>{ 
-                    console.log('JWT cookie cleared',res.data)
-                    setLoading(false);
-                })
-                .catch(err => console.error('Logout error:', err));
-        }
-            setLoading(false);
-        });
+useEffect(() => {
+  const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
+    setUser(currentUser);
 
-        return () => unSubscribe();
-    }, [axiosPublic, user]);
+    if (currentUser?.email) {
+      const user = { email: currentUser.email };
+
+      axiosPublic
+        .post("/jwt", user, { withCredentials: true })
+        .then((res) => {
+          console.log("JWT response:", res.data);
+          setJwtReady(true); // Only on success
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error("JWT error:", err.response?.status, err.message);
+          setJwtReady(false); // Keep false on failure
+          setLoading(false);
+        });
+    } else {
+      axiosPublic
+        .post("/logout", {}, { withCredentials: true })
+        .then((res) => {
+          console.log("Logged out:", res.data);
+          setJwtReady(false);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error("Logout error:", err);
+          setJwtReady(false);
+          setLoading(false);
+        });
+    }
+  });
+
+  return () => unSubscribe();
+}, [axiosPublic]);
+
+
 
 
     // Inactivity auto-logout
@@ -174,6 +187,7 @@ useEffect(() => {
         updateUserProfile,
         sendPassResetEmail,
         logOut,
+        jwtReady,
     };
 
     return (
