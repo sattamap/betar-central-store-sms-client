@@ -5,7 +5,7 @@ const AboutSMS = () => {
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <div className="max-w-3xl mx-auto p-8 bg-white shadow-md rounded-md text-justify">
                 <Link to="/" className="block text-blue-500 hover:underline mb-4">&larr; Back to Login Page</Link>
-                <h2 className="text-2xl font-semibold mb-4">About Store Management System (IMS)</h2>
+                <h2 className="text-2xl font-semibold mb-4">About Store Management System (SMS)</h2>
                 <p className="mb-4">
                 The Store Management System (SMS) is a web application designed for managing items in the Bangladesh Betar. Developed by Sattam, this system helps categorize items stored in the office-store and manages items stored in different office locations, providing an efficient way to organize and monitor inventory.
                 </p>

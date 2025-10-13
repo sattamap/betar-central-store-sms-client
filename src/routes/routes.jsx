@@ -1,5 +1,3 @@
-//
-
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Main from "../layout/Main";
 import Dashboard from "../layout/Dashboard";
@@ -107,7 +105,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "updateItem/:id",
-            element: <HeadUpdateItems />,
+            element: <HeadUpdateItems block="head"/>,
             loader: ({ params }) =>
               fetch(`http://localhost:5000/head/items/${params.id}`, {
                 credentials: "include",
@@ -145,7 +143,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "updateService/:id",
-            element: <UpdateServices />,
+            element: <UpdateServices block="head"/>,
             loader: ({ params }) =>
               fetch(`http://localhost:5000/head/services/${params.id}`, {
                 credentials: "include",
@@ -180,7 +178,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "updateItem/:id",
-            element: <LocalUpdateItems />,
+            element: <LocalUpdateItems block="local"/>,
             loader: ({ params }) =>
               fetch(`http://localhost:5000/local/items/${params.id}`, {
                 credentials: "include",
@@ -217,7 +215,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "updateService/:id",
-            element: <UpdateServices />,
+            element: <UpdateServices block="local"/>,
             loader: ({ params }) =>
               fetch(`http://localhost:5000/local/services/${params.id}`, {
                 credentials: "include",

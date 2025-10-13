@@ -8,6 +8,30 @@ import useAxiosPublic from "../../../../../hooks/useAxiosPublic";
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
+// ✅ Category lists for different blocks
+const category_local = [
+  "পরিষ্কার পরিচ্ছন্নতা সামগ্রী",
+  "বইপত্র ও সাময়িকী",
+  "প্রকাশনা",
+  "নিরাপত্তা সামগ্রী",
+  "কম্পিউটার সামগ্রী",
+  "মুদ্রণ ও বাঁধাই",
+  "অন্যান্য মনিহারি",
+  "অনুষ্ঠান/ উৎসবাদি",
+  "বাগান পরিচর্যা",
+  "বৈদ্যুতিক সরঞ্জামাদি",
+  "আসবাবপত্র",
+];
+
+const category_head = [
+  "বেতার সরঞ্জামাদি",
+  "বৈদ্যুতিক সরঞ্জামাদি",
+  "কম্পিউটার ও আনুষঙ্গিক",
+  "অফিস সরঞ্জামাদি",
+  "কাঁচামাল ও খুচরা যন্ত্রাংশ",
+  "প্রকৌশল ও অন্যান্য সরঞ্জামাদি",
+];
+
 const UpdateItems = ({ block = "head" }) => {
   const {
     itemName,
@@ -22,26 +46,43 @@ const UpdateItems = ({ block = "head" }) => {
   } = useLoaderData();
 
   const axiosPublic = useAxiosPublic();
-  const {
-    register,
-    handleSubmit,
-    watch,
-  } = useForm();
+  const { register, handleSubmit } = useForm();
 
-  const [userSelectedCategory, setUserSelectedCategory] = useState(
-    category === "Equipment" || category === "SpareParts" ? category : "Others"
-  );
-  const [specificCategory, setSpecificCategory] = useState(category);
-  const selectedCategory = watch("category");
+  const [specificCategory, setSpecificCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [currentImageUrl, setCurrentImageUrl] = useState(image);
 
-  useEffect(() => {
-    setUserSelectedCategory(selectedCategory);
-  }, [selectedCategory]);
+  // ✅ Dynamic category options based on block
+  const categoryOptions = block === "local" ? category_local : category_head;
 
+  // ✅ Initialize category selection properly
+  useEffect(() => {
+    if (category) {
+      const categoryInList = categoryOptions.includes(category);
+      if (categoryInList) {
+        setSelectedCategory(category);
+        setSpecificCategory("");
+      } else {
+        setSelectedCategory("Others");
+        setSpecificCategory(category);
+      }
+    }
+  }, [category, categoryOptions, block]);
+
+  // ✅ Handle category change
+  const handleCategoryChange = (e) => {
+    const value = e.target.value;
+    setSelectedCategory(value);
+    if (value !== "Others") {
+      setSpecificCategory("");
+    }
+  };
+
+  // ✅ Form submit handler
   const onSubmit = async (data) => {
     let imageUrl = currentImageUrl;
 
+    // Upload new image if provided
     if (data.image && data.image[0]) {
       const formData = new FormData();
       formData.append("image", data.image[0]);
@@ -50,12 +91,9 @@ const UpdateItems = ({ block = "head" }) => {
         const res = await axiosPublic.post(image_hosting_api, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
-
         if (res.data.success) {
           imageUrl = res.data.data.display_url;
           setCurrentImageUrl(imageUrl);
-        } else {
-          console.error("Image upload failed:", res.data);
         }
       } catch (error) {
         console.error("Error uploading image:", error);
@@ -64,7 +102,8 @@ const UpdateItems = ({ block = "head" }) => {
 
     const item = {
       itemName: data.itemName,
-      category: data.category === "Others" ? specificCategory : data.category,
+      category:
+        selectedCategory === "Others" ? specificCategory : selectedCategory,
       model: data.model,
       origin: data.origin,
       locationGood: data.locationGood,
@@ -94,9 +133,14 @@ const UpdateItems = ({ block = "head" }) => {
 
   return (
     <div className="w-full mx-auto bg-white p-4 my-10 rounded-md shadow-xl md:w-4/5 lg:w-full xl:w-full">
+      <h2 className="text-2xl font-bold mb-6 w-1/3 mx-auto text-emerald-900 bg-emerald-100 border border-emerald-300 rounded-xl px-6 py-3 text-center shadow-md">
+        Update the Item
+      </h2>
+
       <form onSubmit={handleSubmit(onSubmit)}>
+        {/* Item Name */}
         <div className="flex flex-col lg:flex-row gap-6 mb-6">
-          <div className="form-control w-full ">
+          <div className="form-control w-full">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Name of the Item
             </label>
@@ -109,30 +153,27 @@ const UpdateItems = ({ block = "head" }) => {
             />
           </div>
 
-          <div className="form-control w-full ">
+          {/* ✅ Dynamic Category */}
+          <div className="form-control w-full">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Category
             </label>
             <select
               {...register("category")}
-              defaultValue={category}
-              value={userSelectedCategory}
-              onChange={(e) => {
-                const selectedValue = e.target.value;
-                setUserSelectedCategory(selectedValue);
-                if (selectedValue !== "Others") {
-                  setSpecificCategory("");
-                }
-              }}
+              value={selectedCategory}
+              onChange={handleCategoryChange}
               className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
             >
-              <option value="SpareParts">Spare Parts</option>
-              <option value="Equipment">Equipment</option>
-              <option value="Furniture">Furniture</option>
+              <option value="">Select Category</option>
+              {categoryOptions.map((cat, i) => (
+                <option key={i} value={cat}>
+                  {cat}
+                </option>
+              ))}
               <option value="Others">Others</option>
             </select>
 
-            {userSelectedCategory === "Others" && (
+            {selectedCategory === "Others" && (
               <div className="mt-2">
                 <input
                   type="text"
@@ -147,8 +188,9 @@ const UpdateItems = ({ block = "head" }) => {
           </div>
         </div>
 
+        {/* Model & Origin */}
         <div className="flex flex-col lg:flex-row gap-6 mb-6">
-          <div className="form-control w-full ">
+          <div className="form-control w-full">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Model Name
             </label>
@@ -160,7 +202,8 @@ const UpdateItems = ({ block = "head" }) => {
               className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
             />
           </div>
-          <div className="form-control w-full ">
+
+          <div className="form-control w-full">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Country Origin
             </label>
@@ -174,8 +217,9 @@ const UpdateItems = ({ block = "head" }) => {
           </div>
         </div>
 
+        {/* Location & Date */}
         <div className="flex flex-col lg:flex-row gap-6 mb-6">
-          <div className="form-control w-full ">
+          <div className="form-control w-full">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Location (Good)
             </label>
@@ -187,7 +231,8 @@ const UpdateItems = ({ block = "head" }) => {
               className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
             />
           </div>
-          <div className="form-control w-full ">
+
+          <div className="form-control w-full">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Date
             </label>
@@ -200,6 +245,7 @@ const UpdateItems = ({ block = "head" }) => {
           </div>
         </div>
 
+        {/* Detail */}
         <div className="form-control w-full mb-6">
           <label className="block text-gray-700 text-sm font-bold mb-2">
             Detail
@@ -212,6 +258,7 @@ const UpdateItems = ({ block = "head" }) => {
           ></textarea>
         </div>
 
+        {/* Image Upload */}
         <div className="form-control w-full mb-6">
           <label className="block text-gray-700 text-sm font-bold mb-2">
             Upload Image
@@ -228,13 +275,14 @@ const UpdateItems = ({ block = "head" }) => {
             <img src={currentImageUrl} alt="Current" className="w-32 h-32" />
           </div>
         )}
-
-        <button
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Update Item
-        </button>
+        <div className="flex justify-center">
+          <button
+            type="submit"
+            className="bg-emerald-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:bg-emerald-800 hover:shadow-lg transition-all duration-300"
+          >
+            Update Item
+          </button>
+        </div>
       </form>
     </div>
   );

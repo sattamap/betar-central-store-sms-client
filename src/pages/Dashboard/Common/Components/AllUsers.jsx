@@ -139,14 +139,31 @@ const AllUsers = () => {
 
   return (
     <div>
-      <div className="flex flex-col lg:flex-row justify-evenly text-center bg-emerald-800 p-10 rounded-xl">
-        <h2 className="text-2xl text-slate-100 font-extrabold">All Users</h2>
-        <h2 className="text-2xl text-slate-100 font-extrabold">
-          Total users:{" "}
-          <span className="bg-lime-300 px-2 rounded-sm text-rose-950">
+      <div className="flex flex-col lg:flex-row items-center justify-between text-center bg-gradient-to-r from-emerald-700 via-emerald-800 to-emerald-900 p-8 md:p-10 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-[1.02]">
+        <h2 className="text-3xl md:text-4xl font-extrabold text-white tracking-wide drop-shadow-md">
+          👥 All Users
+        </h2>
+
+        <h2 className="text-2xl md:text-3xl font-bold text-emerald-50 mt-4 lg:mt-0">
+          Total Users:&nbsp;
+          <span className="bg-lime-300 text-rose-950 font-extrabold px-3 py-1 rounded-lg shadow-sm border border-lime-400">
             {users.length}
           </span>
         </h2>
+      </div>
+
+      <div className="mt-6 mb-4 mx-4 lg:mx-20 p-4 bg-emerald-50 border-l-4 border-emerald-500 rounded-md shadow-sm">
+        <p className="text-emerald-800 text-sm md:text-base leading-relaxed">
+          💡 <strong>Info:</strong> The{" "}
+          <span className="font-semibold">Status</span> and
+          <span className="font-semibold"> Access Block</span> buttons are{" "}
+          <span className="text-emerald-700 font-semibold">changeable</span>,
+          and only <span className="text-blue-700 font-semibold">Admin</span>{" "}
+          users can modify them. Admins can also view detailed user information
+          or
+          <span className="text-rose-600 font-semibold"> delete users</span> if
+          needed. Please click the respective button to perform these actions.
+        </p>
       </div>
 
       <div className="overflow-x-auto px-4 lg:px-20">
@@ -168,20 +185,20 @@ const AllUsers = () => {
                 <th>{index + 1}</th>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
-
                 {/* Role Status */}
                 <td>
                   <button
                     onClick={() => handleToggleRole(user)}
-                    className={`btn btn-ghost btn-xs ${
-                      user.status === "admin"
-                        ? "text-blue-500"
-                        : user.status === "coordinator"
-                        ? "text-red-500"
-                        : user.status === "monitor"
-                        ? "text-yellow-500"
-                        : "text-gray-500"
-                    }`}
+                    className={`px-3 py-1 rounded-lg font-semibold border transition-all duration-200
+      ${
+        user.status === "admin"
+          ? "bg-blue-100 text-blue-700 border-blue-400 hover:bg-blue-200"
+          : user.status === "coordinator"
+          ? "bg-rose-100 text-rose-700 border-rose-400 hover:bg-rose-200"
+          : user.status === "monitor"
+          ? "bg-yellow-100 text-yellow-700 border-yellow-400 hover:bg-yellow-200"
+          : "bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-200"
+      }`}
                   >
                     {user.status === "admin"
                       ? "Admin"
@@ -197,15 +214,16 @@ const AllUsers = () => {
                 <td>
                   <button
                     onClick={() => handleToggleAccessBlock(user)}
-                    className={`btn btn-ghost btn-xs ${
-                      user.accessBlock === "head"
-                        ? "text-blue-600"
-                        : user.accessBlock === "local"
-                        ? "text-green-600"
-                        : user.accessBlock === "all"
-                        ? "text-purple-600"
-                        : "text-gray-400"
-                    }`}
+                    className={`px-3 py-1 rounded-lg font-semibold border transition-all duration-200
+      ${
+        user.accessBlock === "head"
+          ? "bg-blue-100 text-blue-700 border-blue-400 hover:bg-blue-200"
+          : user.accessBlock === "local"
+          ? "bg-green-100 text-green-700 border-green-400 hover:bg-green-200"
+          : user.accessBlock === "all"
+          ? "bg-purple-100 text-purple-700 border-purple-400 hover:bg-purple-200"
+          : "bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-200"
+      }`}
                   >
                     {user.accessBlock === "head"
                       ? "Head"
@@ -221,7 +239,7 @@ const AllUsers = () => {
                 <td>
                   <button
                     onClick={() => handleSeeInfo(user)}
-                    className="btn btn-ghost btn-xs"
+                    className="px-3 py-1 bg-emerald-100 border border-emerald-400 text-emerald-700 rounded-lg font-semibold hover:bg-emerald-200 transition-all duration-200"
                   >
                     See Info
                   </button>
@@ -229,7 +247,7 @@ const AllUsers = () => {
                 <td>
                   <button
                     onClick={() => handleDelete(user)}
-                    className="btn btn-ghost btn-xs"
+                    className="px-3 py-1 bg-rose-100 border border-rose-400 text-rose-700 rounded-lg font-semibold hover:bg-rose-200 transition-all duration-200"
                   >
                     <FaTrash />
                   </button>

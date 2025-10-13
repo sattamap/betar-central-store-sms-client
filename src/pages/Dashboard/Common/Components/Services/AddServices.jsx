@@ -27,7 +27,8 @@ const AddServices = ({ block = "head" }) => {
   const [specificCategory, setSpecificCategory] = useState("");
 
   const category = watch("category");
-  const categoryOptions = block === "local" ? categoryOptions_local : categoryOptions_head;
+  const categoryOptions =
+    block === "local" ? categoryOptions_local : categoryOptions_head;
 
   const onSubmit = async (data) => {
     const service = {
@@ -68,7 +69,7 @@ const AddServices = ({ block = "head" }) => {
         <div className="flex flex-col lg:flex-row gap-6 mb-6">
           <div className="form-control w-full">
             <label className="block text-gray-700 text-sm font-bold mb-2">
-              Service Name<span className="text-red-500 ml-2">*</span>
+              Service Name
             </label>
             <input
               type="text"
@@ -164,7 +165,7 @@ const AddServices = ({ block = "head" }) => {
         <div className="flex justify-center">
           <button
             type="submit"
-            className="btn w-1/2 mt-10 bg-emerald-700 text-white hover:bg-emerald-900"
+            className="btn mt-10 bg-emerald-700 text-white hover:bg-emerald-900"
           >
             Add Service
           </button>

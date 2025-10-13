@@ -211,7 +211,7 @@ const AddItems = ({ block = "head" }) => {
               </label>
               <input
                 type="text"
-                placeholder="e.g. USA/China/BD"
+                placeholder="e.g. BD/USA/China"
                 {...register("origin", { required: true })}
                 required
                 className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
@@ -292,7 +292,7 @@ const AddItems = ({ block = "head" }) => {
           <div className="flex justify-center">
             <button
               type="submit"
-              className="btn w-1/2 mt-10 bg-emerald-700 text-white hover:bg-emerald-900"
+              className="btn mt-10 bg-emerald-700 text-white hover:bg-emerald-900"
             >
               Add Item
             </button>
