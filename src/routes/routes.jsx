@@ -107,7 +107,7 @@ export const router = createBrowserRouter([
             path: "updateItem/:id",
             element: <HeadUpdateItems block="head"/>,
             loader: ({ params }) =>
-              fetch(`http://localhost:5000/head/items/${params.id}`, {
+              fetch(`https://betar-central-store-sms-server.onrender.com/head/items/${params.id}`, {
                 credentials: "include",
               }),
           },
@@ -145,7 +145,7 @@ export const router = createBrowserRouter([
             path: "updateService/:id",
             element: <UpdateServices block="head"/>,
             loader: ({ params }) =>
-              fetch(`http://localhost:5000/head/services/${params.id}`, {
+              fetch(`https://betar-central-store-sms-server.onrender.com/head/services/${params.id}`, {
                 credentials: "include",
               }),
           },
@@ -180,7 +180,7 @@ export const router = createBrowserRouter([
             path: "updateItem/:id",
             element: <LocalUpdateItems block="local"/>,
             loader: ({ params }) =>
-              fetch(`http://localhost:5000/local/items/${params.id}`, {
+              fetch(`https://betar-central-store-sms-server.onrender.com/local/items/${params.id}`, {
                 credentials: "include",
               }),
           },
@@ -217,7 +217,7 @@ export const router = createBrowserRouter([
             path: "updateService/:id",
             element: <UpdateServices block="local"/>,
             loader: ({ params }) =>
-              fetch(`http://localhost:5000/local/services/${params.id}`, {
+              fetch(`https://betar-central-store-sms-server.onrender.com/local/services/${params.id}`, {
                 credentials: "include",
               }),
           },
