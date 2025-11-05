@@ -97,45 +97,108 @@ const NotificationsPage = () => {
   const endIndex = Math.min(startIndex + itemsPerPage, totalFiltered);
 
   const paginatedNotifications = filteredNotifications.slice(startIndex, endIndex);
-
+    // Handle page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
   // Render pagination buttons
   const renderPageNumbers = () => {
     const pageNumbers = [];
+    const range = 1;
 
-    for (let i = 0; i < numberOfPages; i++) {
+    // Calculate the range of page numbers to display around the current page
+    let startPage = Math.max(0, currentPage - range);
+    let endPage = Math.min(numberOfPages - 1, currentPage + range);
+
+    // Adjust the range if necessary
+    if (endPage - startPage < range * 1) {
+      startPage = Math.max(0, endPage - range * 1);
+      endPage = Math.min(numberOfPages - 1, startPage + range * 1);
+    }
+
+    // Always include the first and last page
+    if (startPage > 0) {
+      pageNumbers.push(
+        <button
+          key={0}
+          className={`btn btn-xs ${
+            currentPage === 0 ? "bg-teal-950 text-white" : "btn-info text-black"
+          }`}
+          onClick={() => handlePageChange(0)}
+        >
+          1
+        </button>
+      );
+      if (startPage > 1) {
+        pageNumbers.push(
+          <span key="dots1" className="mx-2">
+            ...
+          </span>
+        );
+      }
+    }
+
+    // Render page buttons within the range
+    for (let i = startPage; i <= endPage; i++) {
       pageNumbers.push(
         <button
           key={i}
-          onClick={() => setCurrentPage(i)}
-          className={`btn btn-xs mx-1 ${
-            i === currentPage ? "bg-emerald-700 text-white" : "bg-gray-200"
+          className={`btn btn-xs ${
+            currentPage === i ? "bg-teal-950 text-white" : "btn-info text-black"
           }`}
+          onClick={() => handlePageChange(i)}
         >
           {i + 1}
         </button>
       );
     }
 
+    // Always include the last page
+    if (endPage < numberOfPages - 1) {
+      if (endPage < numberOfPages - 2) {
+        pageNumbers.push(
+          <span key="dots2" className="mx-2">
+            ...
+          </span>
+        );
+      }
+      pageNumbers.push(
+        <button
+          key={numberOfPages - 1}
+          className={`btn btn-xs ${
+            currentPage === numberOfPages - 1
+              ? "bg-teal-950 text-white"
+              : "btn-info text-black"
+          }`}
+          onClick={() => handlePageChange(numberOfPages - 1)}
+        >
+          {numberOfPages}
+        </button>
+      );
+    }
+
     return (
-      <div className="mt-4 flex justify-center items-center gap-2">
-        <button
-          className="btn btn-xs"
-          onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
-          disabled={currentPage === 0}
-        >
-          Prev
-        </button>
+      <ul className="flex justify-center items-center space-x-2">
+        <li>
+          <button
+            className="btn btn-xs btn-info mx-2"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 0}
+          >
+            Previous
+          </button>
+        </li>
         {pageNumbers}
-        <button
-          className="btn btn-xs"
-          onClick={() =>
-            setCurrentPage((prev) => Math.min(numberOfPages - 1, prev + 1))
-          }
-          disabled={currentPage === numberOfPages - 1}
-        >
-          Next
-        </button>
-      </div>
+        <li>
+          <button
+            className="btn btn-xs btn-info mx-2"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === numberOfPages - 1}
+          >
+            Next
+          </button>
+        </li>
+      </ul>
     );
   };
 
@@ -240,11 +303,13 @@ const NotificationsPage = () => {
               ))}
             </tbody>
           </table>
-          {/* Pagination Controls */}
-          {numberOfPages > 1 && renderPageNumbers()}
+        </div>
+      )}
+        {/* Pagination Controls */}
+         
           {/* Items per page selector */}
           <div className="flex flex-col lg:flex-row items-center justify-center mt-4">
-            <div className="mb-2 lg:mr-6">
+            <div className="mb-4 lg:mb-0 lg:mr-4">
               <select
                 value={itemsPerPage}
                 onChange={(e) => {
@@ -258,9 +323,8 @@ const NotificationsPage = () => {
                 <option value={20}>20 per page</option>
               </select>
             </div>
+             {numberOfPages > 1 && renderPageNumbers()}
           </div>
-        </div>
-      )}
     </div>
   );
 };

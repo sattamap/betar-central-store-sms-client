@@ -1,14 +1,14 @@
 import axios from "axios";
 
 const axiosPublic = axios.create({
-  baseURL: 'https://betar-central-store-sms-server.onrender.com',
+  baseURL: 'http://localhost:5000',
   withCredentials: true,
 });
 
-//https://betar-central-store-sms-server.onrender.com
+//http://localhost:5000
 
 
-// ✅ Global Response Interceptor for Token Expiry https://betar-central-store-sms-server.onrender.com/
+// ✅ Global Response Interceptor for Token Expiry http://localhost:5000/
 axiosPublic.interceptors.response.use(
   res => res,
   err => {

@@ -791,6 +791,8 @@ const AdminManageItems = ({ block = "head" }) => {
               <>
                 <input
                   type="number"
+                  step="0.01" // ✅ allows decimal inputs like 1.25, 3.5, etc.
+                  min="0"
                   name="good"
                   value={formData.good}
                   onChange={handleInputChange}

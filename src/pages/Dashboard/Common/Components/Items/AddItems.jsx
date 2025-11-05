@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import PropTypes from "prop-types";
 import useAxiosPublic from "../../../../../hooks/useAxiosPublic";
-import axios from 'axios';
+import axios from "axios";
 
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
@@ -67,7 +67,7 @@ const AddItems = ({ block = "head" }) => {
     }
 
     const items_quantity = {
-      item_store: parseInt(data.goodQuantity),
+      item_store: parseFloat(data.goodQuantity),
       item_use: 0,
       item_faulty_store: 0,
       item_faulty_use: 0,
@@ -153,7 +153,9 @@ const AddItems = ({ block = "head" }) => {
               </label>
               <input
                 type="text"
-                  placeholder={block === "head" ? "e.g. PA Module" : "e.g. কলম, কাগজ"}
+                placeholder={
+                  block === "head" ? "e.g. PA Module" : "e.g. কলম, কাগজ"
+                }
                 {...register("itemName", { required: true })}
                 required
                 className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
@@ -198,7 +200,9 @@ const AddItems = ({ block = "head" }) => {
               </label>
               <input
                 type="text"
-                  placeholder={block === "head" ? "e.g. FM-10s" : "e.g. Matador All-Time"}
+                placeholder={
+                  block === "head" ? "e.g. FM-10s" : "e.g. Matador All-Time"
+                }
                 {...register("model")}
                 onBlur={onBlurModel}
                 className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
@@ -227,8 +231,10 @@ const AddItems = ({ block = "head" }) => {
               </label>
               <input
                 type="number"
+                step="0.01" // 👈 allows decimals up to 2 decimal places
+                min="0"
                 placeholder="Add amount greater than 0"
-                {...register("goodQuantity", { required: true })}
+                {...register("goodQuantity", { required: true, min: 0 })}
                 required
                 className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
               />
