@@ -518,7 +518,7 @@ const ManageItems = ({ block = "head" }) => {
           </td>
           <td>
             <div className="text-sm opacity-50 text-center">
-              {item?.items_quantity?.item_store}
+              {item?.items_quantity?.item_store} {item?.unit || ""}
             </div>
           </td>
           <td>
@@ -528,27 +528,27 @@ const ManageItems = ({ block = "head" }) => {
           </td>
           <td>
             <div className="text-sm opacity-50 text-center">
-              {item?.items_quantity?.item_use}
+              {item?.items_quantity?.item_use} {item?.unit || ""}
             </div>
           </td>
           <td>
             <div className="text-sm opacity-50 text-center">
-              {item?.items_quantity?.item_faulty_store}
+              {item?.items_quantity?.item_faulty_store} {item?.unit || ""}
             </div>
           </td>
           <td>
             <div className="text-sm opacity-50 text-center">
-              {item?.items_quantity?.item_faulty_use}
+              {item?.items_quantity?.item_faulty_use} {item?.unit || ""}
             </div>
           </td>
           <td>
             <div className="text-sm opacity-50 text-center">
-              {item?.items_quantity?.item_transfer}
+              {item?.items_quantity?.item_transfer} {item?.unit || ""}
             </div>
           </td>
           <td>
             <div className="text-center">
-              <p>{item?.totalQuantity}</p>
+              <p>{item?.totalQuantity} {item?.unit || ""}</p>
             </div>
           </td>
           <td>

@@ -951,27 +951,27 @@ const AdminRecords = ({ block = "head" }) => {
           </td>
           <td className="border">
             <div className="text-sm opacity-50 text-center">
-              {item?.items_quantity?.item_store}
+              {item?.items_quantity?.item_store} {item?.unit || ""}
             </div>
           </td>
           <td className="border">
             <div className="text-sm opacity-50 text-center">
-              {item?.items_quantity?.item_use}
+              {item?.items_quantity?.item_use} {item?.unit || ""}
             </div>
           </td>
           <td className="border">
             <div className="text-sm opacity-50 text-center">
-              {item?.items_quantity?.item_faulty_store}
+              {item?.items_quantity?.item_faulty_store} {item?.unit || ""}
             </div>
           </td>
           <td className="border">
             <div className="text-sm opacity-50 text-center">
-              {item?.items_quantity?.item_faulty_use}
+              {item?.items_quantity?.item_faulty_use} {item?.unit || ""}
             </div>
           </td>
           <td className="border">
             <div className="text-sm opacity-50 text-center">
-              {item?.items_quantity?.item_transfer}
+              {item?.items_quantity?.item_transfer} {item?.unit || ""}
             </div>
           </td>
           <td className="border">

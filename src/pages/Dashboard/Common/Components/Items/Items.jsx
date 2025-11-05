@@ -324,19 +324,19 @@ const Items = () => {
                   <div className="text-sm">{item?.origin}</div>
                 </td>
                 <td className="text-center">
-                  {item?.items_quantity?.item_store}
+                  {item?.items_quantity?.item_store}{item?.unit || ""}
                 </td>
                 <td className="text-center">
-                  {item?.items_quantity?.item_use}
+                  {item?.items_quantity?.item_use}{item?.unit || ""}
                 </td>
                 <td className="text-center">
-                  {item?.items_quantity?.item_faulty_store}
+                  {item?.items_quantity?.item_faulty_store}{item?.unit || ""}
                 </td>
                 <td className="text-center">
-                  {item?.items_quantity?.item_faulty_use}
+                  {item?.items_quantity?.item_faulty_use}{item?.unit || ""}
                 </td>
                 <td className="text-center">
-                  {item?.items_quantity?.item_transfer}
+                  {item?.items_quantity?.item_transfer}{item?.unit || ""}
                 </td>
                 <td className="text-center">
                   <p>{item?.category}</p>

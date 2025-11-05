@@ -215,7 +215,7 @@ const AddItems = ({ block = "head" }) => {
               </label>
               <input
                 type="text"
-                placeholder="e.g. BD/USA/China"
+                placeholder="e.g. BD / USA/ China"
                 {...register("origin", { required: true })}
                 required
                 className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
@@ -224,6 +224,7 @@ const AddItems = ({ block = "head" }) => {
           </div>
 
           <div className="flex flex-col lg:flex-row gap-6 mb-6">
+            {/* Quantity */}
             <div className="form-control w-full">
               <label className="block text-gray-700 text-sm font-bold mb-2">
                 Item Quantity in Store
@@ -231,10 +232,24 @@ const AddItems = ({ block = "head" }) => {
               </label>
               <input
                 type="number"
-                step="0.01" // 👈 allows decimals up to 2 decimal places
+                step="0.01"
                 min="0"
                 placeholder="Add amount greater than 0"
                 {...register("goodQuantity", { required: true, min: 0 })}
+                required
+                className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
+              />
+            </div>
+
+            {/* Unit */}
+            <div className="form-control w-full">
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Unit<span className="text-red-500 ml-2">*</span>
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. pcs / kg / টি / রীম"
+                {...register("unit", { required: true })}
                 required
                 className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
               />

@@ -8,7 +8,6 @@ import useAxiosPublic from "../../../../../hooks/useAxiosPublic";
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
-// ✅ Category lists for different blocks
 const category_local = [
   "পরিষ্কার পরিচ্ছন্নতা সামগ্রী",
   "বইপত্র ও সাময়িকী",
@@ -38,6 +37,7 @@ const UpdateItems = ({ block = "head" }) => {
     category,
     model,
     origin,
+    unit, // 👈 existing or newly added unit from DB
     locationGood,
     date,
     detail,
@@ -52,10 +52,8 @@ const UpdateItems = ({ block = "head" }) => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [currentImageUrl, setCurrentImageUrl] = useState(image);
 
-  // ✅ Dynamic category options based on block
   const categoryOptions = block === "local" ? category_local : category_head;
 
-  // ✅ Initialize category selection properly
   useEffect(() => {
     if (category) {
       const categoryInList = categoryOptions.includes(category);
@@ -69,7 +67,6 @@ const UpdateItems = ({ block = "head" }) => {
     }
   }, [category, categoryOptions, block]);
 
-  // ✅ Handle category change
   const handleCategoryChange = (e) => {
     const value = e.target.value;
     setSelectedCategory(value);
@@ -78,11 +75,9 @@ const UpdateItems = ({ block = "head" }) => {
     }
   };
 
-  // ✅ Form submit handler
   const onSubmit = async (data) => {
     let imageUrl = currentImageUrl;
 
-    // Upload new image if provided
     if (data.image && data.image[0]) {
       const formData = new FormData();
       formData.append("image", data.image[0]);
@@ -106,6 +101,7 @@ const UpdateItems = ({ block = "head" }) => {
         selectedCategory === "Others" ? specificCategory : selectedCategory,
       model: data.model,
       origin: data.origin,
+      unit: data.unit, // 👈 include Unit here
       locationGood: data.locationGood,
       date: data.date,
       detail: data.detail,
@@ -138,7 +134,7 @@ const UpdateItems = ({ block = "head" }) => {
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        {/* Item Name */}
+        {/* Item Name & Category */}
         <div className="flex flex-col lg:flex-row gap-6 mb-6">
           <div className="form-control w-full">
             <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -153,7 +149,6 @@ const UpdateItems = ({ block = "head" }) => {
             />
           </div>
 
-          {/* ✅ Dynamic Category */}
           <div className="form-control w-full">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Category
@@ -188,7 +183,7 @@ const UpdateItems = ({ block = "head" }) => {
           </div>
         </div>
 
-        {/* Model & Origin */}
+        {/* Model, Origin & Unit */}
         <div className="flex flex-col lg:flex-row gap-6 mb-6">
           <div className="form-control w-full">
             <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -212,6 +207,20 @@ const UpdateItems = ({ block = "head" }) => {
               defaultValue={origin}
               placeholder="e.g. USA"
               {...register("origin")}
+              className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
+            />
+          </div>
+
+          {/* ✅ New Unit field */}
+          <div className="form-control w-full">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Unit
+            </label>
+            <input
+              type="text"
+              defaultValue={unit}
+              placeholder="e.g. pcs / set / box"
+              {...register("unit")}
               className="border rounded w-full py-2 px-3 text-gray-700 text-sm md:text-base"
             />
           </div>
@@ -275,6 +284,7 @@ const UpdateItems = ({ block = "head" }) => {
             <img src={currentImageUrl} alt="Current" className="w-32 h-32" />
           </div>
         )}
+
         <div className="flex justify-center">
           <button
             type="submit"
