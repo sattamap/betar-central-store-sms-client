@@ -2,7 +2,6 @@
 
 import UpdateItems from "../../../Common/Components/Items/UpdateItems";
 
-
 const HeadUpdateItems = () => {
   return <UpdateItems block="head" />;
 };

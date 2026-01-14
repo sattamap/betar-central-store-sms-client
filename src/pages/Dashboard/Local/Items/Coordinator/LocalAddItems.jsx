@@ -1,6 +1,5 @@
 import AddItems from "../../../Common/Components/Items/AddItems";
 
-
 const LocalAddItems = () => {
   return (
     <div>

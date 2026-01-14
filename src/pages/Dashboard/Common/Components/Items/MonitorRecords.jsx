@@ -21,7 +21,7 @@ const months = [
   "December",
 ];
 
-const AdminRecords = ({ block = "head" }) => {
+const MonitorRecords = ({ block = "head" }) => {
   const axiosPublic = useAxiosPublic();
   const [records, setRecords] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -53,108 +53,73 @@ const AdminRecords = ({ block = "head" }) => {
       }
     };
     fetchItems();
-  }, [axiosPublic, block]);
+  }, [axiosPublic, records, block]);
 
-  const handleApprove = async (id) => {
+  // Replace handleApprove with handleForwardToAdmin
+  const handleAcceptByMonitor = async (id) => {
     try {
       const { isConfirmed } = await Swal.fire({
-        title: "Approve and update inventory?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Approve",
-      });
-      if (!isConfirmed) return;
-
-      await axiosPublic.patch(`/${block}/records/admin-approve/${id}`);
-
-      setRecords((prev) =>
-        prev.map((record) =>
-          record._id === id
-            ? { ...record, workflowStatus: "admin_approved" }
-            : record
-        )
-      );
-
-      Swal.fire({
-        icon: "success",
-        title: "Approved",
-        text: "Inventory updated",
-      });
-    } catch (err) {
-      console.error("Approve error:", err);
-      Swal.fire({
-        icon: "error",
-        title: "Failed",
-        text: "Could not approve",
-      });
-    }
-  };
-
-  const handleDecline = async (id) => {
-    try {
-      const { isConfirmed } = await Swal.fire({
-        title: "Are you sure you want to decline this record?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Decline",
-        cancelButtonText: "Cancel",
-        reverseButtons: true,
-      });
-
-      if (isConfirmed) {
-        await axiosPublic.delete(`/${block}/records/${id}`);
-        setRecords(records.filter((record) => record._id !== id));
-        Swal.fire({
-          icon: "success",
-          title: "Record Declined!",
-          text: "The record has been successfully declined.",
-        });
-      }
-    } catch (error) {
-      console.error("Error declining record:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "An error occurred while declining the record.",
-      });
-    }
-  };
-
-  const handleSendToCoordinator = async (id) => {
-    try {
-      const { isConfirmed } = await Swal.fire({
-        title: "Send back to Coordinator?",
+        title: "Accept this record?",
+        text: "This will complete the workflow.",
         icon: "question",
         showCancelButton: true,
-        confirmButtonText: "Yes, Send",
+        confirmButtonText: "Yes, Accept",
       });
 
       if (!isConfirmed) return;
 
-      await axiosPublic.patch(`/${block}/records/send-to-coordinator/${id}`);
+      await axiosPublic.patch(`/${block}/records/accept-by-monitor/${id}`);
 
       setRecords((prev) =>
         prev.map((r) =>
-          r._id === id
-            ? { ...r, workflowStatus: "sent_back_to_coordinator" }
-            : r
+          r._id === id ? { ...r, workflowStatus: "accepted_by_monitor" } : r
         )
       );
 
       Swal.fire({
         icon: "success",
-        title: "Sent",
-        text: "Record sent back to coordinator",
+        title: "Accepted",
+        text: "Record accepted successfully",
       });
     } catch (err) {
-      console.error("Send to coordinator error", err);
+      console.error("Accept by monitor error", err);
       Swal.fire({
         icon: "error",
         title: "Failed",
-        text: "Could not send record",
+        text: "Could not accept record",
       });
     }
   };
+
+  // const handleDecline = async (id) => {
+  //     try {
+  //         const { isConfirmed } = await Swal.fire({
+  //             title: "Are you sure you want to decline this record?",
+  //             icon: "warning",
+  //             showCancelButton: true,
+  //             confirmButtonText: "Decline",
+  //             cancelButtonText: "Cancel",
+  //             reverseButtons: true,
+  //         });
+
+  //         if (isConfirmed) {
+  //             await axiosPublic.delete(`/${block}/records/${id}`);
+  //             setRecords(records.filter((record) => record._id !== id));
+  //             Swal.fire({
+  //                 icon: "success",
+  //                 title: "Record Declined!",
+  //                 text: "The record has been successfully declined.",
+  //             });
+  //         }
+  //     } catch (error) {
+  //         console.error("Error declining record:", error);
+  //         Swal.fire({
+  //             icon: "error",
+  //             title: "Oops...",
+  //             text: "An error occurred while declining the record.",
+  //         });
+  //     }
+  // };
 
   // Filter items based on search term and selected category
 
@@ -475,11 +440,11 @@ const AdminRecords = ({ block = "head" }) => {
           {/* PURPOSE + LOCATION */}
           <td className="border text-xs px-2">
             <div>
-              <span className="font-semibold">উদ্দেশ্য:</span>
+              <span className="font-semibold">Purpose:</span>
               <div className="opacity-80">{item?.purpose || "-"}</div>
             </div>
             <div className="mt-1">
-              <span className="font-semibold">স্থান:</span>
+              <span className="font-semibold">Location:</span>
               <div className="opacity-80">{item?.locationGood || "-"}</div>
             </div>
           </td>
@@ -535,32 +500,14 @@ const AdminRecords = ({ block = "head" }) => {
             </div>
           </td>
 
-          <td className="py-2 px-3 text-center border">
-            {/* Admin approval stage */}
-            {item?.workflowStatus === "forwarded_to_admin" && (
-              <>
-                <button
-                  onClick={() => handleApprove(item._id)}
-                  className="btn btn-xs bg-green-600 mr-1"
-                >
-                  Approve
-                </button>
-                <button
-                  onClick={() => handleDecline(item._id)}
-                  className="btn btn-xs bg-red-500"
-                >
-                  Decline
-                </button>
-              </>
-            )}
-
-            {/* After admin approval */}
-            {item?.workflowStatus === "admin_approved" && (
+          {/* ACTION */}
+          <td className="border text-center">
+            {item?.workflowStatus === "sent_back_to_monitor" && (
               <button
-                onClick={() => handleSendToCoordinator(item._id)}
-                className="btn btn-sm bg-blue-500"
+                onClick={() => handleAcceptByMonitor(item._id)}
+                className="btn btn-xs bg-green-600 text-white"
               >
-                Send to Coordinator
+                Accept
               </button>
             )}
           </td>
@@ -568,6 +515,10 @@ const AdminRecords = ({ block = "head" }) => {
       ))}
     </tbody>
   );
+
+  // =======================
+  // FINAL TABLE
+  // =======================
 
   return (
     <div className="mt-4">
@@ -709,8 +660,8 @@ const AdminRecords = ({ block = "head" }) => {
   );
 };
 
-AdminRecords.propTypes = {
+MonitorRecords.propTypes = {
   block: PropTypes.string,
 };
 
-export default AdminRecords;
+export default MonitorRecords;

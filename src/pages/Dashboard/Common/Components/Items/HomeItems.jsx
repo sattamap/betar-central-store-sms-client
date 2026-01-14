@@ -3,10 +3,7 @@ import useAxiosPublic from "../../../../../hooks/useAxiosPublic";
 import PropTypes from "prop-types";
 
 const HomeItems = ({ block = "head" }) => {
-//   const outletContext = useOutletContext();
-//   const block = outletContext?.block || "head";
   const axiosPublic = useAxiosPublic();
-
   const [totalItems, setTotalItems] = useState(0);
   const [itemStore, setItemStore] = useState(0);
   const [itemUse, setItemUse] = useState(0);
@@ -25,7 +22,10 @@ const HomeItems = ({ block = "head" }) => {
 
         setTotalItems(items.length);
 
-        let store = 0, use = 0, faultStore = 0, faultUse = 0;
+        let store = 0,
+          use = 0,
+          faultStore = 0,
+          faultUse = 0;
 
         items.forEach((item) => {
           const q = item.items_quantity || {};
@@ -54,19 +54,53 @@ const HomeItems = ({ block = "head" }) => {
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        <StatCard title="Total Records" value={totalItems} color="from-gray-500 to-gray-700" />
-        <StatCard title="Total Items" value={totalQuantity} color="from-yellow-500 to-yellow-700" />
-        <StatCard title="Good Items" value={totalGood} color="from-green-500 to-green-700" />
-        <StatCard title="Faulty Items" value={totalFaulty} color="from-red-500 to-red-700" />
-        <StatCard title="In Store" value={itemStore} color="from-blue-500 to-blue-700" />
-        <StatCard title="In Use" value={itemUse} color="from-indigo-500 to-indigo-700" />
-        <StatCard title="Faulty in Store" value={faultyStore} color="from-pink-500 to-pink-700" />
-        <StatCard title="Faulty in Use" value={faultyUse} color="from-orange-500 to-orange-700" />
+        <StatCard
+          title="Total Records"
+          value={totalItems}
+          color="from-gray-500 to-gray-700"
+        />
+        <StatCard
+          title="Total Items"
+          value={totalQuantity}
+          color="from-yellow-500 to-yellow-700"
+        />
+        <StatCard
+          title="Good Items"
+          value={totalGood}
+          color="from-green-500 to-green-700"
+        />
+        <StatCard
+          title="Faulty Items"
+          value={totalFaulty}
+          color="from-red-500 to-red-700"
+        />
+        <StatCard
+          title="In Store"
+          value={itemStore}
+          color="from-blue-500 to-blue-700"
+        />
+        <StatCard
+          title="In Use"
+          value={itemUse}
+          color="from-indigo-500 to-indigo-700"
+        />
+        <StatCard
+          title="Faulty in Store"
+          value={faultyStore}
+          color="from-pink-500 to-pink-700"
+        />
+        <StatCard
+          title="Faulty in Use"
+          value={faultyUse}
+          color="from-orange-500 to-orange-700"
+        />
       </div>
 
       <footer className="mt-16 text-center text-gray-600 text-sm">
-        &copy; {new Date().getFullYear()} Inventory Management System of Bangladesh Betar. All rights reserved.
-        <br />Developed by Sattam.
+        &copy; {new Date().getFullYear()} Inventory Management System of
+        Bangladesh Betar. All rights reserved.
+        <br />
+        Developed by Sattam.
       </footer>
     </div>
   );
@@ -78,7 +112,9 @@ HomeItems.propTypes = {
 
 // ✅ Reusable Card Component with PropTypes
 const StatCard = ({ title, value, color }) => (
-  <div className={`bg-gradient-to-r ${color} shadow-lg rounded-lg p-6 text-center`}>
+  <div
+    className={`bg-gradient-to-r ${color} shadow-lg rounded-lg p-6 text-center`}
+  >
     <h3 className="text-lg font-semibold text-white mb-2">{title}</h3>
     <p className="text-3xl font-bold text-white">{value}</p>
   </div>

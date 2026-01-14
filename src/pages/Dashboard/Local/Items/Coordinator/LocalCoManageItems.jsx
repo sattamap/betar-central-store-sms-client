@@ -1,11 +1,11 @@
 import ManageItems from "../../../Common/Components/Items/ManageItems";
 
 const LocalCoManageItems = () => {
-    return (
-        <div>
-            <ManageItems block="local"/>
-        </div>
-    );
+  return (
+    <div>
+      <ManageItems block="local" />
+    </div>
+  );
 };
 
 LocalCoManageItems.propTypes = {};

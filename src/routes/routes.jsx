@@ -35,6 +35,7 @@ import ItemsDetails from "../pages/Dashboard/Common/Components/Items/ItemsDetail
 import AboutSMS from "../pages/Login/AboutSMS";
 import Services from "../pages/Dashboard/Common/Components/Services/Services";
 import NotificationsPage from "../pages/Dashboard/Common/Components/Both/NotificationsPage";
+import LocalMonitorRecords from "../pages/Dashboard/Local/Items/Monitor/LocalMonitorRecords";
 
 export const router = createBrowserRouter([
   {
@@ -105,18 +106,21 @@ export const router = createBrowserRouter([
           },
           {
             path: "updateItem/:id",
-            element: <HeadUpdateItems block="head"/>,
+            element: <HeadUpdateItems block="head" />,
             loader: ({ params }) =>
               fetch(`http://localhost:5000/head/items/${params.id}`, {
                 credentials: "include",
               }),
           },
-          { path: "allItems", element: <Items block="head"/> },
+          { path: "allItems", element: <Items block="head" /> },
           { path: "manageItems", element: <ManageItems block="head" /> },
           { path: "adminRecords", element: <HeadAdminRecords /> },
-          { path: "adminNotifications", element: <NotificationsPage block="head"/> },
+          {
+            path: "adminNotifications",
+            element: <NotificationsPage block="head" />,
+          },
           { path: "records", element: <HeadCoRecords /> },
-          { path: "details/:id", element: <ItemsDetails block="head"/> },
+          { path: "details/:id", element: <ItemsDetails block="head" /> },
           { path: "none", element: <HeadWelcomeMsg /> },
         ],
       },
@@ -143,15 +147,18 @@ export const router = createBrowserRouter([
           },
           {
             path: "updateService/:id",
-            element: <UpdateServices block="head"/>,
+            element: <UpdateServices block="head" />,
             loader: ({ params }) =>
               fetch(`http://localhost:5000/head/services/${params.id}`, {
                 credentials: "include",
               }),
           },
-          { path: "allServices", element: <Services block="head"/> },
-          { path: "details/:id", element: <ServiceDetails block="head"/> },
-          { path: "adminNotifications", element: <NotificationsPage block="head"/> },
+          { path: "allServices", element: <Services block="head" /> },
+          { path: "details/:id", element: <ServiceDetails block="head" /> },
+          {
+            path: "adminNotifications",
+            element: <NotificationsPage block="head" />,
+          },
         ],
       },
     ],
@@ -178,18 +185,22 @@ export const router = createBrowserRouter([
           },
           {
             path: "updateItem/:id",
-            element: <LocalUpdateItems block="local"/>,
+            element: <LocalUpdateItems block="local" />,
             loader: ({ params }) =>
               fetch(`http://localhost:5000/local/items/${params.id}`, {
                 credentials: "include",
               }),
           },
-          { path: "allItems", element: <Items block="local"/> },
+          { path: "allItems", element: <Items block="local" /> },
           { path: "manageItems", element: <ManageItems block="local" /> },
           { path: "adminRecords", element: <LocalRecords /> },
-          { path: "adminNotifications", element: <NotificationsPage block="local"/> },
+          {
+            path: "adminNotifications",
+            element: <NotificationsPage block="local" />,
+          },
           { path: "records", element: <LocalCoRecords /> },
-          { path: "details/:id", element: <ItemsDetails block="local"/> },
+          { path: "monitorRecords", element: <LocalMonitorRecords /> },
+          { path: "details/:id", element: <ItemsDetails block="local" /> },
           { path: "none", element: <LocalWelcomeMsg /> },
         ],
       },
@@ -215,15 +226,18 @@ export const router = createBrowserRouter([
           },
           {
             path: "updateService/:id",
-            element: <UpdateServices block="local"/>,
+            element: <UpdateServices block="local" />,
             loader: ({ params }) =>
               fetch(`http://localhost:5000/local/services/${params.id}`, {
                 credentials: "include",
               }),
           },
-           { path: "allServices", element: <Services block="local"/> },
-          { path: "details/:id", element: <ServiceDetails block="local"/> },
-          { path: "adminNotifications", element: <NotificationsPage block="local"/> },
+          { path: "allServices", element: <Services block="local" /> },
+          { path: "details/:id", element: <ServiceDetails block="local" /> },
+          {
+            path: "adminNotifications",
+            element: <NotificationsPage block="local" />,
+          },
 
           // Add actual services routes later
         ],

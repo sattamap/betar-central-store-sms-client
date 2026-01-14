@@ -1,6 +1,5 @@
 import UpdateItems from "../../../Common/Components/Items/UpdateItems";
 
-
 const LocalUpdateItems = () => {
   return (
     <div>
@@ -8,6 +7,5 @@ const LocalUpdateItems = () => {
     </div>
   );
 };
-
 
 export default LocalUpdateItems;

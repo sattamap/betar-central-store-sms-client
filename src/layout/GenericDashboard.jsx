@@ -33,7 +33,7 @@ const GenericDashboard = () => {
   const location = useLocation();
   const block = location.pathname.split("/")[1];
   const subBlock = location.pathname.split("/")[2]; // 'items' or 'services'
-  console.log("Subblock",subBlock)
+  console.log("Subblock", subBlock);
 
   const themeColor = block === "head" ? "#1e3a5f" : "#0f766e";
 
@@ -77,7 +77,9 @@ const GenericDashboard = () => {
   const fetchNotifications = async (initial = false) => {
     try {
       const res = await axiosPublic.get(
-        `/notifications?block=${block}&module=${subBlock}&skip=${initial ? 0 : skip}&limit=5`
+        `/notifications?block=${block}&module=${subBlock}&skip=${
+          initial ? 0 : skip
+        }&limit=5`
       );
       if (initial) {
         setNotifications(res.data);
@@ -98,7 +100,9 @@ const GenericDashboard = () => {
   // ✅ Mark all as seen
   const markAllAsSeen = async () => {
     try {
-      await axiosPublic.patch(`/notifications/mark-all?block=${block}&module=${subBlock}`);
+      await axiosPublic.patch(
+        `/notifications/mark-all?block=${block}&module=${subBlock}`
+      );
       setNotificationCount(0);
     } catch (err) {
       console.error("Failed to mark notifications as seen:", err);
@@ -129,7 +133,10 @@ const GenericDashboard = () => {
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
       {/* ✅ Sidebar */}
-      <div className="w-full lg:w-64 text-white p-4" style={{ backgroundColor: themeColor }}>
+      <div
+        className="w-full lg:w-52 text-white p-4"
+        style={{ backgroundColor: themeColor }}
+      >
         <div className="text-center mb-4">
           <img
             src={user?.photoURL}
@@ -139,7 +146,8 @@ const GenericDashboard = () => {
           <p className="mt-2 font-semibold">{user?.displayName}</p>
           <p className="text-sm">{userData?.designation}</p>
           <p className="bg-blue-100 text-black text-xs mt-1 px-2 py-1 rounded font-semibold shadow-sm">
-            Role: <span className="uppercase font-semibold">{userData?.status}</span>
+            Role:{" "}
+            <span className="uppercase font-semibold">{userData?.status}</span>
           </p>
           <p className="bg-emerald-100 text-emerald-800 text-xs mt-1 px-2 py-1 rounded font-semibold shadow-sm">
             Current Block: <span className="uppercase font-bold">{block}</span>
@@ -152,26 +160,74 @@ const GenericDashboard = () => {
             <>
               {userData?.status === "admin" && (
                 <>
-                  <li><NavLink to="items/home"><FaHome /> Home</NavLink></li>
-                  <li><NavLink to="items/addItems"><MdFormatListBulletedAdd /> Add Items</NavLink></li>
-                  <li><NavLink to="items/adminManageItems"><MdEditNote /> Manage Items</NavLink></li>
-                  <li><NavLink to="items/adminRecords"><FaList /> Admin Records</NavLink></li>
-                  <li><NavLink to="items/adminNotifications"><MdNotificationsActive /> All Notifications</NavLink></li>
+                  <li>
+                    <NavLink to="items/home">
+                      <FaHome /> Home
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="items/addItems">
+                      <MdFormatListBulletedAdd /> Add Items
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="items/adminManageItems">
+                      <MdEditNote /> Manage Items
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="items/adminRecords">
+                      <FaList /> Admin Records
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="items/adminNotifications">
+                      <MdNotificationsActive /> All Notifications
+                    </NavLink>
+                  </li>
                 </>
               )}
               {userData?.status === "coordinator" && (
                 <>
-                  <li><NavLink to="items/home"><FaHome /> Home</NavLink></li>
-                  <li><NavLink to="items/addItems"><MdFormatListBulletedAdd /> Add Items</NavLink></li>
-                  <li><NavLink to="items/manageItems"><MdEditNote /> Manage Items</NavLink></li>
-                  <li><NavLink to="items/records"><FaList /> Records</NavLink></li>
+                  <li>
+                    <NavLink to="items/home">
+                      <FaHome /> Home
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="items/addItems">
+                      <MdFormatListBulletedAdd /> Add Items
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="items/manageItems">
+                      <MdEditNote /> Manage Items
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="items/records">
+                      <FaList /> Records
+                    </NavLink>
+                  </li>
                 </>
               )}
               {userData?.status === "monitor" && (
                 <>
-                  <li><NavLink to="items/home"><FaHome /> Home</NavLink></li>
-                  <li><NavLink to="items/allItems"><FaSitemap /> Items</NavLink></li>
-                  <li><NavLink to="items/records"><FaList /> Records</NavLink></li>
+                  <li>
+                    <NavLink to="items/home">
+                      <FaHome /> Home
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="items/allItems">
+                      <FaSitemap /> Items
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="items/monitorRecords">
+                      <FaList /> Records
+                    </NavLink>
+                  </li>
                 </>
               )}
             </>
@@ -181,30 +237,68 @@ const GenericDashboard = () => {
             <>
               {userData?.status === "admin" && (
                 <>
-                  <li><NavLink to="services/home"><FaHome /> Home</NavLink></li>
-                  <li><NavLink to="services/addServices"><MdFormatListBulletedAdd /> Add Service</NavLink></li>
-                  <li><NavLink to="services/adminManageServices"><MdEditNote /> Manage Service</NavLink></li>
-                  <li><NavLink to="services/adminNotifications"><MdNotificationsActive /> All Notifications</NavLink></li>
+                  <li>
+                    <NavLink to="services/home">
+                      <FaHome /> Home
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="services/addServices">
+                      <MdFormatListBulletedAdd /> Add Service
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="services/adminManageServices">
+                      <MdEditNote /> Manage Service
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="services/adminNotifications">
+                      <MdNotificationsActive /> All Notifications
+                    </NavLink>
+                  </li>
                 </>
               )}
               {userData?.status === "coordinator" && (
                 <>
-                  <li><NavLink to="services/home"><FaHome /> Home</NavLink></li>
-                  <li><NavLink to="services/addServices"><MdFormatListBulletedAdd /> Add Service</NavLink></li>
-                  <li><NavLink to="services/manageServices"><MdEditNote /> Manage Service</NavLink></li>
+                  <li>
+                    <NavLink to="services/home">
+                      <FaHome /> Home
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="services/addServices">
+                      <MdFormatListBulletedAdd /> Add Service
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="services/manageServices">
+                      <MdEditNote /> Manage Service
+                    </NavLink>
+                  </li>
                 </>
               )}
               {userData?.status === "monitor" && (
                 <>
-                  <li><NavLink to="services/home"><FaHome /> Home</NavLink></li>
-                  <li><NavLink to="services/allServices"><FaSitemap /> All Service</NavLink></li>
+                  <li>
+                    <NavLink to="services/home">
+                      <FaHome /> Home
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="services/allServices">
+                      <FaSitemap /> All Service
+                    </NavLink>
+                  </li>
                 </>
               )}
             </>
           )}
 
           <div className="divider" />
-          <li><NavLink to="/dashboard/select-block">🔙 Back to Dashboard</NavLink></li>
+          <li>
+            <NavLink to="/dashboard/select-block">🔙 Back to Dashboard</NavLink>
+          </li>
           <li>
             <button onClick={handleLogOut}>
               <FaSignOutAlt /> Logout
@@ -239,13 +333,22 @@ const GenericDashboard = () => {
 
               {showDropdown && (
                 <div className="absolute right-0 mt-2 w-72 bg-white border shadow-lg rounded-lg p-3 z-20">
-                  <h4 className="font-semibold mb-2 text-gray-800">Notifications</h4>
+                  <h4 className="font-semibold mb-2 text-gray-800">
+                    Notifications
+                  </h4>
                   {notifications.length === 0 ? (
                     <p className="text-gray-500 text-sm">No notifications</p>
                   ) : (
-                    <ul className={`space-y-2 ${showAll ? "max-h-64 overflow-y-auto" : ""}`}>
+                    <ul
+                      className={`space-y-2 ${
+                        showAll ? "max-h-64 overflow-y-auto" : ""
+                      }`}
+                    >
                       {notifications.map((n, idx) => (
-                        <li key={idx} className="border-b pb-2 text-sm text-blue-700">
+                        <li
+                          key={idx}
+                          className="border-b pb-2 text-sm text-blue-700"
+                        >
                           {n.message}
                           <div className="text-gray-400 text-xs">
                             {new Date(n.timestamp).toLocaleString()}

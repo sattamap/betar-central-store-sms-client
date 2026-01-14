@@ -24,16 +24,19 @@ const WelcomeMsg = () => {
         </h2>
 
         <p className="text-lg text-gray-700 mb-4">
-          You have successfully created an account, but your access role has not been assigned yet.
-          An administrator from the {blockName} team will soon review and assign you a role.
+          You have successfully created an account, but your access role has not
+          been assigned yet. An administrator from the {blockName} team will
+          soon review and assign you a role.
         </p>
 
         <p className="text-lg text-gray-700 mb-2">
-          In the meantime, feel free to explore or contact the admin team if you have any questions or preferences.
+          In the meantime, feel free to explore or contact the admin team if you
+          have any questions or preferences.
         </p>
 
         <p className="text-sm text-gray-500 mt-6 italic">
-          You are currently viewing: <strong>{block ? `/${block}` : `/dashboard`}</strong>
+          You are currently viewing:{" "}
+          <strong>{block ? `/${block}` : `/dashboard`}</strong>
         </p>
 
         {/* ✅ Back button */}
@@ -47,8 +50,8 @@ const WelcomeMsg = () => {
 
       {/* Footer */}
       <footer className="mt-12 lg:mt-64 text-center text-gray-600 text-sm">
-        &copy; {new Date().getFullYear()} Inventory Management System of Bangladesh Betar, Bandarban.
-        All rights reserved.
+        &copy; {new Date().getFullYear()} Inventory Management System of
+        Bangladesh Betar, Bandarban. All rights reserved.
         <br />
         Developed by Sattam.
       </footer>

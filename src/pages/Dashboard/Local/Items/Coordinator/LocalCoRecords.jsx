@@ -1,12 +1,11 @@
 import Records from "../../../Common/Components/Items/Records";
 
-
 const LocalCoRecords = () => {
-    return (
-        <div>
-            <Records block="local"/>
-        </div>
-    );
+  return (
+    <div>
+      <Records block="local" />
+    </div>
+  );
 };
 
 LocalCoRecords.propTypes = {};

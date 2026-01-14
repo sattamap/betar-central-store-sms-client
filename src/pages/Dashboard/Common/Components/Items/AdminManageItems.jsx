@@ -1,8 +1,5 @@
-import { useEffect, useState } from "react";
-
-// import { Link, useOutletContext } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
-//import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { FaPlusMinus } from "react-icons/fa6";
 import { MdDelete, MdEdit } from "react-icons/md";
@@ -13,10 +10,12 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import useDownloadPDF from "../../../../../hooks/useDownloadPDF";
 import { FiDownload } from "react-icons/fi";
+import { AuthContext } from "../../../../../provider/AuthProvider";
 
 Modal.setAppElement("#root");
 const AdminManageItems = ({ block = "head" }) => {
   const axiosPublic = useAxiosPublic();
+  const { user } = useContext(AuthContext);
   const [items, setItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -36,9 +35,7 @@ const AdminManageItems = ({ block = "head" }) => {
   const [selectedItemData, setSelectedItemData] = useState(null);
 
   const downloadPDF = useDownloadPDF();
-  //const [operation, setOperation] = useState("plus");
-  //   const outletContext = useOutletContext();
-  // const block = outletContext?.block || "head";
+
 
   // Fetch items from the API
   useEffect(() => {
@@ -166,9 +163,8 @@ const AdminManageItems = ({ block = "head" }) => {
       pageNumbers.push(
         <button
           key={0}
-          className={`btn btn-xs ${
-            currentPage === 0 ? "bg-teal-950 text-white" : "btn-info text-black"
-          }`}
+          className={`btn btn-xs ${currentPage === 0 ? "bg-teal-950 text-white" : "btn-info text-black"
+            }`}
           onClick={() => handlePageChange(0)}
         >
           1
@@ -188,9 +184,8 @@ const AdminManageItems = ({ block = "head" }) => {
       pageNumbers.push(
         <button
           key={i}
-          className={`btn btn-xs ${
-            currentPage === i ? "bg-teal-950 text-white" : "btn-info text-black"
-          }`}
+          className={`btn btn-xs ${currentPage === i ? "bg-teal-950 text-white" : "btn-info text-black"
+            }`}
           onClick={() => handlePageChange(i)}
         >
           {i + 1}
@@ -210,11 +205,10 @@ const AdminManageItems = ({ block = "head" }) => {
       pageNumbers.push(
         <button
           key={numberOfPages - 1}
-          className={`btn btn-xs ${
-            currentPage === numberOfPages - 1
+          className={`btn btn-xs ${currentPage === numberOfPages - 1
               ? "bg-teal-950 text-white"
               : "btn-info text-black"
-          }`}
+            }`}
           onClick={() => handlePageChange(numberOfPages - 1)}
         >
           {numberOfPages}
@@ -247,88 +241,6 @@ const AdminManageItems = ({ block = "head" }) => {
     );
   };
 
-  // Function to generate and download PDF
-  // const handleDownloadPDF = () => {
-  //   const doc = new jsPDF();
-  //   const tableData = items.map((item, index) => [
-  //     startIndex + index + 1,
-  //     [`${item.itemName}`, `${item.model}`, `${item.origin}`],
-  //     item?.items_quantity?.item_store,
-  //     item?.items_quantity?.item_use,
-  //     item?.items_quantity?.item_faulty_store,
-  //     item?.items_quantity?.item_faulty_use,
-  //     item?.items_quantity?.item_transfer,
-  //     item.totalQuantity,
-  //     item.locationGood,
-  //     item.category,
-  //     item.date,
-  //   ]);
-
-  //   doc.autoTable({
-  //     head: [
-  //       [
-  //         "#",
-  //         "Name,Model & Origin",
-  //         "Item (Store)",
-  //         "Item (Use)",
-  //         "Item (Faulty_store)",
-  //         "Item (Faulty_use)",
-  //         "Item (Transfer)",
-  //         "Total item",
-  //         "Location (Good)",
-  //         "Category",
-  //         "Date",
-  //       ],
-  //     ],
-  //     body: tableData,
-  //   });
-
-  //   doc.save("items.pdf");
-  // };
-
-  // Function to generate and download PDF for filtered items
-  // const handleDownloadFilteredPDF = () => {
-  //   const doc = new jsPDF();
-
-  //   // Define headers and data mapping based on the selected condition
-  //   let headers = [];
-  //   let tableData = [];
-
-  //   headers = [
-  //     [
-  //       "#",
-  //       "Name,Model & Origin",
-  //       "Item (Store)",
-  //       "Item (Use)",
-  //       "Item (Faulty_store)",
-  //       "Item (Faulty_use)",
-  //       "Item (Transfer)",
-  //       "Total item",
-  //       "Location (Good)",
-  //       "Category & Date",
-  //     ],
-  //   ];
-  //   tableData = filteredItems.map((item, index) => [
-  //     startIndex + index + 1,
-  //     [`${item.itemName}`, `${item.model}`, `${item.origin}`], // Multi-line text array
-  //     item?.items_quantity?.item_store,
-  //     item?.items_quantity?.item_use,
-  //     item?.items_quantity?.item_faulty_store,
-  //     item?.items_quantity?.item_faulty_use,
-  //     item?.items_quantity?.item_transfer,
-  //     item.totalQuantity,
-  //     item.locationGood,
-  //     [`${item.category}`, `${item.date}`], // Multi-line text array
-  //   ]);
-
-  //   // Generate PDF with the dynamically set headers and table data
-  //   doc.autoTable({
-  //     head: headers,
-  //     body: tableData,
-  //   });
-
-  //   doc.save("filtered_items.pdf");
-  // };
 
   const openModal = (item) => {
     setSelectedItemData(item);
@@ -352,14 +264,9 @@ const AdminManageItems = ({ block = "head" }) => {
       if (!selectedItemData?._id) throw new Error("Missing item ID");
 
       const inputQty = Number(formData.good);
-      const availableStore = Number(
-        selectedItemData.items_quantity?.item_store || 0
-      );
-      const availableUse = Number(
-        selectedItemData.items_quantity?.item_use || 0
-      );
+      const availableStore = Number(selectedItemData.items_quantity?.item_store || 0);
+      const availableUse = Number(selectedItemData.items_quantity?.item_use || 0);
 
-      // ✅ Validate: Quantity must be > 0
       if (isNaN(inputQty) || inputQty <= 0) {
         return Swal.fire({
           icon: "error",
@@ -368,7 +275,6 @@ const AdminManageItems = ({ block = "head" }) => {
         });
       }
 
-      // ❗ Validate input before submit
       if (formData.condition === "use" && inputQty > availableStore) {
         return Swal.fire({
           icon: "error",
@@ -397,11 +303,10 @@ const AdminManageItems = ({ block = "head" }) => {
         return Swal.fire({
           icon: "error",
           title: "Insufficient Store Quantity",
-          text: `Cannot transfer ${inputQty} items. Only ${availableStore} available in store.`,
+          text: `Cannot transfer ${inputQty} items. Only ${availableStore} available.`,
         });
       }
 
-      // ✅ Build payload
       const payload = {
         itemName: selectedItemData.itemName,
         model: selectedItemData.model,
@@ -414,8 +319,9 @@ const AdminManageItems = ({ block = "head" }) => {
           (formData.condition === "add"
             ? "To store"
             : formData.condition === "use"
-            ? "For use"
-            : "Faulty removal"),
+              ? "For use"
+              : "Faulty removal"),
+
         items_quantity: {
           item_store: 0,
           item_use: 0,
@@ -423,27 +329,35 @@ const AdminManageItems = ({ block = "head" }) => {
           item_faulty_use: 0,
           item_transfer: 0,
         },
+
+        requestedBy: {
+          uid: user?.uid,
+          name: user?.displayName,
+          email: user?.email,
+          role: "admin",
+        }
       };
 
-      // ✅ Set status and quantity field
+      // Set actionStatus & quantity
       if (formData.condition === "add") {
-        payload.status = "pending(add)";
+        payload.actionStatus = "pending(add)";
         payload.items_quantity.item_store = inputQty;
       } else if (formData.condition === "use") {
-        payload.status = "pending(remove)";
+        payload.actionStatus = "pending(remove)";
         payload.items_quantity.item_use = inputQty;
       } else if (formData.condition === "faulty_store") {
-        payload.status = "pending(remove_fault_store)";
+        payload.actionStatus = "pending(remove_fault_store)";
         payload.items_quantity.item_faulty_store = inputQty;
       } else if (formData.condition === "faulty_use") {
-        payload.status = "pending(remove_fault_use)";
+        payload.actionStatus = "pending(remove_fault_use)";
         payload.items_quantity.item_faulty_use = inputQty;
       } else if (formData.condition === "transfer") {
-        payload.status = "pending(transfer)";
+        payload.actionStatus = "pending(transfer)";
         payload.items_quantity.item_transfer = inputQty;
       }
 
-      console.log("Submitting payload:", payload);
+      // Workflow position
+      payload.workflowStatus = "submitted_by_admin";
 
       const response = await axiosPublic.post(`/${block}/records`, payload);
 
@@ -477,11 +391,6 @@ const AdminManageItems = ({ block = "head" }) => {
     }
   };
 
-  // const handleDownloadFilteredPDF = () => {
-  //   if (isFiltered && filteredItems?.length > 0) {
-  //     downloadPDF(filteredItems);
-  //   }
-  // };
 
   // Update filterApplied when searchTerm or selectedCondition changes
   useEffect(() => {
@@ -572,7 +481,7 @@ const AdminManageItems = ({ block = "head" }) => {
           </td>
           <td>
             <div className="text-sm opacity-50 text-center">
-               {item?.items_quantity?.item_store} {item?.unit || ""}
+              {item?.items_quantity?.item_store} {item?.unit || ""}
             </div>
           </td>
           <td>
@@ -683,9 +592,8 @@ const AdminManageItems = ({ block = "head" }) => {
             <button
               onClick={() => downloadPDF(filteredItems, "items")}
               disabled={!isFiltered}
-              className={`btn btn-xs sm:btn-sm flex items-center justify-center text-white ${
-                isFiltered ? "bg-green-500" : "bg-gray-300 cursor-not-allowed"
-              }`}
+              className={`btn btn-xs sm:btn-sm flex items-center justify-center text-white ${isFiltered ? "bg-green-500" : "bg-gray-300 cursor-not-allowed"
+                }`}
               title="Download Filtered PDF"
             >
               Filtered PDF <FiDownload className="text-lg" />

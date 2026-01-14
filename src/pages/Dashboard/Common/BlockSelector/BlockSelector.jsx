@@ -22,7 +22,11 @@ const BlockSelector = () => {
       } catch (err) {
         console.error("Error fetching user data:", err);
         if (err.response?.status === 401) {
-          Swal.fire("Error", "Unauthorized access. Please log in again.", "error");
+          Swal.fire(
+            "Error",
+            "Unauthorized access. Please log in again.",
+            "error"
+          );
           navigate("/"); // Redirect to login on auth failure
         }
       }
@@ -84,8 +88,7 @@ const BlockSelector = () => {
                   : "bg-gray-400 text-white cursor-not-allowed"
               }`}
             >
-              🔵 Head Office <br />
-                 ( সদর দপ্তর )
+              🔵 Head Office <br />( সদর দপ্তর )
             </div>
             <div
               onClick={() => handleOfficeSelect("local")}
@@ -96,8 +99,7 @@ const BlockSelector = () => {
                   : "bg-gray-400 text-white cursor-not-allowed"
               }`}
             >
-              🟢 Local Office <br />
-                 ( স্থানীয় বা আঞ্চলিক দপ্তর )
+              🟢 Local Office <br />( স্থানীয় বা আঞ্চলিক দপ্তর )
             </div>
           </div>
         </>
@@ -112,15 +114,14 @@ const BlockSelector = () => {
               onClick={() => handleSubBlockSelect("items")}
               className="cursor-pointer py-8 px-12 rounded-lg shadow-lg transition-all text-center bg-emerald-600 text-white hover:bg-emerald-700"
             >
-              📦 Goods Management <br />
-                 ( পণ্য ব্যবস্থাপনা )
+              📦 Goods Management <br />( পণ্য ব্যবস্থাপনা )
             </div>
             <div
               onClick={() => handleSubBlockSelect("services")}
               className="cursor-pointer py-8 px-12 rounded-lg shadow-lg transition-all text-center bg-purple-600 text-white hover:bg-purple-700"
             >
-              🛠️ Services Management <br />
-                 ( মেরামত ও রক্ষণাবেক্ষণ কাজ ব্যবস্থাপনা )
+              🛠️ Services Management <br />( মেরামত ও রক্ষণাবেক্ষণ কাজ
+              ব্যবস্থাপনা )
             </div>
           </div>
           <button

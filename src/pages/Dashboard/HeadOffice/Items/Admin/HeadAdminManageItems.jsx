@@ -1,5 +1,4 @@
-import AdminManageItems from "../../../Common/Components/Items/AdminManageItems"; 
-
+import AdminManageItems from "../../../Common/Components/Items/AdminManageItems";
 
 const HeadAdminManageItems = () => {
   return (

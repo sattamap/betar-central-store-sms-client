@@ -1,11 +1,11 @@
 import AddServices from "../../../Common/Components/Services/AddServices";
 
 const LocalAddServices = () => {
-    return (
-        <div>
-            <AddServices block="local"/>
-        </div>
-    );
+  return (
+    <div>
+      <AddServices block="local" />
+    </div>
+  );
 };
 
 LocalAddServices.propTypes = {};

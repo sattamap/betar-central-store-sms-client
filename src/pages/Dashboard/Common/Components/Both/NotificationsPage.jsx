@@ -96,8 +96,11 @@ const NotificationsPage = () => {
   const startIndex = currentPage * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, totalFiltered);
 
-  const paginatedNotifications = filteredNotifications.slice(startIndex, endIndex);
-    // Handle page change
+  const paginatedNotifications = filteredNotifications.slice(
+    startIndex,
+    endIndex
+  );
+  // Handle page change
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
@@ -286,7 +289,9 @@ const NotificationsPage = () => {
                   <td className="px-4 py-2 border text-center">
                     {startIndex + idx + 1}
                   </td>
-                  <td className="px-4 py-2 border text-blue-700">{n.message}</td>
+                  <td className="px-4 py-2 border text-blue-700">
+                    {n.message}
+                  </td>
                   <td className="px-4 py-2 border text-blue-700">{n.type}</td>
                   <td className="px-4 py-2 border text-center">
                     {new Date(n.timestamp).toLocaleString()}
@@ -305,26 +310,26 @@ const NotificationsPage = () => {
           </table>
         </div>
       )}
-        {/* Pagination Controls */}
-         
-          {/* Items per page selector */}
-          <div className="flex flex-col lg:flex-row items-center justify-center mt-4">
-            <div className="mb-4 lg:mb-0 lg:mr-4">
-              <select
-                value={itemsPerPage}
-                onChange={(e) => {
-                  setItemsPerPage(parseInt(e.target.value));
-                  setCurrentPage(0);
-                }}
-                className="p-2 border border-teal-400 rounded-lg"
-              >
-                <option value={5}>5 per page</option>
-                <option value={10}>10 per page</option>
-                <option value={20}>20 per page</option>
-              </select>
-            </div>
-             {numberOfPages > 1 && renderPageNumbers()}
-          </div>
+      {/* Pagination Controls */}
+
+      {/* Items per page selector */}
+      <div className="flex flex-col lg:flex-row items-center justify-center mt-4">
+        <div className="mb-4 lg:mb-0 lg:mr-4">
+          <select
+            value={itemsPerPage}
+            onChange={(e) => {
+              setItemsPerPage(parseInt(e.target.value));
+              setCurrentPage(0);
+            }}
+            className="p-2 border border-teal-400 rounded-lg"
+          >
+            <option value={5}>5 per page</option>
+            <option value={10}>10 per page</option>
+            <option value={20}>20 per page</option>
+          </select>
+        </div>
+        {numberOfPages > 1 && renderPageNumbers()}
+      </div>
     </div>
   );
 };
