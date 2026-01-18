@@ -206,7 +206,15 @@ const Login = () => {
           <p className="text-center mt-8 text-sm text-gray-500">
             {" "}
             &copy; {new Date().getFullYear()} Store Management System |
-            Developed by Sattam
+            Developed & Maintained by{" "}
+            <a
+              href="https://sattam-portfolio.netlify.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:underline"
+            >
+              Sattam Chakma
+            </a>
           </p>
         </div>
       </div>

@@ -104,6 +104,19 @@ const Contact = () => {
                 </button>
               </div>
             </form>
+            <div className="mt-10 text-center text-xs text-gray-500">
+              <p>
+                Developed & Maintained by{" "}
+                <a
+                  href="https://sattam-portfolio.netlify.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline"
+                >
+                  Sattam Chakma
+                </a>
+              </p>
+            </div>
           </div>
         </div>
       </div>
